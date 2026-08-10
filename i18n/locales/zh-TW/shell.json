@@ -20,7 +20,7 @@
       "documentation_aria_label": "開啟 Sink 文件（在新分頁中開啟）",
       "resources_aria_label": "資源",
       "skip_to_content": "跳到主要內容",
-      "home_aria_label": "首頁",
+      "dashboard_aria_label": "儀表板",
       "github_aria_label": "GitHub 上的 Sink"
     }
   },

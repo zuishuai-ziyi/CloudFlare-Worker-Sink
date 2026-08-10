@@ -20,7 +20,7 @@
       "documentation_aria_label": "Buka dokumentasi Sink (terbuka di tab baru)",
       "resources_aria_label": "Sumber daya",
       "skip_to_content": "Lompat ke konten utama",
-      "home_aria_label": "Beranda",
+      "dashboard_aria_label": "Dasbor",
       "github_aria_label": "Sink di GitHub"
     }
   },

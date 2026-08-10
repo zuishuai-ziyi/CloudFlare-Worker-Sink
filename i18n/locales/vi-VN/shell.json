@@ -20,7 +20,7 @@
       "documentation_aria_label": "Mở tài liệu Sink (mở trong thẻ mới)",
       "resources_aria_label": "Tài nguyên",
       "skip_to_content": "Chuyển đến nội dung chính",
-      "home_aria_label": "Trang chủ",
+      "dashboard_aria_label": "Bảng điều khiển",
       "github_aria_label": "Sink trên GitHub"
     }
   },

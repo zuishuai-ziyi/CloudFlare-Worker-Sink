@@ -14,6 +14,13 @@ afterAll(async () => {
 })
 
 describe('/', () => {
+  it('redirects the root path to /dashboard when homeURL is not set', async () => {
+    const response = await fetch('/', { redirect: 'manual' })
+
+    expect(response.status).toBe(301)
+    expect(response.headers.get('Location')).toBe('/dashboard')
+  })
+
   it('redirects CriOS user agent to apple URL', async () => {
     const slug = `crios-apple-${crypto.randomUUID()}`
     const apple = 'https://apps.apple.com/app/sink-test'

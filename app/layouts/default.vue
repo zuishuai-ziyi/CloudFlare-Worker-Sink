@@ -56,9 +56,9 @@ function closeMobileMenu() {
             "
           >
             <NuxtLink
-              to="/"
+              to="/dashboard"
               :title="title"
-              :aria-label="$t('layouts.links.home_aria_label')"
+              :aria-label="$t('layouts.links.dashboard_aria_label')"
               class="flex items-center space-x-2"
             >
               <span class="flex size-8 items-center justify-center rounded-full">
@@ -252,9 +252,9 @@ function closeMobileMenu() {
           "
         >
           <NuxtLink
-            to="/"
+            to="/dashboard"
             :title="title"
-            :aria-label="$t('layouts.links.home_aria_label')"
+            :aria-label="$t('layouts.links.dashboard_aria_label')"
             class="block size-fit"
           >
             <div class="flex items-center space-x-2">

@@ -20,7 +20,7 @@
       "documentation_aria_label": "Sink 문서 열기(새 탭에서 열림)",
       "resources_aria_label": "리소스",
       "skip_to_content": "주요 콘텐츠로 건너뛰기",
-      "home_aria_label": "홈",
+      "dashboard_aria_label": "대시보드",
       "github_aria_label": "GitHub의 Sink"
     }
   },

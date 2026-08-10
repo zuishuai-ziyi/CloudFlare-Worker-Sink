@@ -20,7 +20,6 @@
     "build:map": "node scripts/build-map.js",
     "build:sphere": "node scripts/build-sphere.js",
     "build:colo": "node scripts/build-colo.js",
-    "build:testimonials": "node scripts/build-testimonials.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint-staged": "lint-staged",

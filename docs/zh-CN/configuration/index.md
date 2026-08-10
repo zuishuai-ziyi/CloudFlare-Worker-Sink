@@ -92,7 +92,7 @@ Workers 要在 Builds 和运行时填相同值。Pages 只填一次，然后重�
 
 | 变量                                                | 用途                                                           |
 | --------------------------------------------------- | -------------------------------------------------------------- |
-| `NUXT_HOME_URL`                                     | 非空则把 `/` 重定向到该 URL；空则显示 Sink 首页                |
+| `NUXT_HOME_URL`                                     | 非空则把 `/` 重定向到该 URL；空则重定向到 `/dashboard`         |
 | `NUXT_NOT_FOUND_REDIRECT`                           | 未知短链码跳到哪里（**始终 HTTP 302**）                        |
 | `NUXT_CF_ACCESS_TEAM_DOMAIN` + `NUXT_CF_ACCESS_AUD` | 两个都设 → 启用 [Cloudflare Access](./cloudflare-access)       |
 | `NUXT_SAFE_BROWSING_DOH`                            | 用于检查不安全域名的 DNS-over-HTTPS 地址（未设置 `unsafe` 时） |

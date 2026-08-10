@@ -20,7 +20,7 @@
       "documentation_aria_label": "Sink-Dokumentation öffnen (wird in einem neuen Tab geöffnet)",
       "resources_aria_label": "Ressourcen",
       "skip_to_content": "Zum Hauptinhalt springen",
-      "home_aria_label": "Startseite",
+      "dashboard_aria_label": "Dashboard",
       "github_aria_label": "Sink auf GitHub"
     }
   },

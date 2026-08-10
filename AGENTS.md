@@ -74,4 +74,4 @@ pnpm db:migrate:remote   # mutates the configured remote D1 database
 ## Generated artifacts
 
 - `pnpm install` regenerates ignored `public/world.json` via `build:map`.
-- `pnpm build` regenerates `public/sphere.bin` through its prebuild hook. `build:colo` and `build:testimonials` generate `public/colos.json` and `app/data/testimonials.json`; the testimonial task is network-dependent and randomizes order.
+- `pnpm build` regenerates `public/sphere.bin` through its prebuild hook. `build:colo` generates `public/colos.json`.

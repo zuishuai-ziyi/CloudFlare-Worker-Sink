@@ -61,4 +61,4 @@ Cloaking shows the target site inside the page while the address bar still shows
 
 ## Site-wide redirect options
 
-You can change the default redirect code (default `301`), ask browsers not to cache redirects, redirect the homepage (`NUXT_HOME_URL`), and redirect unknown short codes (`NUXT_NOT_FOUND_REDIRECT`, always **302**). See [configuration](/configuration/#advanced-defaults).
+You can change the default redirect code (default `301`), ask browsers not to cache redirects, redirect the root path (`NUXT_HOME_URL`, empty defaults to `/dashboard`), and redirect unknown short codes (`NUXT_NOT_FOUND_REDIRECT`, always **302**). See [configuration](/configuration/#advanced-defaults).

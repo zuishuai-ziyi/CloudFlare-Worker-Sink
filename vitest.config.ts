@@ -33,6 +33,7 @@ export default defineConfig(async ({ mode }) => ({
       wrangler: {
         configPath: './wrangler.jsonc',
       },
+      remoteBindings: false,
       miniflare: {
         cf: true,
         bindings: {

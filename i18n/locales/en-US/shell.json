@@ -20,7 +20,7 @@
       "documentation_aria_label": "Open Sink documentation (opens in a new tab)",
       "resources_aria_label": "Resources",
       "skip_to_content": "Skip to content",
-      "home_aria_label": "Home",
+      "dashboard_aria_label": "Dashboard",
       "github_aria_label": "Sink on GitHub"
     }
   },

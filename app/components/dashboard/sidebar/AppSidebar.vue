@@ -53,7 +53,7 @@ const settingsItems = computed<NavItem[]>(() => [
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" as-child>
             <NuxtLink
-              to="/" :title="title"
+              to="/dashboard" :title="title"
             >
               <div
                 class="

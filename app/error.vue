@@ -21,8 +21,8 @@ defineProps<{
           focus-visible:ring-2 focus-visible:ring-ring
           [&_svg]:h-auto [&_svg]:w-full
         "
-        to="/"
-        :aria-label="$t('layouts.links.home_aria_label')"
+        to="/dashboard"
+        :aria-label="$t('layouts.links.dashboard_aria_label')"
       >
         <span class="contents" v-html="errorImage" />
       </NuxtLink>

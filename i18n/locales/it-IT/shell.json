@@ -20,7 +20,7 @@
       "documentation_aria_label": "Apri la documentazione di Sink (si apre in una nuova scheda)",
       "resources_aria_label": "Risorse",
       "skip_to_content": "Vai al contenuto principale",
-      "home_aria_label": "Pagina iniziale",
+      "dashboard_aria_label": "Pannello di controllo",
       "github_aria_label": "Sink su GitHub"
     }
   },

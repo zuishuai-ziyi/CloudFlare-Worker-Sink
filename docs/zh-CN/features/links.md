@@ -61,4 +61,4 @@ DNS 检查失败时，Sink 会放行链接，而不是拦截。
 
 ## 全站重定向选项
 
-可改默认跳转状态码（默认 `301`）、要求浏览器不缓存跳转、重定向首页（`NUXT_HOME_URL`），以及未知短链码去向（`NUXT_NOT_FOUND_REDIRECT`，始终 **302**）。见[配置参考](/zh-CN/configuration/#高级默认值)。
+可改默认跳转状态码（默认 `301`）、要求浏览器不缓存跳转、重定向根路径（`NUXT_HOME_URL`，空则默认 `/dashboard`），以及未知短链码去向（`NUXT_NOT_FOUND_REDIRECT`，始终 **302**）。见[配置参考](/zh-CN/configuration/#高级默认值)。

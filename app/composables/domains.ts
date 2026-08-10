@@ -11,6 +11,7 @@ export interface DashboardDomain {
 export const useDomainsStore = defineStore('dashboard-domains', () => {
   const domains = ref<DashboardDomain[]>([])
   const loading = shallowRef(false)
+  const loaded = shallowRef(false)
   const error = shallowRef<string | null>(null)
   let requestGeneration = 0
 
@@ -23,6 +24,7 @@ export const useDomainsStore = defineStore('dashboard-domains', () => {
       if (generation !== requestGeneration)
         return
       domains.value = result
+      loaded.value = true
     }
     catch (err) {
       if (generation === requestGeneration) {
@@ -33,6 +35,19 @@ export const useDomainsStore = defineStore('dashboard-domains', () => {
     finally {
       if (generation === requestGeneration)
         loading.value = false
+    }
+  }
+
+  // Fetch once, used by many leaf components (e.g. every link card) to resolve the
+  // default domain without firing a request per card.
+  async function ensureLoaded() {
+    if (loaded.value || loading.value)
+      return
+    try {
+      await fetchDomains()
+    }
+    catch {
+      // Callers fall back to the request host when the default domain is unknown.
     }
   }
 
@@ -53,5 +68,5 @@ export const useDomainsStore = defineStore('dashboard-domains', () => {
 
   const defaultDomain = computed(() => domains.value.find(domain => domain.isDefault)?.name ?? null)
 
-  return { domains, loading, error, defaultDomain, fetchDomains, createDomain, setDefault, removeDomain }
+  return { domains, loading, loaded, error, defaultDomain, fetchDomains, ensureLoaded, createDomain, setDefault, removeDomain }
 })

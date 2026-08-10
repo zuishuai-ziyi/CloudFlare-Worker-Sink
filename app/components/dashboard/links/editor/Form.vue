@@ -175,7 +175,7 @@ watch(currentUrl, (url) => {
 const shortDuplicateLink = computed(() => {
   if (!duplicateLink.value)
     return ''
-  const host = duplicateLink.value.domain && duplicateLink.value.domain !== '' ? duplicateLink.value.domain : requestUrl.host
+  const host = duplicateLink.value.domain && duplicateLink.value.domain !== '' ? duplicateLink.value.domain : (domainsStore.defaultDomain ?? requestUrl.host)
   return `${requestUrl.protocol}//${host}/${duplicateLink.value.slug}`
 })
 

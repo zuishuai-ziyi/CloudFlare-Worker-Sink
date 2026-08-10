@@ -67,8 +67,14 @@ const countersError = computed(() => counterErrorIds?.value.has(props.link.id) ?
 
 const requestUrl = useRequestURL()
 const host = requestUrl.host
-// '' (default domain) links are displayed on the host the dashboard was opened on.
-const linkHost = computed(() => props.link.domain && props.link.domain !== '' ? props.link.domain : host)
+const domainsStore = useDomainsStore()
+// '' (default domain) links resolve to the configured default domain, falling back to
+// the dashboard host when no default is registered.
+const linkHost = computed(() => props.link.domain && props.link.domain !== '' ? props.link.domain : (domainsStore.defaultDomain ?? host))
+
+onMounted(() => {
+  void domainsStore.ensureLoaded()
+})
 
 function getLinkHost(url: string): string | undefined {
   const { host } = parseURL(url)

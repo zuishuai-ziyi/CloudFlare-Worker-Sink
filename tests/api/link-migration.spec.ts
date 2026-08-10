@@ -2,12 +2,14 @@ import type { ImportResult } from '../../shared/schemas/import'
 import type { ExportData } from '../../shared/schemas/link'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { LINK_PASSWORD_HASH_PREFIX, LINK_PASSWORD_MASK_PREFIX } from '../../shared/utils/link-password'
-import { clearLinkMigrationState, deleteStoredLinks, expectStoredHashedPassword, fetchWithAuth, getStoredLink, postJson, setLinkStoreD1Mode } from '../utils'
+import { clearLinkMigrationState, deleteStoredLinks, expectStoredHashedPassword, fetchWithAuth, getStoredLink, insertDomain, postJson, setLinkStoreD1Mode } from '../utils'
 
 const createdSlugs = new Set<string>()
+const TEST_DOMAIN = 'example.com'
 
 beforeEach(async () => {
   await setLinkStoreD1Mode()
+  await insertDomain(TEST_DOMAIN, true)
 })
 
 function trackSlug(slug: string) {
@@ -31,7 +33,7 @@ afterEach(async () => {
 describe('/api/link/export', { concurrent: false }, () => {
   it('exports links with valid auth', async () => {
     const payload = createLinkPayload()
-    expect((await postJson('/api/link/create', payload)).status).toBe(201)
+    expect((await postJson('/api/link/create', { ...payload, domain: TEST_DOMAIN })).status).toBe(201)
 
     const response = await fetchWithAuth('/api/link/export')
     expect(response.status).toBe(200)
@@ -56,6 +58,7 @@ describe('/api/link/export', { concurrent: false }, () => {
     const payload = {
       url: 'https://example.com',
       slug: trackSlug(`000-export-password-${crypto.randomUUID()}`),
+      domain: TEST_DOMAIN,
       password,
     }
 
@@ -108,7 +111,7 @@ describe('/api/link/import', { concurrent: false }, () => {
 
   it('skips existing links during import', async () => {
     const payload = createLinkPayload()
-    expect((await postJson('/api/link/create', payload)).status).toBe(201)
+    expect((await postJson('/api/link/create', { ...payload, domain: TEST_DOMAIN })).status).toBe(201)
 
     const importPayload = { version: '1.0', links: [payload] }
     const response = await postJson('/api/link/import', importPayload)
@@ -129,7 +132,7 @@ describe('/api/link/import', { concurrent: false }, () => {
     const existing = createLinkPayload()
     const first = createLinkPayload()
     const last = createLinkPayload()
-    expect((await postJson('/api/link/create', existing)).status).toBe(201)
+    expect((await postJson('/api/link/create', { ...existing, domain: TEST_DOMAIN })).status).toBe(201)
 
     const response = await postJson('/api/link/import', { version: '1.0', links: [first, existing, last] })
     const data: ImportResult = await response.json()
@@ -163,6 +166,7 @@ describe('/api/link/import', { concurrent: false }, () => {
     const sourcePayload = {
       url: 'https://example.com',
       slug: trackSlug(`000-reimport-source-${crypto.randomUUID()}`),
+      domain: TEST_DOMAIN,
       password,
     }
 

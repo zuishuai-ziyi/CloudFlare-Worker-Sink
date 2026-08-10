@@ -5,6 +5,7 @@ import { useForm } from '@tanstack/vue-form'
 import { useDebounceFn } from '@vueuse/core'
 import { toast } from 'vue-sonner'
 import { z } from 'zod'
+import { DomainSchema } from '#shared/schemas/domain'
 import { nanoid, SlugSchema, UrlSchema } from '#shared/schemas/link'
 
 const props = defineProps<{
@@ -25,6 +26,7 @@ const requestUrl = useRequestURL()
 
 const urlValidator = UrlSchema
 const slugValidator = SlugSchema
+const domainValidator = DomainSchema
 const commentValidator = z.string().max(500).optional()
 const optionalUrlValidator = z.string().trim().url().max(2048).optional().or(z.literal(''))
 
@@ -59,11 +61,33 @@ const isSubmitting = form.useStore(state => state.isSubmitting)
 const isDirty = form.useStore(state => !state.isDefaultValue)
 const tagsInput = useTemplateRef<{ commit: () => boolean }>('tagsInput')
 
+const domainsStore = useDomainsStore()
+const domains = computed(() => domainsStore.domains)
+const domainsLoading = computed(() => domainsStore.loading)
+
+// Preselect the default domain once the list is available. For edits the value is
+// read-only, so a legacy '' (default) link resolves to the current default host.
+// `reset` re-baselines the default value so the preselect is not flagged as dirty.
+onMounted(() => {
+  void domainsStore.fetchDomains()
+    .catch(() => {})
+    .then(() => {
+      const available = domainsStore.domains
+      const current = form.getFieldValue('domain')
+      const selected = current && available.some(domain => domain.name === current)
+        ? current
+        : (domainsStore.defaultDomain ?? available[0]?.name ?? '')
+      if (selected !== current)
+        form.reset({ ...form.state.values, domain: selected })
+    })
+})
+
 watch(isSubmitting, value => emit('update:submitting', value), { immediate: true })
 watch(isDirty, value => emit('update:dirty', value), { immediate: true })
 
 const validateUrl = makeZodValidator(urlValidator)
 const validateSlug = makeZodValidator(slugValidator)
+const validateDomain = makeZodValidator(domainValidator)
 const validateComment = makeZodValidator(commentValidator)
 const validateOptionalUrl = makeZodValidator(optionalUrlValidator)
 
@@ -127,7 +151,7 @@ const findDuplicateLink = useDebounceFn(async (url: string, generation: number) 
     return
 
   try {
-    const match = await linksSearchStore.findDuplicateLink(url, props.link.slug)
+    const match = await linksSearchStore.findDuplicateLink(url, props.link.slug, props.link.domain)
     if (generation === duplicateRequestGeneration && currentUrl.value === url)
       duplicateLink.value = match
   }
@@ -148,7 +172,12 @@ watch(currentUrl, (url) => {
   void findDuplicateLink(url, generation)
 }, { immediate: true })
 
-const shortDuplicateLink = computed(() => duplicateLink.value ? `${requestUrl.origin}/${duplicateLink.value.slug}` : '')
+const shortDuplicateLink = computed(() => {
+  if (!duplicateLink.value)
+    return ''
+  const host = duplicateLink.value.domain && duplicateLink.value.domain !== '' ? duplicateLink.value.domain : requestUrl.host
+  return `${requestUrl.protocol}//${host}/${duplicateLink.value.slug}`
+})
 
 const { previewMode } = useRuntimeConfig().public
 const isExpiredLink = computed(() => Boolean(
@@ -261,7 +290,7 @@ defineExpose({ initializeRandomSlug })
             >
               <span>{{ $t('links.form.duplicate_url_hint', { shortLink: shortDuplicateLink }) }}</span>
               <NuxtLink
-                :to="getDashboardLinkDetailLocation(duplicateLink.slug)"
+                :to="getDashboardLinkDetailLocation(duplicateLink.slug, undefined, duplicateLink.domain)"
                 target="_blank"
                 rel="noopener noreferrer"
                 :aria-label="$t('links.form.duplicate_url_hint', { shortLink: shortDuplicateLink })"
@@ -329,6 +358,70 @@ defineExpose({ initializeRandomSlug })
               @blur="field.handleBlur"
               @input="field.handleChange(($event.target as HTMLInputElement).value)"
             />
+            <FieldError
+              v-if="isInvalid(field)"
+              :errors="formatErrors(field.state.meta.errors)"
+            />
+          </Field>
+        </form.Field>
+
+        <form.Field
+          v-slot="{ field }"
+          name="domain"
+          :validators="{ onBlur: validateDomain, onSubmit: validateDomain }"
+        >
+          <Field :data-invalid="isInvalid(field)">
+            <FieldLabel :for="`${formId}-${field.name}`">
+              {{ $t('links.form.domain') }}
+            </FieldLabel>
+            <Select
+              v-if="domains.length"
+              :model-value="field.state.value"
+              :disabled="isEdit"
+              @update:model-value="field.handleChange(typeof $event === 'string' ? $event : '')"
+            >
+              <SelectTrigger
+                :id="`${formId}-${field.name}`"
+                :disabled="isEdit"
+                :aria-invalid="getAriaInvalid(field)"
+                class="w-full"
+              >
+                <SelectValue :placeholder="$t('links.form.domain_placeholder')" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem v-for="domain in domains" :key="domain.name" :value="domain.name">
+                  <span class="flex items-center gap-2">
+                    {{ domain.name }}
+                    <span v-if="domain.isDefault" class="text-muted-foreground">
+                      {{ $t('domains.default_badge') }}
+                    </span>
+                  </span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <div
+              v-else-if="domainsLoading"
+              class="text-sm text-muted-foreground"
+            >
+              {{ $t('dashboard.loading') }}
+            </div>
+            <div
+              v-else
+              class="
+                rounded-md border border-dashed p-3 text-sm
+                text-muted-foreground
+              "
+            >
+              <NuxtLink
+                to="/dashboard/domains"
+                class="
+                  text-primary underline-offset-4
+                  hover:underline
+                "
+              >
+                {{ $t('links.form.no_domains') }}
+              </NuxtLink>
+            </div>
             <FieldError
               v-if="isInvalid(field)"
               :errors="formatErrors(field.state.meta.errors)"

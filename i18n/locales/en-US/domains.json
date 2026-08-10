@@ -1,0 +1,40 @@
+{
+  "domains": {
+    "title": "Domains",
+    "description": "Pick a domain for each short link.",
+    "hint_title": "Route your domains here",
+    "hint_description": "Every domain below must be routed to this project in Cloudflare (custom domain or route). A short link only resolves on the domain it was created on; default-domain links also work on the dashboard host.",
+    "add_title": "Add a domain",
+    "add_action": "Add domain",
+    "empty": "No domains yet. Add the first domain to start creating short links.",
+    "load_failed": "Failed to load domains.",
+    "default_badge": "Default",
+    "set_default": "Set default",
+    "create_success": "Domain added",
+    "create_failed": "Failed to add domain",
+    "default_success": "Default domain updated",
+    "default_failed": "Failed to update default domain",
+    "delete_success": "Domain deleted",
+    "delete_failed": "Failed to delete domain",
+    "table": {
+      "domain": "Domain",
+      "links": "Links",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "form": {
+      "name_label": "Domain",
+      "name_placeholder": "sink.cool",
+      "name_description": "A host routed to this project. Scheme, port and path are not allowed."
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Delete {name}?",
+        "description": "This domain will no longer be usable for new links.",
+        "has_links": "This domain is used by {count} link(s). Move or delete them before removing the domain.",
+        "in_use_tip": "Delete the links using this domain first.",
+        "action": "Delete"
+      }
+    }
+  }
+}

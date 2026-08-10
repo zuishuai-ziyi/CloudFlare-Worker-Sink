@@ -7,6 +7,7 @@ export type { Link }
 export type LinkUpdateType = 'create' | 'edit' | 'delete'
 
 export interface LinkSearchItem {
+  domain: string
   slug: string
   url: string
   comment?: string

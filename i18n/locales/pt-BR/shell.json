@@ -29,7 +29,8 @@
     "analysis": "Análise",
     "realtime": "Tempo Real",
     "check": "Check",
-    "migrate": "Importar/Exportar"
+    "migrate": "Importar/Exportar",
+    "domains": "Domínios"
   },
   "sidebar": {
     "subtitle": "Encurtador de links",

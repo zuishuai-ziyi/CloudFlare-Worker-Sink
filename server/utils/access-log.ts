@@ -1,4 +1,5 @@
 import type { H3Event } from 'h3'
+import { getRequestHost } from 'h3'
 import { parseAcceptLanguage } from 'intl-parse-accept-language'
 import { UAParser } from 'ua-parser-js'
 import {
@@ -35,6 +36,7 @@ export const blobsMap = {
   blob14: 'device',
   blob15: 'deviceType',
   blob16: 'COLO',
+  blob17: 'domain',
 } as const
 
 export const doublesMap = {
@@ -166,6 +168,8 @@ export function collectAccessLog(event: H3Event): AccessLogResult | undefined {
     device: uaInfo?.device?.model,
     deviceType: uaInfo?.device?.type,
     COLO: cf?.colo,
+    // '' (default domain) links resolve on the host the visitor actually used.
+    domain: link.domain === '' ? getRequestHost(event) : link.domain,
 
     // For RealTime Globe
     latitude: Number(cf?.latitude || getHeader(event, 'cf-iplatitude') || 0),

@@ -2,8 +2,19 @@ import type { Link } from '../../shared/schemas/link'
 import { sql } from 'drizzle-orm'
 import { index, integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
+export const domains = sqliteTable('domains', {
+  // Lowercase host (no scheme/path/port). At most one row has is_default = true.
+  name: text().primaryKey(),
+  isDefault: integer('is_default', { mode: 'boolean' }).notNull().default(false),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+})
+
 export const links = sqliteTable('links', {
-  slug: text().primaryKey(),
+  // '' (empty string) is the sentinel for "the current default domain". New links
+  // store either a concrete host or '' when the chosen domain is the default.
+  domain: text().notNull().default(''),
+  slug: text().notNull(),
   id: text().notNull(),
   url: text().notNull(),
   comment: text(),
@@ -23,8 +34,9 @@ export const links = sqliteTable('links', {
   normalizedUrl: text('normalized_url').notNull(),
   effectiveExpiresAt: integer('effective_expires_at'),
 }, table => [
-  index('links_created_at_slug_idx').on(table.createdAt, table.slug),
-  index('links_created_at_desc_slug_idx').on(sql`${table.createdAt} desc`, table.slug),
+  primaryKey({ columns: [table.domain, table.slug] }),
+  index('links_created_at_domain_slug_idx').on(table.createdAt, table.domain, table.slug),
+  index('links_created_at_desc_domain_slug_idx').on(sql`${table.createdAt} desc`, table.domain, table.slug),
   index('links_normalized_url_idx').on(table.normalizedUrl),
   index('links_id_idx').on(table.id),
 ])
@@ -34,17 +46,21 @@ export const tags = sqliteTable('tags', {
 })
 
 export const linkTags = sqliteTable('link_tags', {
-  linkSlug: text('link_slug').notNull().references(() => links.slug, { onDelete: 'cascade' }),
+  linkDomain: text('link_domain').notNull().default(''),
+  linkSlug: text('link_slug').notNull(),
   tagName: text('tag_name').notNull().references(() => tags.name, { onDelete: 'cascade' }),
 }, table => [
-  primaryKey({ columns: [table.linkSlug, table.tagName] }),
-  index('link_tags_tag_name_link_slug_idx').on(table.tagName, table.linkSlug),
+  primaryKey({ columns: [table.linkDomain, table.linkSlug, table.tagName] }),
+  index('link_tags_tag_name_link_domain_link_slug_idx').on(table.tagName, table.linkDomain, table.linkSlug),
 ])
 
 export const linkTombstones = sqliteTable('link_tombstones', {
-  slug: text().primaryKey(),
+  domain: text().notNull().default(''),
+  slug: text().notNull(),
   deletedAt: integer('deleted_at').notNull(),
-})
+}, table => [
+  primaryKey({ columns: [table.domain, table.slug] }),
+])
 
 export const linkMigrationRuns = sqliteTable('link_migration_runs', {
   id: text().primaryKey(),

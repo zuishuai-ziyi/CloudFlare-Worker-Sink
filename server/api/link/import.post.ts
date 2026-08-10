@@ -26,6 +26,7 @@ defineRouteMeta({
                   properties: {
                     id: { type: 'string', description: 'Link ID (auto-generated if not provided)' },
                     url: { type: 'string', description: 'The target URL' },
+                    domain: { type: 'string', description: 'Registered domain (falls back to the default domain when missing or unknown)' },
                     slug: { type: 'string', description: 'The slug for the short link' },
                     comment: { type: 'string', description: 'Optional comment' },
                     createdAt: { type: 'integer', description: 'Creation timestamp (unix seconds)' },
@@ -85,6 +86,7 @@ export default eventHandler(async (event) => {
           ...linkData,
           id: linkData.id || nanoid(10)(),
           slug,
+          domain: await resolveImportDomain(event, linkData.domain),
           createdAt: linkData.createdAt ?? now,
           updatedAt: linkData.updatedAt ?? now,
         }

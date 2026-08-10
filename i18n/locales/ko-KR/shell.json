@@ -29,7 +29,8 @@
     "analysis": "분석",
     "realtime": "실시간",
     "check": "점검",
-    "migrate": "가져오기/내보내기"
+    "migrate": "가져오기/내보내기",
+    "domains": "도메인"
   },
   "sidebar": {
     "subtitle": "링크 단축기",

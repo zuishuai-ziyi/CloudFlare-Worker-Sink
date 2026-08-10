@@ -66,11 +66,19 @@ export default eventHandler(async (event) => {
     let link: Link | null = null
 
     const lowerCaseSlug = slug.toLowerCase()
-    link = await getLink(event, caseSensitive ? slug : lowerCaseSlug, linkCacheTtl)
-
-    if (!caseSensitive && !link && lowerCaseSlug !== slug) {
-      console.log('original slug fallback:', `slug:${slug} lowerCaseSlug:${lowerCaseSlug}`)
-      link = await getLink(event, slug, linkCacheTtl)
+    // Resolve against the request host's domain namespace, falling back to the
+    // default domain ('' sentinel) on unregistered hosts or the default host itself.
+    const domains = await getEffectiveDomains(event)
+    for (const domain of domains) {
+      link = await getLink(event, domain, caseSensitive ? slug : lowerCaseSlug, linkCacheTtl)
+      if (link)
+        break
+      if (!caseSensitive && lowerCaseSlug !== slug) {
+        console.log('original slug fallback:', `domain:${domain} slug:${slug} lowerCaseSlug:${lowerCaseSlug}`)
+        link = await getLink(event, domain, slug, linkCacheTtl)
+        if (link)
+          break
+      }
     }
 
     if (link) {

@@ -1,6 +1,9 @@
 /// <reference path="../../worker-configuration.d.ts" />
 
 import type { Link } from '#shared/schemas/link'
+import type { BackupDomain } from './backup-json-stream'
+import { drizzle } from 'drizzle-orm/d1'
+import { domains } from '../database/schema'
 import { readCompletedLinkMigrationMarker } from '../services/link-store/migration'
 import { createBackupJsonStream, uploadBackupParts } from './backup-json-stream'
 import { iterateAllAuthoritativeLinks } from './link-store'
@@ -10,6 +13,7 @@ export interface BackupData {
   exportedAt: string
   count: number
   links: Link[]
+  domains: BackupDomain[]
 }
 
 export type BackupResult
@@ -38,15 +42,23 @@ export async function backupLinksToR2(env: Cloudflare.Env, isManual: boolean = f
 
   const now = new Date()
   const backupMetadata = {
-    version: '1.0',
+    version: '1.1',
     exportedAt: now.toISOString(),
   }
+
+  const domainRows = await drizzle(env.DB).select().from(domains)
+  const backupDomains: BackupDomain[] = domainRows.map(row => ({
+    name: row.name,
+    isDefault: row.isDefault,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+  }))
 
   const timestamp = now.toISOString().replace(/:/g, '-')
   const prefix = isManual ? 'manual-links-' : 'links-'
   const filename = `backups/${prefix}${timestamp}.json`
 
-  const backup = createBackupJsonStream(iterateAllAuthoritativeLinks(env), backupMetadata)
+  const backup = createBackupJsonStream(iterateAllAuthoritativeLinks(env), backupMetadata, backupDomains)
   const stagingKey = `${filename}.pending-${crypto.randomUUID()}`
   const upload = await env.R2.createMultipartUpload(stagingKey, {
     httpMetadata: { contentType: 'application/json' },

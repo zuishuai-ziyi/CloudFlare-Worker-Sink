@@ -1,6 +1,7 @@
 import { customAlphabet } from 'nanoid'
 import { z } from 'zod'
 import { LINK_PASSWORD_MASK_PREFIX } from '../utils/link-password'
+import { DomainSchema, StoredDomainSchema } from './domain'
 
 const { slugRegex } = useAppConfig()
 
@@ -45,6 +46,8 @@ const ExpirationSchema = TimestampSchema.refine(expiration => expiration > Math.
 const LinkFieldsSchema = z.object({
   url: UrlSchema,
   slug: SlugSchema,
+  // Loose base field; each contract overrides with its own requirement below.
+  domain: z.string().trim().max(253).optional(),
   comment: z.string().trim().max(2048).optional(),
   expiration: ExpirationSchema.optional(),
   title: z.string().trim().max(256).optional(),
@@ -61,6 +64,8 @@ const LinkFieldsSchema = z.object({
 })
 
 export const CreateLinkSchema = LinkFieldsSchema.extend({
+  // New links require a concrete registered domain (no "auto" option).
+  domain: DomainSchema,
   id: IdSchema.default(nanoid(10)),
   slug: SlugSchema.default(nanoid()),
   createdAt: TimestampSchema.default(() => Math.floor(Date.now() / 1000)),
@@ -68,10 +73,13 @@ export const CreateLinkSchema = LinkFieldsSchema.extend({
 })
 
 export const EditLinkSchema = LinkFieldsSchema.extend({
+  // Domain is read-only on edit and echoes the stored value ('' for default domain).
+  domain: StoredDomainSchema,
   password: EditLinkPasswordSchema,
 })
 
 export const ImportLinkSchema = LinkFieldsSchema.extend({
+  domain: StoredDomainSchema.default(''),
   id: z.preprocess(value => typeof value === 'string' && !value.trim() ? undefined : value, IdSchema.optional()),
   createdAt: TimestampSchema.optional(),
   updatedAt: TimestampSchema.optional(),
@@ -79,6 +87,7 @@ export const ImportLinkSchema = LinkFieldsSchema.extend({
 })
 
 export const StoredLinkSchema = LinkFieldsSchema.extend({
+  domain: StoredDomainSchema.default(''),
   id: IdSchema,
   createdAt: TimestampSchema,
   updatedAt: TimestampSchema,
@@ -96,6 +105,8 @@ export function parseLegacyKvLink(value: unknown, slug: string) {
     ...link,
     id: isEmpty(link.id) ? nanoid(10)() : link.id,
     slug: isEmpty(link.slug) ? slug : link.slug,
+    // Legacy KV records predate domains; they belong to the default domain.
+    domain: isEmpty(link.domain) ? '' : link.domain,
     createdAt: isEmpty(link.createdAt) ? now : link.createdAt,
     updatedAt: isEmpty(link.updatedAt) ? now : link.updatedAt,
   })

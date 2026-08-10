@@ -29,7 +29,8 @@
     "analysis": "Analysis",
     "realtime": "Realtime",
     "check": "Check",
-    "migrate": "Import/Export"
+    "migrate": "Import/Export",
+    "domains": "Domains"
   },
   "sidebar": {
     "subtitle": "Link Shortener",

@@ -1,0 +1,40 @@
+{
+  "domains": {
+    "title": "網域",
+    "description": "為每個短網址選擇使用的網域。",
+    "hint_title": "將你的網域路由到此專案",
+    "hint_description": "下方的每個網域都必須已在 Cloudflare 中路由到此專案（自訂網域或路由）。短網址只會在其所屬的網域下解析；預設網域下的短網址在儀表板所在網域下也可存取。",
+    "add_title": "新增網域",
+    "add_action": "新增網域",
+    "empty": "還沒有網域。新增第一個網域後即可建立短網址。",
+    "load_failed": "載入網域失敗。",
+    "default_badge": "預設",
+    "set_default": "設為預設",
+    "create_success": "網域已新增",
+    "create_failed": "新增網域失敗",
+    "default_success": "預設網域已更新",
+    "default_failed": "更新預設網域失敗",
+    "delete_success": "網域已刪除",
+    "delete_failed": "刪除網域失敗",
+    "table": {
+      "domain": "網域",
+      "links": "連結數",
+      "created": "建立時間",
+      "actions": "操作"
+    },
+    "form": {
+      "name_label": "網域",
+      "name_placeholder": "sink.cool",
+      "name_description": "已路由到此專案的主機名稱，不支援通訊協定、連接埠和路徑。"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "刪除 {name}？",
+        "description": "該網域將不能再使用於建立新的短網址。",
+        "has_links": "該網域被 {count} 個短網址使用。請先轉移或刪除這些短網址，再刪除網域。",
+        "in_use_tip": "請先刪除使用該網域的短網址。",
+        "action": "刪除"
+      }
+    }
+  }
+}

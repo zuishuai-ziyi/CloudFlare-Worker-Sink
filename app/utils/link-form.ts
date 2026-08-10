@@ -6,6 +6,8 @@ export function createLinkFormInitialValues(link: Partial<DashboardLink>): Dashb
   return {
     url: link.url ?? '',
     slug: link.slug ?? '',
+    // '' marks the default domain; the form resolves the concrete host after domains load.
+    domain: link.domain ?? '',
     comment: link.comment ?? '',
     tags: link.tags ?? [],
     expiration: link.expiration ? unix2date(link.expiration) : undefined,
@@ -38,6 +40,7 @@ export function normalizeLinkFormSubmitPayload(value: DashboardLinkFormData, isE
   return {
     url: value.url,
     slug: value.slug,
+    domain: value.domain,
     comment: value.comment || undefined,
     tags: value.tags,
     expiration: value.expiration ? date2unix(value.expiration, 'end') : undefined,

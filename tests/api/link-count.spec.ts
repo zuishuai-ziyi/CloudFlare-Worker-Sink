@@ -3,7 +3,9 @@ import { env } from 'cloudflare:workers'
 import { eq } from 'drizzle-orm'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { links } from '../../server/database/schema'
-import { db, deleteStoredLinks, fetchWithAuth, postJson, setLinkStoreD1Mode } from '../utils'
+import { db, deleteStoredLinks, fetchWithAuth, insertDomain, postJson, setLinkStoreD1Mode } from '../utils'
+
+const TEST_DOMAIN = 'example.com'
 
 interface CountFixture {
   needle: string
@@ -21,6 +23,7 @@ function makeLink(slug: string, overrides: Partial<Link>): Link {
   createdSlugs.add(slug)
   return {
     id: crypto.randomUUID().slice(0, 10),
+    domain: TEST_DOMAIN,
     slug,
     url: `https://count.example/${slug}`,
     createdAt: now,
@@ -40,6 +43,7 @@ async function getCount(query: Record<string, string> = {}): Promise<number> {
 describe('/api/link/count', { concurrent: false }, () => {
   beforeEach(async () => {
     await setLinkStoreD1Mode()
+    await insertDomain(TEST_DOMAIN, true)
     const prefix = `count-${crypto.randomUUID()}`
     const needle = `needle-${crypto.randomUUID().slice(0, 8)}`
     const tag = `tag-${crypto.randomUUID().slice(0, 8)}`

@@ -3,10 +3,13 @@ import { env } from 'cloudflare:workers'
 import { eq } from 'drizzle-orm'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { links } from '../../server/database/schema'
-import { db, deleteStoredLinks, postJson, setLinkStoreD1Mode } from '../utils'
+import { db, deleteStoredLinks, insertDomain, postJson, setLinkStoreD1Mode } from '../utils'
+
+const TEST_DOMAIN = 'example.com'
 
 beforeEach(async () => {
   await setLinkStoreD1Mode()
+  await insertDomain(TEST_DOMAIN, true)
 })
 
 function uniqueSlug(index: number): string {
@@ -17,6 +20,7 @@ async function createStoredLinks(count: number): Promise<{ slug: string, url: st
   const links = Array.from({ length: count }, (_, index) => ({
     slug: uniqueSlug(index),
     url: `http://localhost/link-check/${index}`,
+    domain: TEST_DOMAIN,
   }))
   for (const link of links)
     expect((await postJson('/api/link/create', link)).status).toBe(201)
@@ -68,7 +72,7 @@ describe('/api/link/check', { concurrent: false }, () => {
     await db.update(links)
       .set({ expiration: expiredAt, effectiveExpiresAt: expiredAt })
       .where(eq(links.slug, link.slug))
-    await env.KV.delete(`link:${link.slug}`)
+    await env.KV.delete(`link::${link.slug}`)
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('Blocked test outbound request'))
 
     try {

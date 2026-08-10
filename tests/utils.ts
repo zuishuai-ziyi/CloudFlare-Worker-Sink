@@ -1,12 +1,42 @@
 import type { Link } from '../shared/schemas/link'
 import { env, exports } from 'cloudflare:workers'
-import { eq } from 'drizzle-orm'
+import { and, eq, ne } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/d1'
 import { expect } from 'vitest'
-import { linkMigrationRuns, links, linkTombstones } from '../server/database/schema'
+import { domains, linkMigrationRuns, links, linkTags, linkTombstones } from '../server/database/schema'
 import { LINK_PASSWORD_HASH_PREFIX, LINK_PASSWORD_MASK_PREFIX } from '../shared/utils/link-password'
 
 export const db = drizzle(env.DB)
+
+export function linkCacheKey(domain: string, slug: string): string {
+  return `link:${domain}:${slug}`
+}
+
+export async function insertDomain(name: string, isDefault = false) {
+  const now = Math.floor(Date.now() / 1000)
+  await db.insert(domains).values({ name, isDefault, createdAt: now, updatedAt: now }).onConflictDoNothing()
+  if (isDefault) {
+    await db.update(domains).set({ isDefault: false }).where(ne(domains.name, name))
+    await db.update(domains).set({ isDefault: true, updatedAt: now }).where(eq(domains.name, name))
+  }
+  await env.KV.delete('domain:list')
+}
+
+export async function deleteDomain(name: string) {
+  await db.delete(domains).where(eq(domains.name, name))
+  await env.KV.delete('domain:list')
+}
+
+export async function clearDomains() {
+  await db.delete(domains)
+  await env.KV.delete('domain:list')
+}
+
+export async function clearLinks() {
+  await db.delete(linkTags)
+  await db.delete(links)
+  await db.delete(linkTombstones)
+}
 
 export function fetchWithAuth(path: string, options?: RequestInit): Promise<Response> {
   const request = new Request(`http://localhost${path}`, {
@@ -41,20 +71,20 @@ export function putJson(path: string, body: unknown, withAuth = true): Promise<R
   })
 }
 
-export async function getStoredLink(slug: string) {
-  return await env.KV.get<Link>(`link:${slug}`, { type: 'json' })
+export async function getStoredLink(slug: string, domain = '') {
+  return await env.KV.get<Link>(linkCacheKey(domain, slug), { type: 'json' })
 }
 
-export async function getD1Link(slug: string) {
-  const [link] = await db.select().from(links).where(eq(links.slug, slug)).limit(1)
+export async function getD1Link(slug: string, domain = '') {
+  const [link] = await db.select().from(links).where(and(eq(links.domain, domain), eq(links.slug, slug))).limit(1)
   return link ?? null
 }
 
-export async function deleteStoredLink(slug: string) {
+export async function deleteStoredLink(slug: string, domain = '') {
   await Promise.all([
-    env.KV.delete(`link:${slug}`),
-    db.delete(links).where(eq(links.slug, slug)),
-    db.delete(linkTombstones).where(eq(linkTombstones.slug, slug)),
+    env.KV.delete(linkCacheKey(domain, slug)),
+    db.delete(links).where(and(eq(links.domain, domain), eq(links.slug, slug))),
+    db.delete(linkTombstones).where(and(eq(linkTombstones.domain, domain), eq(linkTombstones.slug, slug))),
   ])
 }
 

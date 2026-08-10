@@ -1,0 +1,40 @@
+{
+  "domains": {
+    "title": "도메인",
+    "description": "각 단축 링크에 사용할 도메인을 선택하세요.",
+    "hint_title": "도메인을 이 프로젝트로 라우팅하세요",
+    "hint_description": "아래의 모든 도메인은 Cloudflare에서 이 프로젝트로 라우팅되어야 합니다(사용자 지정 도메인 또는 라우트). 단축 링크는 생성된 도메인에서만 해석되며, 기본 도메인 링크는 대시보드 호스트에서도 동작합니다.",
+    "add_title": "도메인 추가",
+    "add_action": "도메인 추가",
+    "empty": "아직 도메인이 없습니다. 첫 도메인을 추가하면 단축 링크를 만들 수 있습니다.",
+    "load_failed": "도메인을 불러오지 못했습니다.",
+    "default_badge": "기본",
+    "set_default": "기본으로 설정",
+    "create_success": "도메인이 추가되었습니다",
+    "create_failed": "도메인을 추가하지 못했습니다",
+    "default_success": "기본 도메인이 업데이트되었습니다",
+    "default_failed": "기본 도메인을 업데이트하지 못했습니다",
+    "delete_success": "도메인이 삭제되었습니다",
+    "delete_failed": "도메인을 삭제하지 못했습니다",
+    "table": {
+      "domain": "도메인",
+      "links": "링크",
+      "created": "생성일",
+      "actions": "작업"
+    },
+    "form": {
+      "name_label": "도메인",
+      "name_placeholder": "sink.cool",
+      "name_description": "이 프로젝트로 라우팅된 호스트. 스킴, 포트, 경로는 허용되지 않습니다."
+    },
+    "dialogs": {
+      "delete": {
+        "title": "{name} 삭제?",
+        "description": "이 도메인은 더 이상 새 링크에 사용할 수 없습니다.",
+        "has_links": "이 도메인은 {count}개의 링크에서 사용 중입니다. 도메인을 삭제하기 전에 해당 링크를 이동하거나 삭제하세요.",
+        "in_use_tip": "먼저 이 도메인을 사용하는 링크를 삭제하세요.",
+        "action": "삭제"
+      }
+    }
+  }
+}

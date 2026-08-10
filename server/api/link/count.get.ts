@@ -33,6 +33,13 @@ defineRouteMeta({
         schema: { type: 'string', enum: ['active', 'expired', 'all'], default: 'active' },
         description: 'Expiration status filter',
       },
+      {
+        name: 'domain',
+        in: 'query',
+        required: false,
+        schema: { type: 'string' },
+        description: 'Count links for a specific domain',
+      },
     ],
   },
 })
@@ -44,6 +51,7 @@ const CountQuerySchema = z.object({
   url: z.string().trim().url().max(2048).optional(),
   tag: z.string().trim().toLowerCase().min(1).max(32).optional(),
   status: z.enum(['active', 'expired', 'all']).default('active'),
+  domain: z.string().trim().max(253).optional(),
 })
 
 export default eventHandler(async (event) => {

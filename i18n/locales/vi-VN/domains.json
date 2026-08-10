@@ -1,0 +1,40 @@
+{
+  "domains": {
+    "title": "Tên miền",
+    "description": "Chọn tên miền cho từng liên kết rút gọn.",
+    "hint_title": "Định tuyến tên miền của bạn đến dự án này",
+    "hint_description": "Mỗi tên miền bên dưới phải được định tuyến đến dự án này trên Cloudflare (tên miền tùy chỉnh hoặc route). Liên kết rút gọn chỉ hoạt động trên tên miền nơi nó được tạo; liên kết tên miền mặc định cũng hoạt động trên host của bảng điều khiển.",
+    "add_title": "Thêm tên miền",
+    "add_action": "Thêm tên miền",
+    "empty": "Chưa có tên miền. Thêm tên miền đầu tiên để bắt đầu tạo liên kết rút gọn.",
+    "load_failed": "Không tải được tên miền.",
+    "default_badge": "Mặc định",
+    "set_default": "Đặt mặc định",
+    "create_success": "Đã thêm tên miền",
+    "create_failed": "Không thêm được tên miền",
+    "default_success": "Đã cập nhật tên miền mặc định",
+    "default_failed": "Không cập nhật được tên miền mặc định",
+    "delete_success": "Đã xóa tên miền",
+    "delete_failed": "Không xóa được tên miền",
+    "table": {
+      "domain": "Tên miền",
+      "links": "Liên kết",
+      "created": "Đã tạo",
+      "actions": "Thao tác"
+    },
+    "form": {
+      "name_label": "Tên miền",
+      "name_placeholder": "sink.cool",
+      "name_description": "Một host được định tuyến đến dự án này. Không cho phép scheme, cổng và đường dẫn."
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Xóa {name}?",
+        "description": "Tên miền này sẽ không thể dùng cho liên kết mới.",
+        "has_links": "Tên miền này đang được {count} liên kết sử dụng. Hãy chuyển hoặc xóa chúng trước khi xóa tên miền.",
+        "in_use_tip": "Hãy xóa các liên kết dùng tên miền này trước.",
+        "action": "Xóa"
+      }
+    }
+  }
+}

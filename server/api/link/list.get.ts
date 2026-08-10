@@ -40,6 +40,13 @@ defineRouteMeta({
         schema: { type: 'string', enum: ['active', 'expired', 'all'], default: 'active' },
         description: 'Expiration status filter',
       },
+      {
+        name: 'domain',
+        in: 'query',
+        required: false,
+        schema: { type: 'string' },
+        description: 'Filter links by domain (empty string matches default-domain links)',
+      },
     ],
   },
 })
@@ -50,12 +57,13 @@ const ListQuerySchema = z.object({
   sort: z.enum(['az', 'za', 'newest', 'oldest']).default('newest'),
   tag: z.string().trim().toLowerCase().min(1).max(32).optional(),
   status: z.enum(['active', 'expired', 'all']).default('active'),
+  domain: z.string().trim().max(253).optional(),
 })
 
 export default eventHandler(async (event) => {
-  const { limit, cursor, sort, tag, status } = await getValidatedQuery(event, ListQuerySchema.parse)
+  const { limit, cursor, sort, tag, status, domain } = await getValidatedQuery(event, ListQuerySchema.parse)
 
-  const list = await listLinks(event, { limit, cursor, sort, tag, status })
+  const list = await listLinks(event, { limit, cursor, sort, tag, status, domain })
   return {
     ...list,
     links: sanitizeLinksPassword(list.links),

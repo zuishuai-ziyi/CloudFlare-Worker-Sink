@@ -68,7 +68,7 @@ function selectLink(link: DashboardLinkSearchItem | undefined) {
   if (!link)
     return
   isOpen.value = false
-  router.push(getDashboardLinkDetailLocation(link.slug))
+  router.push(getDashboardLinkDetailLocation(link.slug, undefined, link.domain))
 }
 
 function visibleTags(link: DashboardLinkSearchItem) {
@@ -211,7 +211,7 @@ watch([searchTerm, () => linksStore.status, () => linksStore.tag], ([query]) => 
           :heading="$t('links.group_title')"
         >
           <CommandItem
-            v-for="link in links" :key="link.slug"
+            v-for="link in links" :key="`${link.domain}|${link.slug}`"
             :value="link" @select="selectLink(link)"
           >
             <LinkIcon

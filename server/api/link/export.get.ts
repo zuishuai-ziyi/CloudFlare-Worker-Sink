@@ -31,7 +31,7 @@ export default eventHandler(async (event) => {
   }
 
   const exportData: ExportData = {
-    version: '1.0',
+    version: '1.1',
     exportedAt: new Date().toISOString(),
     count: links.length,
     links,

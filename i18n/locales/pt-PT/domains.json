@@ -1,0 +1,40 @@
+{
+  "domains": {
+    "title": "Domínios",
+    "description": "Escolha um domínio para cada link curto.",
+    "hint_title": "Encaminhe os seus domínios para este projeto",
+    "hint_description": "Cada domínio abaixo deve ser encaminhado para este projeto na Cloudflare (domínio personalizado ou rota). Um link curto só resolve no domínio em que foi criado; os links do domínio padrão também funcionam no host do painel.",
+    "add_title": "Adicionar domínio",
+    "add_action": "Adicionar domínio",
+    "empty": "Ainda sem domínios. Adicione o primeiro domínio para começar a criar links curtos.",
+    "load_failed": "Falha ao carregar os domínios.",
+    "default_badge": "Padrão",
+    "set_default": "Definir como padrão",
+    "create_success": "Domínio adicionado",
+    "create_failed": "Falha ao adicionar o domínio",
+    "default_success": "Domínio padrão atualizado",
+    "default_failed": "Falha ao atualizar o domínio padrão",
+    "delete_success": "Domínio removido",
+    "delete_failed": "Falha ao remover o domínio",
+    "table": {
+      "domain": "Domínio",
+      "links": "Links",
+      "created": "Criado",
+      "actions": "Ações"
+    },
+    "form": {
+      "name_label": "Domínio",
+      "name_placeholder": "sink.cool",
+      "name_description": "Um host encaminhado para este projeto. Esquema, porta e caminho não são permitidos."
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Remover {name}?",
+        "description": "Este domínio deixará de poder ser usado para novos links.",
+        "has_links": "Este domínio é usado por {count} link(s). Mova-os ou remova-os antes de remover o domínio.",
+        "in_use_tip": "Remova primeiro os links que usam este domínio.",
+        "action": "Remover"
+      }
+    }
+  }
+}

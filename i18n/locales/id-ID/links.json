@@ -117,7 +117,10 @@
       "utm_clear": "Bersihkan",
       "utm_invalid_url": "Masukkan URL valid untuk melihat pratinjau dan menerapkan parameter UTM.",
       "ai_og_generate": "Buat OpenGraph AI",
-      "duplicate_url_hint": "URL ini sudah ada sebagai {shortLink}"
+      "duplicate_url_hint": "URL ini sudah ada sebagai {shortLink}",
+      "domain": "Domain",
+      "domain_placeholder": "Pilih domain",
+      "no_domains": "Belum ada domain — tambahkan dulu"
     },
     "dialogs": {
       "discard": {

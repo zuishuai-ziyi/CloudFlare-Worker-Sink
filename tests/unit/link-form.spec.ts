@@ -13,6 +13,7 @@ describe('link form values', () => {
     expect(createLinkFormInitialValues({})).toEqual({
       url: '',
       slug: '',
+      domain: '',
       comment: '',
       tags: [],
       expiration: undefined,

@@ -29,7 +29,8 @@
     "analysis": "Phân tích",
     "realtime": "Thời gian thực",
     "check": "Check",
-    "migrate": "Nhập/Xuất"
+    "migrate": "Nhập/Xuất",
+    "domains": "Tên miền"
   },
   "sidebar": {
     "subtitle": "Rút gọn liên kết",

@@ -77,13 +77,18 @@ export const useDashboardLinksSearchStore = defineStore('dashboard-links-search'
     }
   }
 
+  function linkKey(item: { domain?: string, slug: string }): string {
+    return `${item.domain ?? ''}|${item.slug}`
+  }
+
   function syncLink(link: DashboardLink, type: LinkUpdateType) {
     if (type === 'delete') {
-      links.value = links.value.filter(item => item.slug !== link.slug)
+      links.value = links.value.filter(item => linkKey(item) !== linkKey(link))
       return
     }
 
     const nextLink: DashboardLinkSearchItem = {
+      domain: link.domain,
       slug: link.slug,
       url: withoutUrlQuery(link.url) ?? link.url,
       comment: link.comment,
@@ -97,7 +102,7 @@ export const useDashboardLinksSearchStore = defineStore('dashboard-links-search'
     const matchesCurrentQuery = matchesCurrentFilters && normalizedQuery
       && [nextLink.slug, nextLink.url, nextLink.comment, ...(nextLink.tags ?? [])]
         .some(value => value?.toLocaleLowerCase().includes(normalizedQuery))
-    const index = links.value.findIndex(item => item.slug === link.slug)
+    const index = links.value.findIndex(item => linkKey(item) === linkKey(link))
     if (index === -1) {
       if (matchesCurrentQuery)
         links.value = [...links.value, nextLink].slice(0, 20)
@@ -105,11 +110,11 @@ export const useDashboardLinksSearchStore = defineStore('dashboard-links-search'
     }
 
     links.value = matchesCurrentQuery
-      ? links.value.map(item => item.slug === link.slug ? nextLink : item)
-      : links.value.filter(item => item.slug !== link.slug)
+      ? links.value.map(item => linkKey(item) === linkKey(link) ? nextLink : item)
+      : links.value.filter(item => linkKey(item) !== linkKey(link))
   }
 
-  async function findDuplicateLink(url: string, currentSlug?: string): Promise<DashboardLinkSearchItem | undefined> {
+  async function findDuplicateLink(url: string, currentSlug?: string, currentDomain?: string): Promise<DashboardLinkSearchItem | undefined> {
     const targetUrl = withoutUrlQuery(url)
     if (!targetUrl)
       return undefined
@@ -120,7 +125,7 @@ export const useDashboardLinksSearchStore = defineStore('dashboard-links-search'
         limit: 20,
       },
     })
-    return matches.find(link => link.slug !== currentSlug)
+    return matches.find(link => link.slug !== currentSlug || link.domain !== currentDomain)
   }
 
   return {

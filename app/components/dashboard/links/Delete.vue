@@ -28,6 +28,7 @@ async function deleteLink() {
       method: 'POST',
       body: {
         slug: props.link.slug,
+        domain: props.link.domain,
       },
     })
     pendingDelete.value = props.link

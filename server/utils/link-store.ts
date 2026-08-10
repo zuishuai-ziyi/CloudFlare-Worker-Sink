@@ -3,6 +3,7 @@ import type { Link } from '#shared/schemas/link'
 import type { LinkSearchItem } from '#shared/types/link'
 import type { ExpectedLinkVersion, LinkFilterOptions, ListLinksOptions, ListLinksResult, SearchLinksOptions } from '../services/link-store/d1'
 import { getRequestHost, getRequestProtocol } from 'h3'
+import { getDefaultDomain } from '../services/domain-store'
 import {
   d1CountLinks,
   d1CreateLink,
@@ -19,54 +20,71 @@ import {
   d1SearchLinks,
   d1UpdateLink,
 } from '../services/link-store/d1'
-import { deleteLinkCache, isActiveLinkExpiration, putLinkCache, readLegacyKvLink } from '../services/link-store/kv'
+import { deleteLinkCache, isActiveLinkExpiration, putLinkCache, readLegacyKvLink, readLegacyKvLinkLegacy } from '../services/link-store/kv'
 import { insertMigratedKvLink, readCompletedLinkMigrationMarker } from '../services/link-store/migration'
+import { compositeKey } from './domain'
 
 export function normalizeSlug(event: H3Event, slug: string): string {
   const { caseSensitive } = useRuntimeConfig(event)
   return caseSensitive ? slug : slug.toLowerCase()
 }
 
-export function buildShortLink(event: H3Event, slug: string): string {
-  return `${getRequestProtocol(event)}://${getRequestHost(event)}/${slug}`
+export async function buildShortLink(event: H3Event, domain: string, slug: string): Promise<string> {
+  // A concrete domain is authoritative; the '' sentinel resolves to the default domain.
+  let host = domain && domain !== '' ? domain : getRequestHost(event)
+  if (!domain || domain === '') {
+    const defaultDomain = await getDefaultDomain(event)
+    if (defaultDomain)
+      host = defaultDomain
+  }
+  return `${getRequestProtocol(event)}://${host}/${slug}`
 }
 
 async function writeThroughCache(event: H3Event, link: Link, effectiveExpiresAt?: number | null): Promise<void> {
   if (!isActiveLinkExpiration(effectiveExpiresAt)) {
-    await deleteLinkCache(event, link.slug)
+    await deleteLinkCache(event, link.domain, link.slug)
     return
   }
   if (!await putLinkCache(event, link, effectiveExpiresAt))
     return
   if (!await d1HasActiveLinkVersion(event, link))
-    await deleteLinkCache(event, link.slug)
+    await deleteLinkCache(event, link.domain, link.slug)
 }
 
-export async function getLink(event: H3Event, slug: string, cacheTtl?: number): Promise<Link | null> {
-  const cached = await readLegacyKvLink(event, slug, cacheTtl)
+export async function getLink(event: H3Event, domain: string, slug: string, cacheTtl?: number): Promise<Link | null> {
+  const cached = await readLegacyKvLink(event, domain, slug, cacheTtl)
   if (cached.link)
     return cached.link
 
-  if (!await readCompletedLinkMigrationMarker(event.context.cloudflare.env))
+  const migrationDone = await readCompletedLinkMigrationMarker(event.context.cloudflare.env)
+  // Transition fallback: while the KV-to-D1 migration is incomplete, pre-multi-domain
+  // links live under the legacy `link:{slug}` key and belong to the default domain.
+  if (!migrationDone && domain === '') {
+    const legacy = await readLegacyKvLinkLegacy(event, slug, cacheTtl)
+    if (legacy.link)
+      return legacy.link
+  }
+
+  if (!migrationDone)
     return null
 
-  const stored = await d1GetActiveLink(event, slug)
+  const stored = await d1GetActiveLink(event, domain, slug)
   if (!stored)
     return null
   await writeThroughCache(event, stored.link, stored.effectiveExpiresAt)
   return stored.link
 }
 
-export async function getAuthoritativeLink(event: H3Event, slug: string): Promise<Link | null> {
-  return (await d1GetActiveLink(event, slug))?.link ?? null
+export async function getAuthoritativeLink(event: H3Event, domain: string, slug: string): Promise<Link | null> {
+  return (await d1GetActiveLink(event, domain, slug))?.link ?? null
 }
 
-export async function getAnyAuthoritativeLink(event: H3Event, slug: string): Promise<Link | null> {
-  return await d1GetAnyLink(event, slug)
+export async function getAnyAuthoritativeLink(event: H3Event, domain: string, slug: string): Promise<Link | null> {
+  return await d1GetAnyLink(event, domain, slug)
 }
 
-export async function getLinkWithMetadata(event: H3Event, slug: string): Promise<{ link: Link | null, metadata: Record<string, unknown> | null }> {
-  return await d1GetLinkWithMetadata(event, slug)
+export async function getLinkWithMetadata(event: H3Event, domain: string, slug: string): Promise<{ link: Link | null, metadata: Record<string, unknown> | null }> {
+  return await d1GetLinkWithMetadata(event, domain, slug)
 }
 
 export async function createLink(event: H3Event, link: Link): Promise<boolean> {
@@ -82,15 +100,15 @@ export type CreateLinksResult = { created: boolean } | { error: unknown }
 async function writeThroughCaches(event: H3Event, links: { link: Link, effectiveExpiresAt: number | null }[]): Promise<void> {
   const cached = (await Promise.all(links.map(async ({ link, effectiveExpiresAt }) => {
     if (!isActiveLinkExpiration(effectiveExpiresAt)) {
-      await deleteLinkCache(event, link.slug)
+      await deleteLinkCache(event, link.domain, link.slug)
       return null
     }
     return await putLinkCache(event, link, effectiveExpiresAt) ? link : null
   }))).filter(link => link !== null)
-  const currentSlugs = await d1GetActiveLinkVersions(event, cached)
+  const currentKeys = await d1GetActiveLinkVersions(event, cached)
   await Promise.all(cached.map(async (link) => {
-    if (!currentSlugs.has(link.slug))
-      await deleteLinkCache(event, link.slug)
+    if (!currentKeys.has(compositeKey(link.domain, link.slug)))
+      await deleteLinkCache(event, link.domain, link.slug)
   }))
 }
 
@@ -123,7 +141,7 @@ export async function createLinks(event: H3Event, links: Link[]): Promise<Create
       slugs: successful.map(item => item.link.slug),
       error: error instanceof Error ? error.message : String(error),
     })
-    await Promise.all(successful.map(item => deleteLinkCache(event, item.link.slug)))
+    await Promise.all(successful.map(item => deleteLinkCache(event, item.link.domain, item.link.slug)))
   }
   return results.map(result => ({ created: result.created }))
 }
@@ -140,9 +158,9 @@ export async function updateLink(event: H3Event, link: Link, expected?: Expected
   return true
 }
 
-export async function deleteLink(event: H3Event, slug: string): Promise<void> {
-  await d1DeleteLink(event, slug)
-  await deleteLinkCache(event, slug)
+export async function deleteLink(event: H3Event, domain: string, slug: string): Promise<void> {
+  await d1DeleteLink(event, domain, slug)
+  await deleteLinkCache(event, domain, slug)
 }
 
 export async function listLinks(event: H3Event, options: ListLinksOptions): Promise<ListLinksResult> {

@@ -38,14 +38,15 @@ export async function insertMigratedKvLink(event: H3Event, link: Link, effective
   const { DB } = event.context.cloudflare.env
   const insert = DB.prepare(`
     INSERT INTO links (
-      slug, id, url, comment, created_at, updated_at, expiration, title,
+      domain, slug, id, url, comment, created_at, updated_at, expiration, title,
       description, image, apple, google, cloaking, redirect_with_query,
       password, unsafe, geo, normalized_url, effective_expires_at
     )
-    SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-    WHERE NOT EXISTS (SELECT 1 FROM link_tombstones WHERE slug = ?)
-    ON CONFLICT(slug) DO NOTHING
+    SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+    WHERE NOT EXISTS (SELECT 1 FROM link_tombstones WHERE domain = ? AND slug = ?)
+    ON CONFLICT(domain, slug) DO NOTHING
   `).bind(
+    values.domain,
     values.slug,
     values.id,
     values.url,
@@ -65,6 +66,7 @@ export async function insertMigratedKvLink(event: H3Event, link: Link, effective
     values.geo === null ? null : JSON.stringify(values.geo),
     values.normalizedUrl,
     values.effectiveExpiresAt,
+    values.domain,
     values.slug,
   )
   // Each tag statement relies on the preceding SQLite changes() result to keep the tombstone-guarded link and tags atomic.
@@ -75,10 +77,10 @@ export async function insertMigratedKvLink(event: H3Event, link: Link, effective
       ON CONFLICT(name) DO UPDATE SET name = excluded.name
     `).bind(tag),
     DB.prepare(`
-      INSERT INTO link_tags (link_slug, tag_name)
-      SELECT ?, ? WHERE changes() = 1
-      ON CONFLICT(link_slug, tag_name) DO UPDATE SET tag_name = excluded.tag_name
-    `).bind(link.slug, tag),
+      INSERT INTO link_tags (link_domain, link_slug, tag_name)
+      SELECT ?, ?, ? WHERE changes() = 1
+      ON CONFLICT(link_domain, link_slug, tag_name) DO UPDATE SET tag_name = excluded.tag_name
+    `).bind(values.domain, link.slug, tag),
   ])
   const [result] = await DB.batch([insert, ...tagStatements])
   return (result?.meta.changes ?? 0) > 0

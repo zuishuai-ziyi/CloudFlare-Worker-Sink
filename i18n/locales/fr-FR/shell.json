@@ -29,7 +29,8 @@
     "analysis": "Statistiques",
     "realtime": "Realtime",
     "check": "Check",
-    "migrate": "Import/Export"
+    "migrate": "Import/Export",
+    "domains": "Domaines"
   },
   "sidebar": {
     "subtitle": "Raccourcisseur de liens",

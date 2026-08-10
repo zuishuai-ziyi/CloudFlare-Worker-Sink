@@ -117,7 +117,10 @@
       "utm_clear": "Löschen",
       "utm_invalid_url": "Gib eine gültige URL ein, um UTM-Parameter in der Vorschau zu sehen und anzuwenden.",
       "ai_og_generate": "KI-OpenGraph generieren",
-      "duplicate_url_hint": "Diese URL existiert bereits als {shortLink}"
+      "duplicate_url_hint": "Diese URL existiert bereits als {shortLink}",
+      "domain": "Domain",
+      "domain_placeholder": "Domain auswählen",
+      "no_domains": "Noch keine Domains — zuerst hinzufügen"
     },
     "dialogs": {
       "discard": {

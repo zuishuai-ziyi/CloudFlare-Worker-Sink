@@ -29,7 +29,8 @@
     "analysis": "Analisis",
     "realtime": "Real-time",
     "check": "Check",
-    "migrate": "Impor/Ekspor"
+    "migrate": "Impor/Ekspor",
+    "domains": "Domain"
   },
   "sidebar": {
     "subtitle": "Pemendek Tautan",

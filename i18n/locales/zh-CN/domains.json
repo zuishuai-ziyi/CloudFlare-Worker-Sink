@@ -1,0 +1,40 @@
+{
+  "domains": {
+    "title": "域名",
+    "description": "为每条短链选择使用的域名。",
+    "hint_title": "将你的域名路由到此项目",
+    "hint_description": "下面的每个域名都必须已在 Cloudflare 中路由到此项目（自定义域名或路由）。短链只在其所属的域名下解析；默认域名下的短链在面板所在域名下也可访问。",
+    "add_title": "添加域名",
+    "add_action": "添加域名",
+    "empty": "还没有域名。添加第一个域名后即可创建短链。",
+    "load_failed": "加载域名失败。",
+    "default_badge": "默认",
+    "set_default": "设为默认",
+    "create_success": "域名已添加",
+    "create_failed": "添加域名失败",
+    "default_success": "默认域名已更新",
+    "default_failed": "更新默认域名失败",
+    "delete_success": "域名已删除",
+    "delete_failed": "删除域名失败",
+    "table": {
+      "domain": "域名",
+      "links": "链接数",
+      "created": "创建时间",
+      "actions": "操作"
+    },
+    "form": {
+      "name_label": "域名",
+      "name_placeholder": "sink.cool",
+      "name_description": "已路由到此项目的主机名，不支持协议、端口和路径。"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "删除 {name}？",
+        "description": "该域名将不能再用于创建新的短链。",
+        "has_links": "该域名被 {count} 个短链使用。请先转移或删除这些短链，再删除域名。",
+        "in_use_tip": "请先删除使用该域名的短链。",
+        "action": "删除"
+      }
+    }
+  }
+}

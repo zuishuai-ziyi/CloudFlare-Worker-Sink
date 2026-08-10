@@ -10,9 +10,10 @@ defineRouteMeta({
         'application/json': {
           schema: {
             type: 'object',
-            required: ['url'],
+            required: ['url', 'domain'],
             properties: {
               url: { type: 'string', description: 'The target URL' },
+              domain: { type: 'string', description: 'A registered domain for this short link' },
               slug: { type: 'string', description: 'Custom slug (auto-generated if not provided)' },
               comment: { type: 'string', description: 'Optional comment' },
               expiration: { type: 'integer', description: 'Expiration timestamp (unix seconds)' },
@@ -37,19 +38,19 @@ export default eventHandler(async (event) => {
 
   await prepareIncomingLink(event, link)
 
-  const existingLink = await getAuthoritativeLink(event, link.slug)
+  const existingLink = await getAuthoritativeLink(event, link.domain, link.slug)
   if (existingLink) {
-    return { ...buildLinkResponse(event, existingLink), status: 'existing' }
+    return { ...await buildLinkResponse(event, existingLink), status: 'existing' }
   }
 
   await hashLinkPasswordForCreate(link)
 
   if (!await createLink(event, link)) {
-    const racedLink = await getAuthoritativeLink(event, link.slug)
+    const racedLink = await getAuthoritativeLink(event, link.domain, link.slug)
     if (racedLink)
-      return { ...buildLinkResponse(event, racedLink), status: 'existing' }
+      return { ...await buildLinkResponse(event, racedLink), status: 'existing' }
     throw createError({ status: 409, statusText: 'Link already exists' })
   }
   setResponseStatus(event, 201)
-  return { ...buildLinkResponse(event, link), status: 'created' }
+  return { ...await buildLinkResponse(event, link), status: 'created' }
 })

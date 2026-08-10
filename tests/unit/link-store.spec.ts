@@ -48,6 +48,7 @@ describe('createLinks', () => {
   it('keeps D1 success when post-write cache verification fails', async () => {
     const link: Link = {
       id: 'bulk-id',
+      domain: '',
       slug: 'bulk-success',
       url: 'https://example.com',
       createdAt: 1,
@@ -62,7 +63,7 @@ describe('createLinks', () => {
     await expect(createLinks({} as H3Event, [link])).resolves.toEqual([{ created: true }])
 
     expect(mocks.d1CreateLinks).toHaveBeenCalledOnce()
-    expect(mocks.deleteLinkCache).toHaveBeenCalledWith(expect.anything(), link.slug)
+    expect(mocks.deleteLinkCache).toHaveBeenCalledWith(expect.anything(), link.domain, link.slug)
     expect(consoleError).toHaveBeenCalledWith(expect.objectContaining({ operation: 'bulk-write-through' }))
   })
 })

@@ -1,11 +1,13 @@
 import { env } from 'cloudflare:workers'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { deleteStoredLinks, expectMaskedPassword, expectStoredHashedPassword, fetch, fetchWithAuth, getStoredLink, postJson, putJson, setLinkStoreD1Mode } from '../utils'
+import { deleteStoredLinks, expectMaskedPassword, expectStoredHashedPassword, fetch, fetchWithAuth, getStoredLink, insertDomain, postJson, putJson, setLinkStoreD1Mode } from '../utils'
 
 const createdSlugs = new Set<string>()
+const TEST_DOMAIN = 'example.com'
 
 beforeEach(async () => {
   await setLinkStoreD1Mode()
+  await insertDomain(TEST_DOMAIN, true)
 })
 
 function trackSlug(slug: string) {
@@ -17,6 +19,7 @@ function createLinkPayload() {
   return {
     url: 'https://example.com',
     slug: trackSlug(`test-${crypto.randomUUID()}`),
+    domain: TEST_DOMAIN,
   }
 }
 
@@ -90,7 +93,7 @@ describe('/api/link/og-ai', () => {
 describe('/api/link/create', { concurrent: false }, () => {
   it('generates identity, slug, and timestamps by default', async () => {
     const before = Math.floor(Date.now() / 1000)
-    const response = await postJson('/api/link/create', { url: 'https://example.com/generated' })
+    const response = await postJson('/api/link/create', { url: 'https://example.com/generated', domain: TEST_DOMAIN })
     expect(response.status).toBe(201)
 
     const data = await response.json() as { link: { id: string, slug: string, createdAt: number, updatedAt: number, tags: string[] } }
@@ -127,6 +130,7 @@ describe('/api/link/create', { concurrent: false }, () => {
     const payload = {
       url: 'https://example.com',
       slug: trackSlug(`create-password-${crypto.randomUUID()}`),
+      domain: TEST_DOMAIN,
       password,
     }
 
@@ -153,6 +157,7 @@ describe('/api/link/create', { concurrent: false }, () => {
     const response = await postJson('/api/link/create', {
       url: 'https://example.com',
       slug,
+      domain: TEST_DOMAIN,
       geo: { cn: 'https://cn.example.com' },
     })
     expect(response.status).toBe(201)
@@ -165,6 +170,7 @@ describe('/api/link/create', { concurrent: false }, () => {
     const response = await postJson('/api/link/create', {
       url: 'https://example.com',
       slug: `geo-key-invalid-${crypto.randomUUID()}`,
+      domain: TEST_DOMAIN,
       geo: { USA: 'https://usa.example.com' },
     })
     expect(response.status).toBe(400)
@@ -174,6 +180,7 @@ describe('/api/link/create', { concurrent: false }, () => {
     const response = await postJson('/api/link/create', {
       url: 'https://example.com',
       slug: `geo-url-invalid-${crypto.randomUUID()}`,
+      domain: TEST_DOMAIN,
       geo: { CN: 'not-a-valid-url' },
     })
     expect(response.status).toBe(400)
@@ -205,6 +212,7 @@ describe('/api/link/upsert', { concurrent: false }, () => {
     const payload = {
       url: 'https://example.com',
       slug: trackSlug(`upsert-password-${crypto.randomUUID()}`),
+      domain: TEST_DOMAIN,
       password,
     }
 
@@ -226,7 +234,7 @@ describe('/api/link/query', { concurrent: false }, () => {
     expect(response.status).toBe(200)
 
     const data = await response.json() as { url: string, slug: string }
-    expect(data).toMatchObject(payload)
+    expect(data).toMatchObject({ url: payload.url, slug: payload.slug })
   })
 
   it('returns masked password without exposing plaintext or hash', async () => {
@@ -234,6 +242,7 @@ describe('/api/link/query', { concurrent: false }, () => {
     const payload = {
       url: 'https://example.com',
       slug: trackSlug(`query-password-${crypto.randomUUID()}`),
+      domain: TEST_DOMAIN,
       password,
     }
 
@@ -282,6 +291,7 @@ describe('/api/link/list', { concurrent: false }, () => {
     const payload = {
       url: 'https://example.com',
       slug: trackSlug(`list-password-${crypto.randomUUID()}`),
+      domain: TEST_DOMAIN,
       password,
     }
 
@@ -317,7 +327,7 @@ describe('/api/link/search', { concurrent: false }, () => {
 
     const data = await response.json() as { slug: string, url: string }[]
     expect(data).toHaveLength(1)
-    expect(data[0]).toMatchObject(payload)
+    expect(data[0]).toMatchObject({ url: payload.url, slug: payload.slug })
   })
 })
 
@@ -340,6 +350,7 @@ describe('/api/link/edit', { concurrent: false }, () => {
     const payload = {
       url: 'https://example.com',
       slug: trackSlug(`edit-password-${crypto.randomUUID()}`),
+      domain: TEST_DOMAIN,
       password: initialPassword,
     }
 
@@ -351,14 +362,14 @@ describe('/api/link/edit', { concurrent: false }, () => {
     const storedAfterCreate = await getStoredLink(payload.slug)
     await expectStoredHashedPassword(payload.slug, initialPassword)
 
-    const preservePasswordResponse = await putJson('/api/link/edit', { url: payload.url, slug: payload.slug })
+    const preservePasswordResponse = await putJson('/api/link/edit', { url: payload.url, slug: payload.slug, domain: TEST_DOMAIN })
     expect(preservePasswordResponse.status).toBe(201)
     const preserveData = await preservePasswordResponse.json() as { link: { password?: string } }
     expectMaskedPassword(preserveData.link.password, initialPassword)
     const storedAfterPreserve = await getStoredLink(payload.slug)
     expect(storedAfterPreserve?.password).toBe(storedAfterCreate?.password)
 
-    const changePasswordResponse = await putJson('/api/link/edit', { url: payload.url, slug: payload.slug, password: newPassword })
+    const changePasswordResponse = await putJson('/api/link/edit', { url: payload.url, slug: payload.slug, domain: TEST_DOMAIN, password: newPassword })
     expect(changePasswordResponse.status).toBe(201)
     const changeData = await changePasswordResponse.json() as { link: { password?: string } }
     expectMaskedPassword(changeData.link.password, newPassword)
@@ -366,7 +377,7 @@ describe('/api/link/edit', { concurrent: false }, () => {
     await expectStoredHashedPassword(payload.slug, newPassword)
     expect(storedAfterChange?.password).not.toBe(storedAfterCreate?.password)
 
-    const clearPasswordResponse = await putJson('/api/link/edit', { url: payload.url, slug: payload.slug, password: '' })
+    const clearPasswordResponse = await putJson('/api/link/edit', { url: payload.url, slug: payload.slug, domain: TEST_DOMAIN, password: '' })
     expect(clearPasswordResponse.status).toBe(201)
     const clearData = await clearPasswordResponse.json() as { link: { password?: string } }
     expect(clearData.link.password).toBeUndefined()
@@ -405,13 +416,14 @@ describe('/api/link/edit', { concurrent: false }, () => {
     const payload = {
       url: 'https://example.com',
       slug: trackSlug(`edit-clear-geo-${crypto.randomUUID()}`),
+      domain: TEST_DOMAIN,
       geo: { CN: 'https://cn.example.com' },
     }
 
     const createResponse = await postJson('/api/link/create', payload)
     expect(createResponse.status).toBe(201)
 
-    const editResponse = await putJson('/api/link/edit', { url: payload.url, slug: payload.slug })
+    const editResponse = await putJson('/api/link/edit', { url: payload.url, slug: payload.slug, domain: TEST_DOMAIN })
     expect(editResponse.status).toBe(201)
 
     const data = await editResponse.json() as { link: { geo?: Record<string, string> } }
@@ -419,7 +431,7 @@ describe('/api/link/edit', { concurrent: false }, () => {
   })
 
   it('returns 404 when editing non-existent link', async () => {
-    const payload = { url: 'https://example.com', slug: 'non-existent-slug-for-edit-12345' }
+    const payload = { url: 'https://example.com', slug: 'non-existent-slug-for-edit-12345', domain: TEST_DOMAIN }
     const response = await putJson('/api/link/edit', payload)
     expect(response.status).toBe(404)
   })
@@ -437,7 +449,7 @@ describe('/api/link/edit', { concurrent: false }, () => {
 
 describe('/api/link/edit unsafe', { concurrent: false }, () => {
   it('creates, queries, edits, and deletes a link with unsafe semantics', async () => {
-    const unsafePayload = { url: 'https://example.com', slug: trackSlug(`unsafe-test-${crypto.randomUUID()}`) }
+    const unsafePayload = { url: 'https://example.com', slug: trackSlug(`unsafe-test-${crypto.randomUUID()}`), domain: TEST_DOMAIN }
     const response = await postJson('/api/link/create', { ...unsafePayload, unsafe: true })
     expect(response.status).toBe(201)
 
@@ -461,7 +473,7 @@ describe('/api/link/edit unsafe', { concurrent: false }, () => {
     const setData = await setResponse.json() as { link: { unsafe?: boolean } }
     expect(setData.link.unsafe).toBe(true)
 
-    const deleteResponse = await postJson('/api/link/delete', { slug: unsafePayload.slug })
+    const deleteResponse = await postJson('/api/link/delete', { slug: unsafePayload.slug, domain: TEST_DOMAIN })
     expect(deleteResponse.status).toBe(204)
   })
 })
@@ -471,7 +483,7 @@ describe('/api/link/delete', { concurrent: false }, () => {
     const payload = createLinkPayload()
     expect((await postJson('/api/link/create', payload)).status).toBe(201)
 
-    const response = await postJson('/api/link/delete', { slug: payload.slug })
+    const response = await postJson('/api/link/delete', { slug: payload.slug, domain: TEST_DOMAIN })
     expect(response.status).toBe(204)
   })
 

@@ -40,6 +40,13 @@ defineRouteMeta({
         schema: { type: 'integer', minimum: 1, maximum: 1000, default: 20 },
         description: 'Maximum matches for keyword or exact URL searches',
       },
+      {
+        name: 'domain',
+        in: 'query',
+        required: false,
+        schema: { type: 'string' },
+        description: 'Filter results by domain',
+      },
     ],
   },
 })
@@ -52,6 +59,7 @@ const SearchQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(1000).optional(),
   tag: z.string().trim().toLowerCase().min(1).max(32).optional(),
   status: z.enum(['active', 'expired', 'all']).default('active'),
+  domain: z.string().trim().max(253).optional(),
 })
 
 export default eventHandler(async (event) => {

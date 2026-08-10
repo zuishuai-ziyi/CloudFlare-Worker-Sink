@@ -117,7 +117,10 @@
       "utm_clear": "Clear",
       "utm_invalid_url": "Enter a valid URL to preview and apply UTM parameters.",
       "ai_og_generate": "Generate AI OpenGraph",
-      "duplicate_url_hint": "This URL already exists as {shortLink}"
+      "duplicate_url_hint": "This URL already exists as {shortLink}",
+      "domain": "Domain",
+      "domain_placeholder": "Select a domain",
+      "no_domains": "No domains yet — add one first"
     },
     "dialogs": {
       "discard": {

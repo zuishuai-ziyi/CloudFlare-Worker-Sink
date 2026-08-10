@@ -1,5 +1,8 @@
 import { z } from 'zod'
+import { StoredDomainSchema } from '#shared/schemas/domain'
 import { SlugSchema } from '#shared/schemas/link'
+import { getDefaultDomain } from '../../services/domain-store'
+import { canonicalizeDomain } from '../../utils/domain'
 
 defineRouteMeta({
   openAPI: {
@@ -11,9 +14,10 @@ defineRouteMeta({
         'application/json': {
           schema: {
             type: 'object',
-            required: ['slug'],
+            required: ['slug', 'domain'],
             properties: {
               slug: { type: 'string', description: 'The slug of the link to delete' },
+              domain: { type: 'string', description: 'The domain of the link to delete' },
             },
           },
         },
@@ -24,6 +28,7 @@ defineRouteMeta({
 
 const DeleteSchema = z.object({
   slug: SlugSchema.min(1),
+  domain: StoredDomainSchema,
 })
 
 export default eventHandler(async (event) => {
@@ -37,5 +42,6 @@ export default eventHandler(async (event) => {
 
   const body = await readValidatedBody(event, DeleteSchema.parse)
   const slug = normalizeSlug(event, body.slug)
-  await deleteLink(event, slug)
+  const defaultDomain = await getDefaultDomain(event)
+  await deleteLink(event, canonicalizeDomain(body.domain, defaultDomain), slug)
 })

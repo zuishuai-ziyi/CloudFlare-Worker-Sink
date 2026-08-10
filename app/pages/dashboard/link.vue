@@ -9,6 +9,8 @@ definePageMeta({
 const route = useRoute()
 const router = useRouter()
 const slug = computed(() => parseDashboardSlug(route.query.slug))
+// Empty (absent) domain resolves the default domain on the server.
+const domain = computed(() => (typeof route.query.domain === 'string' ? route.query.domain : ''))
 const linksStore = useDashboardLinksStore()
 useDashboardAnalysisRouteState({ detail: true })
 
@@ -41,7 +43,7 @@ async function loadLink(currentSlug = slug.value) {
   try {
     const data = await useAPI<Link>('/api/link/query', {
       signal: controller.signal,
-      query: { slug: currentSlug },
+      query: { slug: currentSlug, domain: domain.value },
     })
     if (!controller.signal.aborted)
       link.value = data
@@ -58,7 +60,7 @@ async function loadLink(currentSlug = slug.value) {
   }
 }
 
-watch(slug, currentSlug => void loadLink(currentSlug), { immediate: true })
+watch([slug, domain], ([currentSlug]) => void loadLink(currentSlug), { immediate: true })
 watch(id, (currentId) => {
   if (currentId)
     void fetchCounters([currentId])
@@ -75,7 +77,7 @@ linksStore.onLinkUpdate(({ link: updatedLink, type }) => {
   else if (type === 'edit') {
     link.value = updatedLink
     if (updatedLink.slug !== slug.value)
-      void router.replace(getDashboardLinkDetailLocation(updatedLink.slug, route.query))
+      void router.replace(getDashboardLinkDetailLocation(updatedLink.slug, route.query, updatedLink.domain))
   }
 })
 </script>

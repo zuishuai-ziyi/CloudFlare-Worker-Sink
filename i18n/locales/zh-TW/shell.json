@@ -29,7 +29,8 @@
     "analysis": "分析",
     "realtime": "即時",
     "check": "檢查",
-    "migrate": "匯入/匯出"
+    "migrate": "匯入/匯出",
+    "domains": "網域"
   },
   "sidebar": {
     "subtitle": "縮網址服務",

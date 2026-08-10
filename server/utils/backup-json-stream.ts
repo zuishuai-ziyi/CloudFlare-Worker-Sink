@@ -5,6 +5,13 @@ interface BackupJsonStreamOptions {
   exportedAt: string
 }
 
+export interface BackupDomain {
+  name: string
+  isDefault: boolean
+  createdAt: number
+  updatedAt: number
+}
+
 export interface BackupJsonStream {
   stream: ReadableStream<Uint8Array>
   count: Promise<number>
@@ -58,7 +65,7 @@ export async function uploadBackupParts(upload: R2MultipartUpload, stream: Reada
   }
 }
 
-export function createBackupJsonStream(links: AsyncIterable<Link>, options: BackupJsonStreamOptions): BackupJsonStream {
+export function createBackupJsonStream(links: AsyncIterable<Link>, options: BackupJsonStreamOptions, domains: BackupDomain[] = []): BackupJsonStream {
   const iterator = links[Symbol.asyncIterator]()
   let emitted = 0
   let prefixed = false
@@ -90,7 +97,7 @@ export function createBackupJsonStream(links: AsyncIterable<Link>, options: Back
           return
         }
 
-        controller.enqueue(encoder.encode(`],"count":${emitted}}`))
+        controller.enqueue(encoder.encode(`],"domains":${JSON.stringify(domains)},"count":${emitted}}`))
         settled = true
         resolveCount(emitted)
         controller.close()

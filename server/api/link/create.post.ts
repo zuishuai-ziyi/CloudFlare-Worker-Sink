@@ -21,9 +21,10 @@ defineRouteMeta({
         'application/json': {
           schema: {
             type: 'object',
-            required: ['url'],
+            required: ['url', 'domain'],
             properties: {
               url: { type: 'string', description: 'The target URL' },
+              domain: { type: 'string', description: 'A registered domain for this short link' },
               slug: { type: 'string', description: 'Custom slug (auto-generated if not provided)' },
               comment: { type: 'string', description: 'Optional comment' },
               expiration: { type: 'integer', description: 'Expiration timestamp (unix seconds)' },
@@ -60,5 +61,5 @@ export default eventHandler(async (event) => {
     })
   }
   setResponseStatus(event, 201)
-  return buildLinkResponse(event, link)
+  return await buildLinkResponse(event, link)
 })

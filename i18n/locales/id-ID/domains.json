@@ -1,0 +1,40 @@
+{
+  "domains": {
+    "title": "Domain",
+    "description": "Pilih domain untuk setiap tautan pendek.",
+    "hint_title": "Arahkan domain Anda ke proyek ini",
+    "hint_description": "Setiap domain di bawah harus diarahkan ke proyek ini di Cloudflare (custom domain atau route). Tautan pendek hanya dapat diakses di domain tempat ia dibuat; tautan domain default juga berfungsi di host dasbor.",
+    "add_title": "Tambah domain",
+    "add_action": "Tambah domain",
+    "empty": "Belum ada domain. Tambahkan domain pertama untuk mulai membuat tautan pendek.",
+    "load_failed": "Gagal memuat domain.",
+    "default_badge": "Default",
+    "set_default": "Jadikan default",
+    "create_success": "Domain ditambahkan",
+    "create_failed": "Gagal menambahkan domain",
+    "default_success": "Domain default diperbarui",
+    "default_failed": "Gagal memperbarui domain default",
+    "delete_success": "Domain dihapus",
+    "delete_failed": "Gagal menghapus domain",
+    "table": {
+      "domain": "Domain",
+      "links": "Tautan",
+      "created": "Dibuat",
+      "actions": "Aksi"
+    },
+    "form": {
+      "name_label": "Domain",
+      "name_placeholder": "sink.cool",
+      "name_description": "Host yang diarahkan ke proyek ini. Skema, port, dan path tidak diizinkan."
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Hapus {name}?",
+        "description": "Domain ini tidak dapat lagi digunakan untuk tautan baru.",
+        "has_links": "Domain ini digunakan oleh {count} tautan. Pindahkan atau hapus tautan tersebut sebelum menghapus domain.",
+        "in_use_tip": "Hapus dulu tautan yang menggunakan domain ini.",
+        "action": "Hapus"
+      }
+    }
+  }
+}

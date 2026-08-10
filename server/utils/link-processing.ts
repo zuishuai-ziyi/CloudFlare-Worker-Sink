@@ -1,5 +1,7 @@
 import type { H3Event } from 'h3'
 import type { EditLink, Link } from '#shared/schemas/link'
+import { getDefaultDomain, getDomains, isDomainRegistered } from '../services/domain-store'
+import { canonicalizeDomain } from './domain'
 
 const editableOptionalLinkFields = [
   'comment',
@@ -23,7 +25,33 @@ interface LinkResponse {
 
 export async function prepareIncomingLink(event: H3Event, link: Link): Promise<void> {
   link.slug = normalizeSlug(event, link.slug)
+  await canonicalizeLinkDomain(event, link)
   await detectUnsafeLink(event, link)
+}
+
+// Canonicalize the submitted domain and reject unknown hosts. Selecting the default
+// domain stores the '' sentinel; non-default hosts must be registered.
+export async function canonicalizeLinkDomain(event: H3Event, link: Pick<Link, 'domain'>): Promise<void> {
+  const defaultDomain = await getDefaultDomain(event)
+  const domain = canonicalizeDomain(link.domain, defaultDomain)
+  if (domain !== '' && !await isDomainRegistered(event, domain)) {
+    throw createError({
+      status: 400,
+      statusText: 'Unknown domain',
+    })
+  }
+  link.domain = domain
+}
+
+// Imported links fall back to the default domain ('' sentinel) when their domain is
+// missing or no longer registered.
+export async function resolveImportDomain(event: H3Event, submitted: string): Promise<string> {
+  const defaultDomain = await getDefaultDomain(event)
+  const domain = canonicalizeDomain(submitted, defaultDomain)
+  if (domain === '')
+    return ''
+  const { domains } = await getDomains(event)
+  return domains.includes(domain) ? domain : ''
 }
 
 export async function detectUnsafeLink(event: H3Event, link: Pick<Link, 'url' | 'unsafe'>): Promise<void> {
@@ -40,10 +68,10 @@ export async function hashLinkPasswordForCreate(link: Link): Promise<void> {
     link.password = await hashLinkPassword(link.password)
 }
 
-export function buildLinkResponse(event: H3Event, link: Link): LinkResponse {
+export async function buildLinkResponse(event: H3Event, link: Link): Promise<LinkResponse> {
   return {
     link: sanitizeLinkPassword(link),
-    shortLink: buildShortLink(event, link.slug),
+    shortLink: await buildShortLink(event, link.domain, link.slug),
   }
 }
 

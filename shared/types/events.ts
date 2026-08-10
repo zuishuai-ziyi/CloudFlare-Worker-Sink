@@ -1,6 +1,7 @@
 export interface LogEvent {
   id: string
   slug: string
+  domain?: string
   os?: string
   browser?: string
   country?: string

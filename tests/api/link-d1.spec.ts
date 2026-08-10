@@ -4,9 +4,10 @@ import { env } from 'cloudflare:workers'
 import { count, eq } from 'drizzle-orm'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { linkMigrationRuns, links, linkTags, linkTombstones, tags } from '../../server/database/schema'
-import { clearLinkMigrationState, db, deleteStoredLinks, fetch, fetchWithAuth, getD1Link, getStoredLink, postJson, putJson, setLinkStoreD1Mode } from '../utils'
+import { clearLinkMigrationState, db, deleteStoredLinks, fetch, fetchWithAuth, getD1Link, getStoredLink, insertDomain, postJson, putJson, setLinkStoreD1Mode } from '../utils'
 
 const createdSlugs = new Set<string>()
+const TEST_DOMAIN = 'example.com'
 
 function trackSlug(slug: string): string {
   createdSlugs.add(slug)
@@ -17,6 +18,7 @@ function makeLink(slug = `d1-${crypto.randomUUID()}`, overrides: Partial<Link> =
   const now = Math.floor(Date.now() / 1000)
   return {
     id: crypto.randomUUID().slice(0, 10),
+    domain: TEST_DOMAIN,
     slug: trackSlug(slug),
     url: `https://example.com/${slug}`,
     createdAt: now,
@@ -26,13 +28,21 @@ function makeLink(slug = `d1-${crypto.randomUUID()}`, overrides: Partial<Link> =
   }
 }
 
+// TEST_DOMAIN is the default domain, so links submitted with it are stored with the
+// '' sentinel. Keep the storage keys in sync with what the API actually writes.
+function storedDomainKey(domain: string): string {
+  return domain === TEST_DOMAIN ? '' : domain
+}
+
 interface KvLinkExpirationOptions {
   metadataExpiration?: number
   nativeExpiration?: number
 }
 
 async function putKvLink(link: Link, options: KvLinkExpirationOptions = {}) {
-  await env.KV.put(`link:${link.slug}`, JSON.stringify(link), {
+  // Write the value with the canonical stored domain so the key and value agree.
+  const stored = { ...link, domain: storedDomainKey(link.domain) }
+  await env.KV.put(`link:${storedDomainKey(link.domain)}:${link.slug}`, JSON.stringify(stored), {
     expiration: options.nativeExpiration,
     metadata: { expiration: options.metadataExpiration, url: link.url },
   })
@@ -40,6 +50,7 @@ async function putKvLink(link: Link, options: KvLinkExpirationOptions = {}) {
 
 async function insertD1Link(link: Link, effectiveExpiresAt: number | null = null) {
   await db.insert(links).values({
+    domain: storedDomainKey(link.domain),
     slug: link.slug,
     id: link.id,
     url: link.url,
@@ -69,6 +80,7 @@ async function runMigration(force: boolean) {
 describe('d1 link integration', () => {
   beforeEach(async () => {
     await setLinkStoreD1Mode()
+    await insertDomain(TEST_DOMAIN, true)
   })
 
   afterEach(async () => {
@@ -79,11 +91,11 @@ describe('d1 link integration', () => {
 
   it('uses D1 for management queries and valid KV hits for redirects', async () => {
     const link = makeLink()
-    const response = await postJson('/api/link/create', { slug: link.slug, url: link.url })
+    const response = await postJson('/api/link/create', { slug: link.slug, url: link.url, domain: TEST_DOMAIN })
     expect(response.status).toBe(201)
     expect(await getD1Link(link.slug)).toMatchObject({ slug: link.slug, url: link.url })
     expect(await getStoredLink(link.slug)).toMatchObject({ slug: link.slug, url: link.url })
-    const cached = await env.KV.getWithMetadata(`link:${link.slug}`)
+    const cached = await env.KV.getWithMetadata(`link::${link.slug}`)
     expect(cached.metadata).toBeNull()
 
     await putKvLink({ ...link, url: 'https://tampered.example/' })
@@ -114,6 +126,7 @@ describe('d1 link integration', () => {
     const response = await postJson('/api/link/create', {
       slug,
       url: `https://example.com/${slug}`,
+      domain: TEST_DOMAIN,
       tags: [` ${tag.toUpperCase()} `, tag, ' Second '],
     })
     expect(response.status).toBe(201)
@@ -130,6 +143,7 @@ describe('d1 link integration', () => {
     const edit = await putJson('/api/link/edit', {
       slug,
       url: `https://example.com/${slug}/edited`,
+      domain: TEST_DOMAIN,
       tags: [' Replacement ', 'replacement'],
     })
     expect(edit.status).toBe(201)
@@ -140,7 +154,7 @@ describe('d1 link integration', () => {
     const exported = await exportedResponse.json() as { links: Link[] }
     const exportedLink = exported.links.find(link => link.slug === slug)
     expect(exportedLink?.tags).toEqual(['replacement'])
-    expect((await postJson('/api/link/delete', { slug })).status).toBe(204)
+    expect((await postJson('/api/link/delete', { slug, domain: TEST_DOMAIN })).status).toBe(204)
     const imported = await postJson('/api/link/import', { version: '1.0', links: [exportedLink] })
     expect(await imported.json()).toMatchObject({ success: 1 })
     expect(await (await fetchWithAuth(`/api/link/query?slug=${slug}`)).json()).toMatchObject({ tags: ['replacement'] })
@@ -159,7 +173,7 @@ describe('d1 link integration', () => {
     expect((await postJson('/api/link/create', active)).status).toBe(201)
     expect((await postJson('/api/link/create', expired)).status).toBe(201)
     await db.update(links).set({ expiration: now - 1, effectiveExpiresAt: now - 1 }).where(eq(links.slug, expired.slug))
-    await env.KV.delete(`link:${expired.slug}`)
+    await env.KV.delete(`link::${expired.slug}`)
     const list = async (status?: string) => {
       const suffix = status ? `&status=${status}` : ''
       const response = await fetchWithAuth(`/api/link/list?tag=${tag}${suffix}`)
@@ -176,6 +190,7 @@ describe('d1 link integration', () => {
     const edit = await putJson('/api/link/edit', {
       slug: expired.slug,
       url: expired.url,
+      domain: TEST_DOMAIN,
       expiration: now + 7200,
       tags: [tag],
     })
@@ -192,14 +207,14 @@ describe('d1 link integration', () => {
     await clearLinkMigrationState()
     const link = makeLink(undefined, { tags: ['legacy-tag'] })
     await putKvLink(link)
-    const before = await env.KV.getWithMetadata(`link:${link.slug}`)
+    const before = await env.KV.getWithMetadata(`link::${link.slug}`)
 
     const redirect = await fetch(`/${link.slug}`, { redirect: 'manual' })
 
     expect(redirect.status).toBe(301)
     expect(redirect.headers.get('Location')).toBe(link.url)
     expect(await getD1Link(link.slug)).toBeNull()
-    expect(await env.KV.getWithMetadata(`link:${link.slug}`)).toEqual(before)
+    expect(await env.KV.getWithMetadata(`link::${link.slug}`)).toEqual(before)
   })
 
   it('uses KV metadata expiration as an override and payload expiration as fallback', async () => {
@@ -211,8 +226,8 @@ describe('d1 link integration', () => {
     const payloadExpired = makeLink(undefined, { expiration: now - 60 })
     await putKvLink(metadataActive, { metadataExpiration: now + 3600 })
     await putKvLink(metadataExpired, { metadataExpiration: now - 60 })
-    await env.KV.put(`link:${payloadActive.slug}`, JSON.stringify(payloadActive))
-    await env.KV.put(`link:${payloadExpired.slug}`, JSON.stringify(payloadExpired))
+    await env.KV.put(`link::${payloadActive.slug}`, JSON.stringify(payloadActive))
+    await env.KV.put(`link::${payloadExpired.slug}`, JSON.stringify(payloadExpired))
 
     const activeRedirect = await fetch(`/${metadataActive.slug}`, { redirect: 'manual' })
     expect(activeRedirect.status).toBe(301)
@@ -228,7 +243,7 @@ describe('d1 link integration', () => {
     await clearLinkMigrationState()
     const link = makeLink()
     await insertD1Link(link)
-    await env.KV.delete(`link:${link.slug}`)
+    await env.KV.delete(`link::${link.slug}`)
 
     expect((await fetch(`/${link.slug}`, { redirect: 'manual' })).status).toBe(404)
     expect(await getStoredLink(link.slug)).toBeNull()
@@ -267,7 +282,7 @@ describe('d1 link integration', () => {
   it('falls back to D1 for redirects when the completed D1 run has no KV cache', async () => {
     const link = makeLink()
     await insertD1Link(link)
-    await env.KV.delete(`link:${link.slug}`)
+    await env.KV.delete(`link::${link.slug}`)
 
     const redirect = await fetch(`/${link.slug}`, { redirect: 'manual' })
     expect(redirect.status).toBe(301)
@@ -297,8 +312,8 @@ describe('d1 link integration', () => {
     expect((await postJson('/api/link/create', link)).status).toBe(201)
 
     const edits = [
-      { slug: link.slug, url: link.url, tags: ['a-one', 'a-two'] },
-      { slug: link.slug, url: link.url, tags: ['b-one', 'b-two'] },
+      { slug: link.slug, url: link.url, domain: TEST_DOMAIN, tags: ['a-one', 'a-two'] },
+      { slug: link.slug, url: link.url, domain: TEST_DOMAIN, tags: ['b-one', 'b-two'] },
     ]
     const responses = await Promise.all(edits.map(edit => putJson('/api/link/edit', edit)))
     expect(responses.every(response => response.status === 201 || response.status === 409)).toBe(true)
@@ -372,8 +387,8 @@ describe('d1 link integration', () => {
 
   it('does not restore a tombstoned link to D1 during migration', async () => {
     const link = makeLink()
-    expect((await postJson('/api/link/create', { slug: link.slug, url: link.url })).status).toBe(201)
-    expect((await postJson('/api/link/delete', { slug: link.slug })).status).toBe(204)
+    expect((await postJson('/api/link/create', { slug: link.slug, url: link.url, domain: TEST_DOMAIN })).status).toBe(201)
+    expect((await postJson('/api/link/delete', { slug: link.slug, domain: TEST_DOMAIN })).status).toBe(204)
     await putKvLink(link)
     await runMigration(true)
 
@@ -407,11 +422,11 @@ describe('d1 link integration', () => {
     const link = makeLink(undefined, { expiration: now + 3600, tags: [tag] })
     expect((await postJson('/api/link/create', link)).status).toBe(201)
     await db.update(links).set({ expiration: now - 60, effectiveExpiresAt: now - 60 }).where(eq(links.slug, link.slug))
-    await env.KV.delete(`link:${link.slug}`)
+    await env.KV.delete(`link::${link.slug}`)
     const exported = await (await fetchWithAuth('/api/link/export')).json() as { links: Link[] }
     const archived = exported.links.find(item => item.slug === link.slug)
     expect(archived).toMatchObject({ id: link.id, tags: [tag], expiration: now - 60 })
-    expect((await postJson('/api/link/delete', { slug: link.slug })).status).toBe(204)
+    expect((await postJson('/api/link/delete', { slug: link.slug, domain: TEST_DOMAIN })).status).toBe(204)
     const imported = await postJson('/api/link/import', { version: '1.0', links: [archived] })
     expect(await imported.json()).toMatchObject({ success: 1, failed: 0 })
 
@@ -472,17 +487,17 @@ describe('d1 link integration', () => {
       EXPLAIN QUERY PLAN
       SELECT * FROM links
       WHERE (effective_expires_at IS NULL OR effective_expires_at > ?)
-        AND (created_at < ? OR (created_at = ? AND slug > ?))
-      ORDER BY created_at DESC, slug ASC
+        AND (created_at < ? OR (created_at = ? AND (domain > ? OR (domain = ? AND slug > ?))))
+      ORDER BY created_at DESC, domain ASC, slug ASC
       LIMIT 10
-    `).bind(Math.floor(Date.now() / 1000), 100, 100, 'cursor-slug').all<{ detail: string }>()
-    expect(plan.results.some(row => row.detail.includes('links_created_at_desc_slug_idx'))).toBe(true)
+    `).bind(Math.floor(Date.now() / 1000), 100, 100, '', '', 'cursor-slug').all<{ detail: string }>()
+    expect(plan.results.some(row => row.detail.includes('links_created_at_desc_domain_slug_idx'))).toBe(true)
   })
 
   it('recreates a deleted link by JSON import and clears its tombstone', async () => {
     const link = makeLink()
-    expect((await postJson('/api/link/create', { slug: link.slug, url: link.url })).status).toBe(201)
-    expect((await postJson('/api/link/delete', { slug: link.slug })).status).toBe(204)
+    expect((await postJson('/api/link/create', { slug: link.slug, url: link.url, domain: TEST_DOMAIN })).status).toBe(201)
+    expect((await postJson('/api/link/delete', { slug: link.slug, domain: TEST_DOMAIN })).status).toBe(204)
 
     const response = await postJson('/api/link/import', { version: '1.0', links: [link] })
     expect(await response.json()).toMatchObject({ success: 1, skipped: 0 })
@@ -629,7 +644,7 @@ describe('d1 link integration', () => {
     expect((await postJson('/api/link/create', active)).status).toBe(201)
     expect((await postJson('/api/link/create', expired)).status).toBe(201)
     await db.update(links).set({ expiration: now - 1, effectiveExpiresAt: now - 1 }).where(eq(links.slug, expired.slug))
-    await env.KV.delete(`link:${expired.slug}`)
+    await env.KV.delete(`link::${expired.slug}`)
     const search = async (status?: string, requestedTag = tag.toUpperCase()) => {
       const statusQuery = status ? `&status=${status}` : ''
       const response = await fetchWithAuth(`/api/link/search?q=${query}&tag=${requestedTag}${statusQuery}`)
@@ -654,17 +669,17 @@ describe('d1 link integration', () => {
   it('fills KV from a D1 redirect miss without leaking internal fields', async () => {
     const active = makeLink()
     await insertD1Link(active)
-    await env.KV.delete(`link:${active.slug}`)
+    await env.KV.delete(`link::${active.slug}`)
     const redirect = await fetch(`/${active.slug}`, { redirect: 'manual' })
     expect(redirect.status).toBeGreaterThanOrEqual(300)
     const cached = await getStoredLink(active.slug)
-    expect(cached).toMatchObject(active)
+    expect(cached).toMatchObject({ ...active, domain: storedDomainKey(active.domain) })
     expect(cached).not.toHaveProperty('normalizedUrl')
     expect(cached).not.toHaveProperty('effectiveExpiresAt')
 
     const expired = makeLink()
     await insertD1Link(expired, Math.floor(Date.now() / 1000) - 1)
-    await env.KV.delete(`link:${expired.slug}`)
+    await env.KV.delete(`link::${expired.slug}`)
     expect((await fetch(`/${expired.slug}`, { redirect: 'manual' })).status).toBe(404)
     expect(await getStoredLink(expired.slug)).toBeNull()
   })

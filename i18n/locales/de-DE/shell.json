@@ -29,7 +29,8 @@
     "analysis": "Analyse",
     "realtime": "Echtzeit",
     "check": "Check",
-    "migrate": "Import/Export"
+    "migrate": "Import/Export",
+    "domains": "Domains"
   },
   "sidebar": {
     "subtitle": "Link-Verkürzer",

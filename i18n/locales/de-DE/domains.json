@@ -1,0 +1,40 @@
+{
+  "domains": {
+    "title": "Domains",
+    "description": "Wähle eine Domain für jeden Kurzlink.",
+    "hint_title": "Leite deine Domains auf dieses Projekt",
+    "hint_description": "Jede Domain unten muss in Cloudflare auf dieses Projekt weitergeleitet werden (Custom Domain oder Route). Ein Kurzlink wird nur auf der Domain aufgelöst, auf der er erstellt wurde; Links der Standard-Domain funktionieren auch auf dem Host des Dashboards.",
+    "add_title": "Domain hinzufügen",
+    "add_action": "Domain hinzufügen",
+    "empty": "Noch keine Domains. Füge die erste Domain hinzu, um Kurzlinks zu erstellen.",
+    "load_failed": "Domains konnten nicht geladen werden.",
+    "default_badge": "Standard",
+    "set_default": "Als Standard festlegen",
+    "create_success": "Domain hinzugefügt",
+    "create_failed": "Domain konnte nicht hinzugefügt werden",
+    "default_success": "Standard-Domain aktualisiert",
+    "default_failed": "Standard-Domain konnte nicht aktualisiert werden",
+    "delete_success": "Domain gelöscht",
+    "delete_failed": "Domain konnte nicht gelöscht werden",
+    "table": {
+      "domain": "Domain",
+      "links": "Links",
+      "created": "Erstellt",
+      "actions": "Aktionen"
+    },
+    "form": {
+      "name_label": "Domain",
+      "name_placeholder": "sink.cool",
+      "name_description": "Ein Host, der auf dieses Projekt weitergeleitet wird. Schema, Port und Pfad sind nicht erlaubt."
+    },
+    "dialogs": {
+      "delete": {
+        "title": "{name} löschen?",
+        "description": "Diese Domain kann nicht mehr für neue Links verwendet werden.",
+        "has_links": "Diese Domain wird von {count} Link(s) verwendet. Verschiebe oder lösche sie zuerst.",
+        "in_use_tip": "Lösche zuerst die Links, die diese Domain verwenden.",
+        "action": "Löschen"
+      }
+    }
+  }
+}

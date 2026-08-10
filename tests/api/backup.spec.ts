@@ -69,13 +69,14 @@ describe('/api/backup', { concurrent: false }, () => {
     try {
       await setLinkStoreD1Mode()
       await db.batch([
-        db.insert(links).values({ slug: slugs.active, id: crypto.randomUUID(), url: 'https://example.com/active', createdAt: now, updatedAt: now, normalizedUrl: 'https://example.com/active', effectiveExpiresAt: null }),
-        db.insert(links).values({ slug: slugs.expired, id: crypto.randomUUID(), url: 'https://example.com/expired', createdAt: now, updatedAt: now, normalizedUrl: 'https://example.com/expired', effectiveExpiresAt: now - 60 }),
+        db.insert(links).values({ domain: '', slug: slugs.active, id: crypto.randomUUID(), url: 'https://example.com/active', createdAt: now, updatedAt: now, normalizedUrl: 'https://example.com/active', effectiveExpiresAt: null }),
+        db.insert(links).values({ domain: '', slug: slugs.expired, id: crypto.randomUUID(), url: 'https://example.com/expired', createdAt: now, updatedAt: now, normalizedUrl: 'https://example.com/expired', effectiveExpiresAt: now - 60 }),
         db.insert(tags).values({ name: tag }),
-        db.insert(linkTags).values({ linkSlug: slugs.active, tagName: tag }),
+        db.insert(linkTags).values({ linkDomain: '', linkSlug: slugs.active, tagName: tag }),
       ])
       for (let offset = 0; offset < pageSlugs.length; offset += 10) {
         await db.insert(links).values(pageSlugs.slice(offset, offset + 10).map(slug => ({
+          domain: '',
           slug,
           id: crypto.randomUUID(),
           url: `https://example.com/${slug}`,
@@ -87,6 +88,7 @@ describe('/api/backup', { concurrent: false }, () => {
       }
       const legacyLink = (slug: string, url: string, tags: string[] = []): Link => ({
         id: crypto.randomUUID().slice(0, 10),
+        domain: '',
         slug,
         url,
         createdAt: now,
@@ -136,6 +138,7 @@ describe('/api/backup', { concurrent: false }, () => {
     const now = Math.floor(Date.now() / 1000)
     const link: Link = {
       id: crypto.randomUUID().slice(0, 10),
+      domain: '',
       slug: `count-mismatch-${crypto.randomUUID()}`,
       url: 'https://example.com/count-mismatch',
       createdAt: now,
@@ -199,6 +202,7 @@ describe('/api/backup', { concurrent: false }, () => {
       try {
         yield {
           id: crypto.randomUUID().slice(0, 10),
+          domain: '',
           slug: `upload-failure-${crypto.randomUUID()}`,
           url: 'https://example.com/upload-failure',
           comment: 'x'.repeat(6 * 1024 * 1024),

@@ -1,0 +1,40 @@
+{
+  "domains": {
+    "title": "Domaines",
+    "description": "Choisissez un domaine pour chaque lien court.",
+    "hint_title": "Routez vos domaines vers ce projet",
+    "hint_description": "Chaque domaine ci-dessous doit être routé vers ce projet dans Cloudflare (domaine personnalisé ou route). Un lien court ne se résout que sur le domaine sur lequel il a été créé ; les liens du domaine par défaut fonctionnent aussi sur l’hôte du tableau de bord.",
+    "add_title": "Ajouter un domaine",
+    "add_action": "Ajouter un domaine",
+    "empty": "Aucun domaine pour l’instant. Ajoutez le premier domaine pour créer des liens courts.",
+    "load_failed": "Échec du chargement des domaines.",
+    "default_badge": "Par défaut",
+    "set_default": "Définir par défaut",
+    "create_success": "Domaine ajouté",
+    "create_failed": "Échec de l’ajout du domaine",
+    "default_success": "Domaine par défaut mis à jour",
+    "default_failed": "Échec de la mise à jour du domaine par défaut",
+    "delete_success": "Domaine supprimé",
+    "delete_failed": "Échec de la suppression du domaine",
+    "table": {
+      "domain": "Domaine",
+      "links": "Liens",
+      "created": "Créé",
+      "actions": "Actions"
+    },
+    "form": {
+      "name_label": "Domaine",
+      "name_placeholder": "sink.cool",
+      "name_description": "Un hôte routé vers ce projet. Protocole, port et chemin non autorisés."
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Supprimer {name} ?",
+        "description": "Ce domaine ne pourra plus être utilisé pour de nouveaux liens.",
+        "has_links": "Ce domaine est utilisé par {count} lien(s). Déplacez ou supprimez-les avant de supprimer le domaine.",
+        "in_use_tip": "Supprimez d’abord les liens utilisant ce domaine.",
+        "action": "Supprimer"
+      }
+    }
+  }
+}

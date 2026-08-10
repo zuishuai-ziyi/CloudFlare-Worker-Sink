@@ -6,7 +6,8 @@
     "dashboard",
     "links",
     "check",
-    "migrate"
+    "migrate",
+    "domains"
   ],
   "locales": [
     {

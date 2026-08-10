@@ -47,6 +47,22 @@ defineRouteMeta({
   },
 })
 
+// Parse a link cache key into its (domain, slug) pair. Supported shapes:
+//   link:{slug}            legacy key (default domain)
+//   link::{slug}           default-domain key
+//   link:{domain}:{slug}   concrete-domain key
+function parseLinkCacheKey(key: string): { domain: string, slug: string } {
+  const rest = key.startsWith('link:') ? key.slice(5) : key
+  if (!rest)
+    return { domain: '', slug: '' }
+  if (rest.startsWith(':'))
+    return { domain: '', slug: rest.slice(1) }
+  const separator = rest.indexOf(':')
+  if (separator === -1)
+    return { domain: '', slug: rest }
+  return { domain: rest.slice(0, separator), slug: rest.slice(separator + 1) }
+}
+
 function encodeMigrationCursor(runId: string): string {
   return `${MIGRATION_CURSOR_PREFIX}${btoa(JSON.stringify({ runId }))}`
 }
@@ -135,12 +151,15 @@ export default eventHandler(async (event): Promise<LinkMigrationRunResult> => {
   for (const key of page.keys) {
     try {
       const stored = await KV.getWithMetadata(key.name, { type: 'json' })
-      const parsed = parseLegacyKvLink(stored.value, key.name.slice(5))
+      const { domain, slug: keySlug } = parseLinkCacheKey(key.name)
+      const parsed = parseLegacyKvLink(stored.value, keySlug)
       if (!parsed.success)
         throw new Error(parsed.error.issues.map(issue => issue.message).join('; '))
 
       const link = parsed.data
       link.slug = normalizeSlug(event, link.slug)
+      // Legacy keys have no domain; keep the sentinel ('' = default domain).
+      link.domain = link.domain || domain
       const metadata = stored.metadata as Record<string, unknown> | null
       const metadataExpiration = typeof metadata?.expiration === 'number' ? metadata.expiration : undefined
       const effectiveExpiresAt = metadataExpiration ?? key.expiration ?? getExpiration(event, link.expiration)

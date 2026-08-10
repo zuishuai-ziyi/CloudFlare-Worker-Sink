@@ -1,0 +1,40 @@
+{
+  "domains": {
+    "title": "Domini",
+    "description": "Scegli un dominio per ogni link breve.",
+    "hint_title": "Instrada i tuoi domini verso questo progetto",
+    "hint_description": "Ogni dominio qui sotto deve essere instradato a questo progetto su Cloudflare (dominio personalizzato o route). Un link breve funziona solo sul dominio su cui è stato creato; i link del dominio predefinito funzionano anche sull’host della dashboard.",
+    "add_title": "Aggiungi un dominio",
+    "add_action": "Aggiungi dominio",
+    "empty": "Nessun dominio. Aggiungi il primo dominio per iniziare a creare link brevi.",
+    "load_failed": "Caricamento domini non riuscito.",
+    "default_badge": "Predefinito",
+    "set_default": "Imposta predefinito",
+    "create_success": "Dominio aggiunto",
+    "create_failed": "Impossibile aggiungere il dominio",
+    "default_success": "Dominio predefinito aggiornato",
+    "default_failed": "Impossibile aggiornare il dominio predefinito",
+    "delete_success": "Dominio eliminato",
+    "delete_failed": "Impossibile eliminare il dominio",
+    "table": {
+      "domain": "Dominio",
+      "links": "Link",
+      "created": "Creato",
+      "actions": "Azioni"
+    },
+    "form": {
+      "name_label": "Dominio",
+      "name_placeholder": "sink.cool",
+      "name_description": "Un host instradato a questo progetto. Schema, porta e percorso non consentiti."
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Eliminare {name}?",
+        "description": "Questo dominio non potrà più essere usato per nuovi link.",
+        "has_links": "Questo dominio è usato da {count} link. Spostali o eliminali prima di rimuovere il dominio.",
+        "in_use_tip": "Elimina prima i link che usano questo dominio.",
+        "action": "Elimina"
+      }
+    }
+  }
+}

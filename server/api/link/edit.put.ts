@@ -11,9 +11,10 @@ defineRouteMeta({
         'application/json': {
           schema: {
             type: 'object',
-            required: ['url', 'slug'],
+            required: ['url', 'slug', 'domain'],
             properties: {
               url: { type: 'string', description: 'The target URL' },
+              domain: { type: 'string', description: 'The current domain of the link (read-only on edit)' },
               slug: { type: 'string', description: 'The slug of the link to edit' },
               comment: { type: 'string', description: 'Optional comment' },
               expiration: { type: 'integer', description: 'Expiration timestamp (unix seconds)' },
@@ -46,8 +47,9 @@ export default eventHandler(async (event) => {
   }
   const link = await readValidatedBody(event, EditLinkSchema.parse)
   link.slug = normalizeSlug(event, link.slug)
+  await canonicalizeLinkDomain(event, link)
 
-  const existingLink: Link | null = await getAnyAuthoritativeLink(event, link.slug)
+  const existingLink: Link | null = await getAnyAuthoritativeLink(event, link.domain, link.slug)
   if (!existingLink) {
     throw createError({
       status: 404,
@@ -68,5 +70,5 @@ export default eventHandler(async (event) => {
     })
   }
   setResponseStatus(event, 201)
-  return buildLinkResponse(event, newLink)
+  return await buildLinkResponse(event, newLink)
 })

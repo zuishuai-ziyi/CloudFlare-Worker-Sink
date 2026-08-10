@@ -8,6 +8,7 @@ export const QuerySchema = z.object({
   endAt: z.coerce.number().int().safe().optional(),
   url: z.string().optional(),
   slug: z.string().optional(),
+  domain: z.string().optional(),
   referer: z.string().optional(),
   country: z.string().optional(),
   region: z.string().optional(),

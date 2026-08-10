@@ -1,12 +1,14 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { deleteStoredLinks, fetch, postJson, setLinkStoreD1Mode } from './utils'
+import { deleteStoredLinks, fetch, insertDomain, postJson, setLinkStoreD1Mode } from './utils'
 
 type CfRequestInit = RequestInit & { cf?: { country?: string } }
 
 const createdSlugs: string[] = []
+const TEST_DOMAIN = 'example.com'
 
 beforeAll(async () => {
   await setLinkStoreD1Mode()
+  await insertDomain(TEST_DOMAIN, true)
 })
 
 afterAll(async () => {
@@ -28,6 +30,7 @@ describe('/', () => {
     const createResponse = await postJson('/api/link/create', {
       url: 'https://example.com',
       slug,
+      domain: TEST_DOMAIN,
       apple,
     })
     expect(createResponse.status).toBe(201)
@@ -53,6 +56,7 @@ describe('/', () => {
     const createResponse = await postJson('/api/link/create', {
       url: targetUrl,
       slug,
+      domain: TEST_DOMAIN,
       redirectWithQuery: true,
     })
     expect(createResponse.status).toBe(201)
@@ -71,6 +75,7 @@ describe('/', () => {
     const createResponse = await postJson('/api/link/create', {
       url: targetUrl,
       slug,
+      domain: TEST_DOMAIN,
       title: 'Social preview title',
       description: 'Social preview description',
     })
@@ -103,6 +108,7 @@ describe('/', () => {
     const createResponse = await postJson('/api/link/create', {
       url: 'https://example.com/default',
       slug,
+      domain: TEST_DOMAIN,
       geo: { CN: cnUrl },
     })
     expect(createResponse.status).toBe(201)
@@ -122,6 +128,7 @@ describe('/', () => {
     const createResponse = await postJson('/api/link/create', {
       url: defaultUrl,
       slug,
+      domain: TEST_DOMAIN,
       geo: { CN: 'https://cn.example.com/landing' },
     })
     expect(createResponse.status).toBe(201)
@@ -141,6 +148,7 @@ describe('/', () => {
     const createResponse = await postJson('/api/link/create', {
       url: 'https://example.com/default',
       slug,
+      domain: TEST_DOMAIN,
       unsafe: true,
       geo: { CN: cnUrl },
     })
@@ -162,6 +170,7 @@ describe('/', () => {
     const createResponse = await postJson('/api/link/create', {
       url: targetUrl,
       slug,
+      domain: TEST_DOMAIN,
       cloaking: true,
     })
     expect(createResponse.status).toBe(201)
@@ -185,6 +194,7 @@ describe('/', () => {
     const createResponse = await postJson('/api/link/create', {
       url: 'https://example.com/default',
       slug,
+      domain: TEST_DOMAIN,
       apple,
       geo: { CN: 'https://cn.example.com/landing' },
     })
@@ -211,6 +221,7 @@ describe('password protected redirect', { concurrent: false }, () => {
     const payload = {
       url: 'https://example.com/redirect-target',
       slug: `redirect-password-${crypto.randomUUID()}`,
+      domain: TEST_DOMAIN,
       password,
     }
 
@@ -244,6 +255,7 @@ describe('password protected redirect', { concurrent: false }, () => {
     const createResponse = await postJson('/api/link/create', {
       url: targetUrl,
       slug,
+      domain: TEST_DOMAIN,
       password,
       unsafe: true,
     })

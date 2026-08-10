@@ -20,14 +20,15 @@ export function canonicalizeDomain(submitted: string, defaultDomain: string | nu
   return defaultDomain && submitted === defaultDomain ? '' : submitted
 }
 
-// Candidate domains to try when resolving slug on a request host:
-// - registered hosts resolve their own namespace only (plus '' when they are the default)
-// - unregistered hosts (localhost, *.workers.dev) fall back to the default namespace ''
+// Candidate domains to try when resolving slug on a request host. Short links only
+// resolve on their own registered domains: the default-domain namespace ('' sentinel)
+// is reachable only via the default domain's host, and no fallback is made for
+// unregistered hosts (localhost, *.workers.dev, or the dashboard's own host).
 export async function getEffectiveDomains(event: H3Event): Promise<string[]> {
   const { domains, default: defaultDomain } = await getDomains(event)
   const host = normalizeHost(getRequestHost(event))
   const registered = new Set(domains)
   if (registered.has(host))
     return host === defaultDomain ? [host, ''] : [host]
-  return ['']
+  return []
 }

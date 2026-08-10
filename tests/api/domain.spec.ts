@@ -183,9 +183,9 @@ describe('domain-scoped links', { concurrent: false }, () => {
     const miss = await fetchOnHost('b.example', `/${defaultSlug}`, { redirect: 'manual' })
     expect(miss.status).toBe(404)
 
-    // Unregistered hosts (localhost) fall back to the default domain namespace.
+    // Unregistered hosts resolve nothing — there is no fallback to the default namespace.
     const local = await exports.default.fetch(new Request(`http://localhost/${defaultSlug}`, { redirect: 'manual' }))
-    expect(local.status).toBe(301)
+    expect(local.status).toBe(404)
     const localMiss = await exports.default.fetch(new Request(`http://localhost/${otherSlug}`, { redirect: 'manual' }))
     expect(localMiss.status).toBe(404)
   })

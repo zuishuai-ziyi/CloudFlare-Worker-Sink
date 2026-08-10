@@ -8,6 +8,11 @@ import { LINK_PASSWORD_HASH_PREFIX, LINK_PASSWORD_MASK_PREFIX } from '../shared/
 
 export const db = drizzle(env.DB)
 
+// Test requests target a registered domain. Short links no longer fall back to the
+// default namespace on unregistered hosts, so redirect tests must hit a domain that
+// the link/redirect specs register as the default (example.com).
+const TEST_HOST = 'example.com'
+
 export function linkCacheKey(domain: string, slug: string): string {
   return `link:${domain}:${slug}`
 }
@@ -39,7 +44,7 @@ export async function clearLinks() {
 }
 
 export function fetchWithAuth(path: string, options?: RequestInit): Promise<Response> {
-  const request = new Request(`http://localhost${path}`, {
+  const request = new Request(`http://${TEST_HOST}${path}`, {
     ...options,
     headers: {
       ...options?.headers,
@@ -50,7 +55,7 @@ export function fetchWithAuth(path: string, options?: RequestInit): Promise<Resp
 }
 
 export function fetch(path: string, options?: RequestInit): Promise<Response> {
-  return exports.default.fetch(new Request(`http://localhost${path}`, options))
+  return exports.default.fetch(new Request(`http://${TEST_HOST}${path}`, options))
 }
 
 export function postJson(path: string, body: unknown, withAuth = true): Promise<Response> {

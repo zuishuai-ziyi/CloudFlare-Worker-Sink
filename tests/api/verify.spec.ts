@@ -14,7 +14,7 @@ describe('/api/verify', () => {
       url: 'https://sink.cool',
       authMethod: 'site-token',
       userID: 'root',
-      userEmail: 'root@localhost',
+      userEmail: 'root@example.com',
       accessEnabled: false,
     })
   })

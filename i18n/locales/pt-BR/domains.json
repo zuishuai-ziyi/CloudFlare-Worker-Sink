@@ -3,7 +3,7 @@
     "title": "Domínios",
     "description": "Escolha um domínio para cada link curto.",
     "hint_title": "Encaminhe seus domínios para este projeto",
-    "hint_description": "Cada domínio abaixo deve ser encaminhado para este projeto na Cloudflare (domínio personalizado ou rota). Um link curto só resolve no domínio em que foi criado; links do domínio padrão também funcionam no host do painel.",
+    "hint_description": "Cada domínio abaixo deve ser encaminhado para este projeto na Cloudflare (domínio personalizado ou rota). Um link curto só resolve no domínio em que foi criado.",
     "add_title": "Adicionar domínio",
     "add_action": "Adicionar domínio",
     "empty": "Ainda sem domínios. Adicione o primeiro domínio para começar a criar links curtos.",

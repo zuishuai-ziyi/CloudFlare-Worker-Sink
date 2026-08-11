@@ -3,7 +3,7 @@
     "title": "Domain",
     "description": "Pilih domain untuk setiap tautan pendek.",
     "hint_title": "Arahkan domain Anda ke proyek ini",
-    "hint_description": "Setiap domain di bawah harus diarahkan ke proyek ini di Cloudflare (custom domain atau route). Tautan pendek hanya dapat diakses di domain tempat ia dibuat; tautan domain default juga berfungsi di host dasbor.",
+    "hint_description": "Setiap domain di bawah harus diarahkan ke proyek ini di Cloudflare (custom domain atau route). Tautan pendek hanya dapat diakses di domain tempat ia dibuat.",
     "add_title": "Tambah domain",
     "add_action": "Tambah domain",
     "empty": "Belum ada domain. Tambahkan domain pertama untuk mulai membuat tautan pendek.",

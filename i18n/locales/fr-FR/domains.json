@@ -3,7 +3,7 @@
     "title": "Domaines",
     "description": "Choisissez un domaine pour chaque lien court.",
     "hint_title": "Routez vos domaines vers ce projet",
-    "hint_description": "Chaque domaine ci-dessous doit être routé vers ce projet dans Cloudflare (domaine personnalisé ou route). Un lien court ne se résout que sur le domaine sur lequel il a été créé ; les liens du domaine par défaut fonctionnent aussi sur l’hôte du tableau de bord.",
+    "hint_description": "Chaque domaine ci-dessous doit être routé vers ce projet dans Cloudflare (domaine personnalisé ou route). Un lien court ne se résout que sur le domaine sur lequel il a été créé.",
     "add_title": "Ajouter un domaine",
     "add_action": "Ajouter un domaine",
     "empty": "Aucun domaine pour l’instant. Ajoutez le premier domaine pour créer des liens courts.",

@@ -3,7 +3,7 @@
     "title": "Domini",
     "description": "Scegli un dominio per ogni link breve.",
     "hint_title": "Instrada i tuoi domini verso questo progetto",
-    "hint_description": "Ogni dominio qui sotto deve essere instradato a questo progetto su Cloudflare (dominio personalizzato o route). Un link breve funziona solo sul dominio su cui è stato creato; i link del dominio predefinito funzionano anche sull’host della dashboard.",
+    "hint_description": "Ogni dominio qui sotto deve essere instradato a questo progetto su Cloudflare (dominio personalizzato o route). Un link breve funziona solo sul dominio su cui è stato creato.",
     "add_title": "Aggiungi un dominio",
     "add_action": "Aggiungi dominio",
     "empty": "Nessun dominio. Aggiungi il primo dominio per iniziare a creare link brevi.",

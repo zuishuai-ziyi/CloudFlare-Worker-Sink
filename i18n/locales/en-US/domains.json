@@ -3,7 +3,7 @@
     "title": "Domains",
     "description": "Pick a domain for each short link.",
     "hint_title": "Route your domains here",
-    "hint_description": "Every domain below must be routed to this project in Cloudflare (custom domain or route). A short link only resolves on the domain it was created on; default-domain links also work on the dashboard host.",
+    "hint_description": "Every domain below must be routed to this project in Cloudflare (custom domain or route). A short link only resolves on the domain it was created on.",
     "add_title": "Add a domain",
     "add_action": "Add domain",
     "empty": "No domains yet. Add the first domain to start creating short links.",

@@ -3,7 +3,7 @@
     "title": "Tên miền",
     "description": "Chọn tên miền cho từng liên kết rút gọn.",
     "hint_title": "Định tuyến tên miền của bạn đến dự án này",
-    "hint_description": "Mỗi tên miền bên dưới phải được định tuyến đến dự án này trên Cloudflare (tên miền tùy chỉnh hoặc route). Liên kết rút gọn chỉ hoạt động trên tên miền nơi nó được tạo; liên kết tên miền mặc định cũng hoạt động trên host của bảng điều khiển.",
+    "hint_description": "Mỗi tên miền bên dưới phải được định tuyến đến dự án này trên Cloudflare (tên miền tùy chỉnh hoặc route). Liên kết rút gọn chỉ hoạt động trên tên miền nơi nó được tạo.",
     "add_title": "Thêm tên miền",
     "add_action": "Thêm tên miền",
     "empty": "Chưa có tên miền. Thêm tên miền đầu tiên để bắt đầu tạo liên kết rút gọn.",

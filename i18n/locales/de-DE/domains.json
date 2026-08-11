@@ -3,7 +3,7 @@
     "title": "Domains",
     "description": "Wähle eine Domain für jeden Kurzlink.",
     "hint_title": "Leite deine Domains auf dieses Projekt",
-    "hint_description": "Jede Domain unten muss in Cloudflare auf dieses Projekt weitergeleitet werden (Custom Domain oder Route). Ein Kurzlink wird nur auf der Domain aufgelöst, auf der er erstellt wurde; Links der Standard-Domain funktionieren auch auf dem Host des Dashboards.",
+    "hint_description": "Jede Domain unten muss in Cloudflare auf dieses Projekt weitergeleitet werden (Custom Domain oder Route). Ein Kurzlink wird nur auf der Domain aufgelöst, auf der er erstellt wurde.",
     "add_title": "Domain hinzufügen",
     "add_action": "Domain hinzufügen",
     "empty": "Noch keine Domains. Füge die erste Domain hinzu, um Kurzlinks zu erstellen.",

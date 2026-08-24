@@ -1,4 +1,6 @@
 import { timingSafeEqual } from 'node:crypto'
+import { API_KEY_TOKEN_PREFIX } from '#shared/schemas/api-key'
+import { resolveOpenApiScopes, touchApiKeyUsage, verifyApiKey } from '../utils/api-key'
 
 export default eventHandler(async (event) => {
   if (!event.path.startsWith('/api/'))
@@ -9,6 +11,40 @@ export default eventHandler(async (event) => {
     event.context.authMethod = 'site-token'
     event.context.userID = 'root'
     event.context.userEmail = `root@${getRequestURL(event).hostname}`
+    return
+  }
+
+  if (token?.startsWith(API_KEY_TOKEN_PREFIX)) {
+    const apiKey = await verifyApiKey(event, token)
+    if (!apiKey) {
+      throw createError({
+        status: 401,
+        statusText: 'Unauthorized',
+      })
+    }
+
+    const method = getMethod(event) ?? event.method
+    const requiredScopes = resolveOpenApiScopes(event.path.split('?')[0] ?? event.path, method)
+    if (requiredScopes === null) {
+      throw createError({
+        status: 403,
+        statusText: 'Forbidden',
+      })
+    }
+
+    if (!requiredScopes.every(scope => apiKey.scopes.includes(scope))) {
+      throw createError({
+        status: 403,
+        statusText: 'Insufficient API key scope',
+      })
+    }
+
+    const hostname = getRequestURL(event).hostname
+    event.context.authMethod = 'api-key'
+    event.context.userID = `api-key:${apiKey.id}`
+    event.context.userEmail = `api-key:${apiKey.id}@${hostname}`
+    event.context.apiKey = { id: apiKey.id, name: apiKey.name, scopes: apiKey.scopes }
+    touchApiKeyUsage(event, apiKey)
     return
   }
 

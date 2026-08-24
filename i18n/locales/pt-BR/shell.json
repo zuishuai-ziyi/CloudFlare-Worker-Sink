@@ -30,7 +30,8 @@
     "realtime": "Tempo Real",
     "check": "Check",
     "migrate": "Importar/Exportar",
-    "domains": "Domínios"
+    "domains": "Domínios",
+    "api_keys": "Chaves de API"
   },
   "sidebar": {
     "subtitle": "Encurtador de links",

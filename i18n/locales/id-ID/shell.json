@@ -30,7 +30,8 @@
     "realtime": "Real-time",
     "check": "Check",
     "migrate": "Impor/Ekspor",
-    "domains": "Domain"
+    "domains": "Domain",
+    "api_keys": "Kunci API"
   },
   "sidebar": {
     "subtitle": "Pemendek Tautan",

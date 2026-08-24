@@ -1,0 +1,70 @@
+{
+  "api_keys": {
+    "group_title": "Chaves de API",
+    "create": "Criar chave de API",
+    "edit": "Editar chave de API",
+    "load_failed": "Falha ao carregar as chaves de API.",
+    "empty_title": "Ainda não existem chaves de API",
+    "empty_description": "Crie uma chave de API para integrar o Sink nas suas ferramentas e aplicações.",
+    "copy_success": "Chave de API copiada",
+    "never_used": "Nunca utilizada",
+    "never_expires": "Nunca",
+    "create_success": "Chave de API criada",
+    "create_failed": "Falha ao criar a chave de API",
+    "update_success": "Chave de API atualizada",
+    "update_failed": "Falha ao atualizar a chave de API",
+    "revoke_success": "Chave de API revogada",
+    "revoke_failed": "Falha ao revogar a chave de API",
+    "delete_success": "Chave de API eliminada",
+    "delete_failed": "Falha ao eliminar a chave de API",
+    "table": {
+      "name": "Nome",
+      "token": "Chave",
+      "scopes": "Permissões",
+      "status": "Estado",
+      "created_at": "Criada em",
+      "last_used_at": "Última utilização",
+      "expires_at": "Expira em"
+    },
+    "status": {
+      "active": "Ativa",
+      "revoked": "Revogada",
+      "expired": "Expirada"
+    },
+    "scopes": {
+      "links_read": "Ler links",
+      "links_write": "Escrever links"
+    },
+    "form": {
+      "name": "Nome",
+      "name_placeholder": "ex.: Integração CI",
+      "name_required": "O nome é obrigatório",
+      "scopes": "Permissões",
+      "scopes_description": "Ler permite consultar e listar links. Escrever também permite criar, editar e eliminar links.",
+      "expiration": "Expiração",
+      "expiration_description": "A chave deixa de funcionar após expirar. Deixe vazio para não expirar.",
+      "clear_expiration": "Limpar expiração",
+      "pick_date": "Escolher uma data"
+    },
+    "token": {
+      "title": "Chave de API criada",
+      "description": "Copie agora a sua chave de API e guarde-a num local seguro.",
+      "warning": "Por questões de segurança, a chave completa é mostrada apenas uma vez e não pode ser recuperada.",
+      "copy": "Copiar",
+      "copied": "Copiada",
+      "done": "Concluído"
+    },
+    "dialogs": {
+      "revoke": {
+        "title": "Revogar {name}?",
+        "description": "Os pedidos feitos com esta chave deixarão de funcionar de imediato.",
+        "action": "Revogar chave"
+      },
+      "delete": {
+        "title": "Eliminar {name}?",
+        "description": "Esta ação elimina permanentemente o registo da chave e não pode ser revertida.",
+        "action": "Eliminar chave"
+      }
+    }
+  }
+}

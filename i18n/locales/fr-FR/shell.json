@@ -30,7 +30,8 @@
     "realtime": "Realtime",
     "check": "Check",
     "migrate": "Import/Export",
-    "domains": "Domaines"
+    "domains": "Domaines",
+    "api_keys": "Clés API"
   },
   "sidebar": {
     "subtitle": "Raccourcisseur de liens",

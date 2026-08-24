@@ -1,0 +1,70 @@
+{
+  "api_keys": {
+    "group_title": "Khóa API",
+    "create": "Tạo Khóa API",
+    "edit": "Sửa Khóa API",
+    "load_failed": "Tải khóa API thất bại.",
+    "empty_title": "Chưa có khóa API nào",
+    "empty_description": "Tạo một khóa API để tích hợp Sink với các công cụ và ứng dụng của bạn.",
+    "copy_success": "Đã sao chép khóa API",
+    "never_used": "Chưa từng dùng",
+    "never_expires": "Không hết hạn",
+    "create_success": "Đã tạo khóa API",
+    "create_failed": "Tạo khóa API thất bại",
+    "update_success": "Đã cập nhật khóa API",
+    "update_failed": "Cập nhật khóa API thất bại",
+    "revoke_success": "Đã thu hồi khóa API",
+    "revoke_failed": "Thu hồi khóa API thất bại",
+    "delete_success": "Đã xóa khóa API",
+    "delete_failed": "Xóa khóa API thất bại",
+    "table": {
+      "name": "Tên",
+      "token": "Khóa",
+      "scopes": "Phạm vi",
+      "status": "Trạng thái",
+      "created_at": "Ngày tạo",
+      "last_used_at": "Lần dùng cuối",
+      "expires_at": "Ngày hết hạn"
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "revoked": "Đã thu hồi",
+      "expired": "Đã hết hạn"
+    },
+    "scopes": {
+      "links_read": "Đọc liên kết",
+      "links_write": "Ghi liên kết"
+    },
+    "form": {
+      "name": "Tên",
+      "name_placeholder": "vd. Tích hợp CI",
+      "name_required": "Vui lòng nhập tên",
+      "scopes": "Phạm vi",
+      "scopes_description": "Đọc cho phép truy vấn và liệt kê liên kết. Ghi còn cho phép tạo, sửa và xóa liên kết.",
+      "expiration": "Hết hạn",
+      "expiration_description": "Khóa sẽ ngừng hoạt động sau khi hết hạn. Để trống nếu không muốn đặt hạn.",
+      "clear_expiration": "Xóa thời hạn",
+      "pick_date": "Chọn ngày"
+    },
+    "token": {
+      "title": "Đã tạo khóa API",
+      "description": "Sao chép khóa API ngay bây giờ và cất giữ ở nơi an toàn.",
+      "warning": "Vì lý do bảo mật, khóa đầy đủ chỉ được hiển thị một lần và không thể khôi phục.",
+      "copy": "Sao chép",
+      "copied": "Đã sao chép",
+      "done": "Xong"
+    },
+    "dialogs": {
+      "revoke": {
+        "title": "Thu hồi {name}?",
+        "description": "Các yêu cầu dùng khóa này sẽ ngừng hoạt động ngay lập tức.",
+        "action": "Thu hồi khóa"
+      },
+      "delete": {
+        "title": "Xóa {name}?",
+        "description": "Thao tác này xóa vĩnh viễn bản ghi khóa và không thể hoàn tác.",
+        "action": "Xóa khóa"
+      }
+    }
+  }
+}

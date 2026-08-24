@@ -1,0 +1,70 @@
+{
+  "api_keys": {
+    "group_title": "API-Schlüssel",
+    "create": "API-Schlüssel erstellen",
+    "edit": "API-Schlüssel bearbeiten",
+    "load_failed": "API-Schlüssel konnten nicht geladen werden.",
+    "empty_title": "Noch keine API-Schlüssel",
+    "empty_description": "Erstelle einen API-Schlüssel, um Sink in deine eigenen Tools und Apps zu integrieren.",
+    "copy_success": "API-Schlüssel kopiert",
+    "never_used": "Nie verwendet",
+    "never_expires": "Niemals",
+    "create_success": "API-Schlüssel erstellt",
+    "create_failed": "API-Schlüssel konnte nicht erstellt werden",
+    "update_success": "API-Schlüssel aktualisiert",
+    "update_failed": "API-Schlüssel konnte nicht aktualisiert werden",
+    "revoke_success": "API-Schlüssel widerrufen",
+    "revoke_failed": "API-Schlüssel konnte nicht widerrufen werden",
+    "delete_success": "API-Schlüssel gelöscht",
+    "delete_failed": "API-Schlüssel konnte nicht gelöscht werden",
+    "table": {
+      "name": "Name",
+      "token": "Schlüssel",
+      "scopes": "Berechtigungen",
+      "status": "Status",
+      "created_at": "Erstellt am",
+      "last_used_at": "Zuletzt verwendet",
+      "expires_at": "Läuft ab am"
+    },
+    "status": {
+      "active": "Aktiv",
+      "revoked": "Widerrufen",
+      "expired": "Abgelaufen"
+    },
+    "scopes": {
+      "links_read": "Links lesen",
+      "links_write": "Links schreiben"
+    },
+    "form": {
+      "name": "Name",
+      "name_placeholder": "z. B. CI-Integration",
+      "name_required": "Name ist erforderlich",
+      "scopes": "Berechtigungen",
+      "scopes_description": "Lesen erlaubt das Abfragen und Auflisten von Links. Schreiben erlaubt zusätzlich das Erstellen, Bearbeiten und Löschen von Links.",
+      "expiration": "Ablauf",
+      "expiration_description": "Der Schlüssel funktioniert nach Ablauf nicht mehr. Leer lassen für kein Ablaufdatum.",
+      "clear_expiration": "Ablauf entfernen",
+      "pick_date": "Datum auswählen"
+    },
+    "token": {
+      "title": "API-Schlüssel erstellt",
+      "description": "Kopiere deinen API-Schlüssel jetzt und bewahre ihn sicher auf.",
+      "warning": "Aus Sicherheitsgründen wird der vollständige Schlüssel nur einmal angezeigt und kann nicht wiederhergestellt werden.",
+      "copy": "Kopieren",
+      "copied": "Kopiert",
+      "done": "Fertig"
+    },
+    "dialogs": {
+      "revoke": {
+        "title": "{name} widerrufen?",
+        "description": "Anfragen mit diesem Schlüssel funktionieren sofort nicht mehr.",
+        "action": "Schlüssel widerrufen"
+      },
+      "delete": {
+        "title": "{name} löschen?",
+        "description": "Dies löscht den Schlüsseldatensatz dauerhaft und kann nicht rückgängig gemacht werden.",
+        "action": "Schlüssel löschen"
+      }
+    }
+  }
+}

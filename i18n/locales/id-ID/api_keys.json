@@ -1,0 +1,70 @@
+{
+  "api_keys": {
+    "group_title": "Kunci API",
+    "create": "Buat Kunci API",
+    "edit": "Edit Kunci API",
+    "load_failed": "Gagal memuat kunci API.",
+    "empty_title": "Belum ada kunci API",
+    "empty_description": "Buat kunci API untuk mengintegrasikan Sink dengan alat dan aplikasi Anda sendiri.",
+    "copy_success": "Kunci API disalin",
+    "never_used": "Belum pernah digunakan",
+    "never_expires": "Tidak pernah",
+    "create_success": "Kunci API dibuat",
+    "create_failed": "Gagal membuat kunci API",
+    "update_success": "Kunci API diperbarui",
+    "update_failed": "Gagal memperbarui kunci API",
+    "revoke_success": "Kunci API dicabut",
+    "revoke_failed": "Gagal mencabut kunci API",
+    "delete_success": "Kunci API dihapus",
+    "delete_failed": "Gagal menghapus kunci API",
+    "table": {
+      "name": "Nama",
+      "token": "Kunci",
+      "scopes": "Cakupan",
+      "status": "Status",
+      "created_at": "Dibuat Pada",
+      "last_used_at": "Terakhir Digunakan",
+      "expires_at": "Kedaluwarsa Pada"
+    },
+    "status": {
+      "active": "Aktif",
+      "revoked": "Dicabut",
+      "expired": "Kedaluwarsa"
+    },
+    "scopes": {
+      "links_read": "Baca tautan",
+      "links_write": "Tulis tautan"
+    },
+    "form": {
+      "name": "Nama",
+      "name_placeholder": "mis. Integrasi CI",
+      "name_required": "Nama wajib diisi",
+      "scopes": "Cakupan",
+      "scopes_description": "Baca memungkinkan query dan daftar tautan. Tulis juga memungkinkan buat, edit, dan hapus tautan.",
+      "expiration": "Kedaluwarsa",
+      "expiration_description": "Kunci berhenti bekerja setelah kedaluwarsa. Biarkan kosong untuk tanpa kedaluwarsa.",
+      "clear_expiration": "Hapus kedaluwarsa",
+      "pick_date": "Pilih tanggal"
+    },
+    "token": {
+      "title": "Kunci API dibuat",
+      "description": "Salin kunci API Anda sekarang dan simpan di tempat yang aman.",
+      "warning": "Demi alasan keamanan, kunci lengkap hanya ditampilkan sekali dan tidak dapat dipulihkan.",
+      "copy": "Salin",
+      "copied": "Disalin",
+      "done": "Selesai"
+    },
+    "dialogs": {
+      "revoke": {
+        "title": "Cabut {name}?",
+        "description": "Permintaan yang dibuat dengan kunci ini akan langsung berhenti bekerja.",
+        "action": "Cabut kunci"
+      },
+      "delete": {
+        "title": "Hapus {name}?",
+        "description": "Ini menghapus permanen catatan kunci dan tidak dapat dibatalkan.",
+        "action": "Hapus kunci"
+      }
+    }
+  }
+}

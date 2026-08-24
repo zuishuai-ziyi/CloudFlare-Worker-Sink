@@ -25,6 +25,8 @@ Authorization: Bearer YOUR_SITE_TOKEN
 
 (`Bearer` means “here is the token”.) It must match `NUXT_SITE_TOKEN` exactly (at least 8 characters). With [Cloudflare Access](/configuration/cloudflare-access) enabled, browsers can also authenticate with a verified Access login.
 
+API Keys (`Authorization: Bearer sk_...`) are also accepted, but only on a limited set of endpoints. See [API Keys](/features/api-keys) for scopes, the allowlist, and management endpoints.
+
 ## CORS
 
 Optional. Set `NUXT_API_CORS=true` at build time to allow browser apps on other sites to call `/api/**`. Login is still required. See [configuration](/configuration/#optional).
@@ -53,4 +55,5 @@ Use the OpenAPI UI for full request/response details.
 | Storage setup | `/api/link/migration/status`, `/api/link/migration/run` — [storage setup](/storage/kv-to-d1) |
 | AI            | `/api/link/ai`, `/api/link/og-ai` — [Workers AI](/features/ai)                               |
 | Analytics     | `/api/stats/**`, `/api/logs/**` — [Analytics](/features/analytics)                           |
+| API Keys      | `/api/api-key/create`, `edit`, `revoke`, `delete`, `list` — [API Keys](/features/api-keys)   |
 | Utilities     | `/api/verify`, `/api/location`, `/api/upload/image`, `/api/backup`                           |

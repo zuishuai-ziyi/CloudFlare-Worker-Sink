@@ -1,0 +1,70 @@
+{
+  "api_keys": {
+    "group_title": "API Keys",
+    "create": "Create API Key",
+    "edit": "Edit API Key",
+    "load_failed": "Failed to load API keys.",
+    "empty_title": "No API keys yet",
+    "empty_description": "Create an API key to integrate Sink with your own tools and apps.",
+    "copy_success": "API key copied",
+    "never_used": "Never used",
+    "never_expires": "Never",
+    "create_success": "API key created",
+    "create_failed": "Failed to create API key",
+    "update_success": "API key updated",
+    "update_failed": "Failed to update API key",
+    "revoke_success": "API key revoked",
+    "revoke_failed": "Failed to revoke API key",
+    "delete_success": "API key deleted",
+    "delete_failed": "Failed to delete API key",
+    "table": {
+      "name": "Name",
+      "token": "Key",
+      "scopes": "Scopes",
+      "status": "Status",
+      "created_at": "Created At",
+      "last_used_at": "Last Used At",
+      "expires_at": "Expires At"
+    },
+    "status": {
+      "active": "Active",
+      "revoked": "Revoked",
+      "expired": "Expired"
+    },
+    "scopes": {
+      "links_read": "Read links",
+      "links_write": "Write links"
+    },
+    "form": {
+      "name": "Name",
+      "name_placeholder": "e.g. CI integration",
+      "name_required": "Name is required",
+      "scopes": "Scopes",
+      "scopes_description": "Read allows querying and listing links. Write also allows creating, editing, and deleting links.",
+      "expiration": "Expiration",
+      "expiration_description": "The key stops working after it expires. Leave empty for no expiration.",
+      "clear_expiration": "Clear expiration",
+      "pick_date": "Pick a date"
+    },
+    "token": {
+      "title": "API key created",
+      "description": "Copy your API key now and store it somewhere safe.",
+      "warning": "For security reasons, the full key is shown only once and cannot be recovered.",
+      "copy": "Copy",
+      "copied": "Copied",
+      "done": "Done"
+    },
+    "dialogs": {
+      "revoke": {
+        "title": "Revoke {name}?",
+        "description": "Requests made with this key will immediately stop working.",
+        "action": "Revoke key"
+      },
+      "delete": {
+        "title": "Delete {name}?",
+        "description": "This permanently deletes the key record and cannot be undone.",
+        "action": "Delete key"
+      }
+    }
+  }
+}

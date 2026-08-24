@@ -1,0 +1,70 @@
+{
+  "api_keys": {
+    "group_title": "API 金鑰",
+    "create": "建立 API 金鑰",
+    "edit": "編輯 API 金鑰",
+    "load_failed": "載入 API 金鑰失敗。",
+    "empty_title": "尚無 API 金鑰",
+    "empty_description": "建立 API 金鑰，將 Sink 整合到你自己的工具與應用程式中。",
+    "copy_success": "API 金鑰已複製",
+    "never_used": "從未使用",
+    "never_expires": "永不過期",
+    "create_success": "API 金鑰已建立",
+    "create_failed": "建立 API 金鑰失敗",
+    "update_success": "API 金鑰已更新",
+    "update_failed": "更新 API 金鑰失敗",
+    "revoke_success": "API 金鑰已撤銷",
+    "revoke_failed": "撤銷 API 金鑰失敗",
+    "delete_success": "API 金鑰已刪除",
+    "delete_failed": "刪除 API 金鑰失敗",
+    "table": {
+      "name": "名稱",
+      "token": "金鑰",
+      "scopes": "權限",
+      "status": "狀態",
+      "created_at": "建立時間",
+      "last_used_at": "最後使用",
+      "expires_at": "過期時間"
+    },
+    "status": {
+      "active": "啟用",
+      "revoked": "已撤銷",
+      "expired": "已過期"
+    },
+    "scopes": {
+      "links_read": "讀取連結",
+      "links_write": "寫入連結"
+    },
+    "form": {
+      "name": "名稱",
+      "name_placeholder": "例如：CI 整合",
+      "name_required": "請輸入名稱",
+      "scopes": "權限",
+      "scopes_description": "讀取權限允許查詢與列出連結。寫入權限額外允許建立、編輯與刪除連結。",
+      "expiration": "過期時間",
+      "expiration_description": "金鑰在過期後將停止使用。留空表示永不過期。",
+      "clear_expiration": "清除過期時間",
+      "pick_date": "選擇日期"
+    },
+    "token": {
+      "title": "API 金鑰已建立",
+      "description": "請立即複製你的 API 金鑰，並妥善保存。",
+      "warning": "基於安全考量，完整金鑰僅顯示一次，無法再次查看。",
+      "copy": "複製",
+      "copied": "已複製",
+      "done": "完成"
+    },
+    "dialogs": {
+      "revoke": {
+        "title": "撤銷 {name}？",
+        "description": "使用此金鑰發出的請求將立即停止運作。",
+        "action": "撤銷金鑰"
+      },
+      "delete": {
+        "title": "刪除 {name}？",
+        "description": "這將永久刪除該金鑰紀錄，且無法復原。",
+        "action": "刪除金鑰"
+      }
+    }
+  }
+}

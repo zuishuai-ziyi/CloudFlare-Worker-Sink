@@ -81,3 +81,18 @@ export const linkMigrationRuns = sqliteTable('link_migration_runs', {
     sql`${table.id} desc`,
   ),
 ])
+
+export const apiKeys = sqliteTable('api_keys', {
+  id: text().primaryKey(),
+  name: text().notNull(),
+  tokenHash: text('token_hash').notNull(),
+  tokenPrefix: text('token_prefix').notNull(),
+  scopes: text({ mode: 'json' }).$type<string[]>().notNull(),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
+  lastUsedAt: integer('last_used_at'),
+  expiresAt: integer('expires_at'),
+  revokedAt: integer('revoked_at'),
+}, table => [
+  index('api_keys_token_hash_idx').on(table.tokenHash),
+])

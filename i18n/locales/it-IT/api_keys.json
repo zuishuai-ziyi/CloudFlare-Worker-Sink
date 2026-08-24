@@ -1,0 +1,70 @@
+{
+  "api_keys": {
+    "group_title": "Chiavi API",
+    "create": "Crea chiave API",
+    "edit": "Modifica chiave API",
+    "load_failed": "Impossibile caricare le chiavi API.",
+    "empty_title": "Nessuna chiave API",
+    "empty_description": "Crea una chiave API per integrare Sink con i tuoi strumenti e le tue app.",
+    "copy_success": "Chiave API copiata",
+    "never_used": "Mai usata",
+    "never_expires": "Nessuna scadenza",
+    "create_success": "Chiave API creata",
+    "create_failed": "Impossibile creare la chiave API",
+    "update_success": "Chiave API aggiornata",
+    "update_failed": "Impossibile aggiornare la chiave API",
+    "revoke_success": "Chiave API revocata",
+    "revoke_failed": "Impossibile revocare la chiave API",
+    "delete_success": "Chiave API eliminata",
+    "delete_failed": "Impossibile eliminare la chiave API",
+    "table": {
+      "name": "Nome",
+      "token": "Chiave",
+      "scopes": "Ambiti",
+      "status": "Stato",
+      "created_at": "Creata il",
+      "last_used_at": "Ultimo utilizzo",
+      "expires_at": "Scade il"
+    },
+    "status": {
+      "active": "Attiva",
+      "revoked": "Revocata",
+      "expired": "Scaduta"
+    },
+    "scopes": {
+      "links_read": "Leggi i link",
+      "links_write": "Scrivi i link"
+    },
+    "form": {
+      "name": "Nome",
+      "name_placeholder": "es. Integrazione CI",
+      "name_required": "Il nome è obbligatorio",
+      "scopes": "Ambiti",
+      "scopes_description": "Lettura permette di interrogare ed elencare i link. Scrittura permette anche di creare, modificare ed eliminare i link.",
+      "expiration": "Scadenza",
+      "expiration_description": "La chiave smette di funzionare dopo la scadenza. Lascia vuoto per nessuna scadenza.",
+      "clear_expiration": "Rimuovi scadenza",
+      "pick_date": "Scegli una data"
+    },
+    "token": {
+      "title": "Chiave API creata",
+      "description": "Copia subito la tua chiave API e conservala in un luogo sicuro.",
+      "warning": "Per motivi di sicurezza, la chiave completa viene mostrata solo una volta e non può essere recuperata.",
+      "copy": "Copia",
+      "copied": "Copiata",
+      "done": "Fatto"
+    },
+    "dialogs": {
+      "revoke": {
+        "title": "Revocare {name}?",
+        "description": "Le richieste effettuate con questa chiave smetteranno immediatamente di funzionare.",
+        "action": "Revoca chiave"
+      },
+      "delete": {
+        "title": "Eliminare {name}?",
+        "description": "Questo elimina definitivamente il record della chiave e non può essere annullato.",
+        "action": "Elimina chiave"
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@ import { env, exports } from 'cloudflare:workers'
 import { and, eq, ne } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/d1'
 import { expect } from 'vitest'
-import { domains, linkMigrationRuns, links, linkTags, linkTombstones } from '../server/database/schema'
+import { apiKeys, domains, linkMigrationRuns, links, linkTags, linkTombstones } from '../server/database/schema'
 import { LINK_PASSWORD_HASH_PREFIX, LINK_PASSWORD_MASK_PREFIX } from '../shared/utils/link-password'
 
 export const db = drizzle(env.DB)
@@ -95,6 +95,10 @@ export async function deleteStoredLink(slug: string, domain = '') {
 
 export async function deleteStoredLinks(slugs: string[]) {
   await Promise.all(slugs.map(slug => deleteStoredLink(slug)))
+}
+
+export async function clearApiKeys() {
+  await db.delete(apiKeys)
 }
 
 export async function clearLinkMigrationState() {

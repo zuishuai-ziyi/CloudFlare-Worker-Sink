@@ -1,0 +1,70 @@
+{
+  "api_keys": {
+    "group_title": "Clés API",
+    "create": "Créer une clé API",
+    "edit": "Modifier la clé API",
+    "load_failed": "Échec du chargement des clés API.",
+    "empty_title": "Aucune clé API pour le moment",
+    "empty_description": "Créez une clé API pour intégrer Sink à vos propres outils et applications.",
+    "copy_success": "Clé API copiée",
+    "never_used": "Jamais utilisée",
+    "never_expires": "Sans expiration",
+    "create_success": "Clé API créée",
+    "create_failed": "Échec de la création de la clé API",
+    "update_success": "Clé API mise à jour",
+    "update_failed": "Échec de la mise à jour de la clé API",
+    "revoke_success": "Clé API révoquée",
+    "revoke_failed": "Échec de la révocation de la clé API",
+    "delete_success": "Clé API supprimée",
+    "delete_failed": "Échec de la suppression de la clé API",
+    "table": {
+      "name": "Nom",
+      "token": "Clé",
+      "scopes": "Portées",
+      "status": "Statut",
+      "created_at": "Créée le",
+      "last_used_at": "Dernière utilisation",
+      "expires_at": "Expire le"
+    },
+    "status": {
+      "active": "Active",
+      "revoked": "Révoquée",
+      "expired": "Expirée"
+    },
+    "scopes": {
+      "links_read": "Lire les liens",
+      "links_write": "Écrire les liens"
+    },
+    "form": {
+      "name": "Nom",
+      "name_placeholder": "ex. Intégration CI",
+      "name_required": "Le nom est requis",
+      "scopes": "Portées",
+      "scopes_description": "Lecture permet de consulter et de lister les liens. Écriture permet également de créer, modifier et supprimer des liens.",
+      "expiration": "Expiration",
+      "expiration_description": "La clé cessera de fonctionner après expiration. Laissez vide pour aucune expiration.",
+      "clear_expiration": "Effacer l'expiration",
+      "pick_date": "Choisir une date"
+    },
+    "token": {
+      "title": "Clé API créée",
+      "description": "Copiez votre clé API maintenant et conservez-la en lieu sûr.",
+      "warning": "Pour des raisons de sécurité, la clé complète n'est affichée qu'une seule fois et ne peut pas être récupérée.",
+      "copy": "Copier",
+      "copied": "Copiée",
+      "done": "Terminé"
+    },
+    "dialogs": {
+      "revoke": {
+        "title": "Révoquer {name} ?",
+        "description": "Les requêtes effectuées avec cette clé cesseront immédiatement de fonctionner.",
+        "action": "Révoquer la clé"
+      },
+      "delete": {
+        "title": "Supprimer {name} ?",
+        "description": "Ceci supprime définitivement l'enregistrement de la clé et est irréversible.",
+        "action": "Supprimer la clé"
+      }
+    }
+  }
+}

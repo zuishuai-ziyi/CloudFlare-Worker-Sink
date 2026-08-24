@@ -21,6 +21,7 @@ export default eventHandler((event) => {
       authMethod !== 'site-token'
       && authMethod !== 'access-user'
       && authMethod !== 'access-service'
+      && authMethod !== 'api-key'
     )
     || typeof userID !== 'string'
     || !userID

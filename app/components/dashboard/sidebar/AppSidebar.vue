@@ -34,6 +34,12 @@ const platformItems = computed<NavItem[]>(() => [
     icon: DASHBOARD_ROUTES.check.icon,
     isActive: isActive('check'),
   },
+  {
+    title: 'nav.api_keys',
+    url: '/dashboard/api-keys',
+    icon: DASHBOARD_ROUTES.apiKeys.icon,
+    isActive: isActive('apiKeys'),
+  },
 ])
 
 const settingsItems = computed<NavItem[]>(() => [

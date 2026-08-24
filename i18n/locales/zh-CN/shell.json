@@ -30,7 +30,8 @@
     "realtime": "实时",
     "check": "检测",
     "migrate": "导入/导出",
-    "domains": "域名"
+    "domains": "域名",
+    "api_keys": "API 密钥"
   },
   "sidebar": {
     "subtitle": "短链接服务",

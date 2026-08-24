@@ -30,7 +30,8 @@
     "realtime": "Thời gian thực",
     "check": "Check",
     "migrate": "Nhập/Xuất",
-    "domains": "Tên miền"
+    "domains": "Tên miền",
+    "api_keys": "Khóa API"
   },
   "sidebar": {
     "subtitle": "Rút gọn liên kết",

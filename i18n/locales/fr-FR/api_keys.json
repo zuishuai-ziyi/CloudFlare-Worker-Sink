@@ -1,6 +1,6 @@
 {
   "api_keys": {
-    "group_title": "Clés API",
+    "group_title": "Plateforme ouverte",
     "create": "Créer une clé API",
     "edit": "Modifier la clé API",
     "load_failed": "Échec du chargement des clés API.",
@@ -13,8 +13,8 @@
     "create_failed": "Échec de la création de la clé API",
     "update_success": "Clé API mise à jour",
     "update_failed": "Échec de la mise à jour de la clé API",
-    "revoke_success": "Clé API révoquée",
-    "revoke_failed": "Échec de la révocation de la clé API",
+    "rotate_success": "Clé API régénérée",
+    "rotate_failed": "Échec de la régénération de la clé API",
     "delete_success": "Clé API supprimée",
     "delete_failed": "Échec de la suppression de la clé API",
     "table": {
@@ -47,7 +47,7 @@
       "pick_date": "Choisir une date"
     },
     "token": {
-      "title": "Clé API créée",
+      "title": "Enregistrez votre clé API",
       "description": "Copiez votre clé API maintenant et conservez-la en lieu sûr.",
       "warning": "Pour des raisons de sécurité, la clé complète n'est affichée qu'une seule fois et ne peut pas être récupérée.",
       "copy": "Copier",
@@ -55,10 +55,10 @@
       "done": "Terminé"
     },
     "dialogs": {
-      "revoke": {
-        "title": "Révoquer {name} ?",
-        "description": "Les requêtes effectuées avec cette clé cesseront immédiatement de fonctionner.",
-        "action": "Révoquer la clé"
+      "rotate": {
+        "title": "Régénérer la clé API",
+        "description": "Générez un nouveau secret pour « {name} ». Le secret actuel cessera immédiatement de fonctionner. Assurez-vous de pouvoir enregistrer le nouveau secret avant de continuer.",
+        "action": "Régénérer la clé"
       },
       "delete": {
         "title": "Supprimer {name} ?",

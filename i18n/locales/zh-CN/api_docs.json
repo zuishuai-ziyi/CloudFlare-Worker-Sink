@@ -1,0 +1,47 @@
+{
+  "api_docs": {
+    "description": "通过 Sink 开放平台 API 以编程方式管理短链接。所有端点接受 JSON，并需要来自 API 密钥页签发的 Bearer 令牌。",
+    "base_url": {
+      "title": "基础地址",
+      "description": "所有端点都从你的 Sink 实例提供服务。请将下方域名替换为该实例实际部署的域名。",
+      "placeholder": "https://your-domain.com"
+    },
+    "auth": {
+      "title": "身份认证",
+      "description": "在 Authorization 请求头中以 Bearer 方式发送你的 API 密钥。密钥可在 API 密钥页生成、配置权限与撤销。",
+      "example_label": "示例请求",
+      "keys_hint": "请到 API 密钥页生成密钥。"
+    },
+    "scopes": {
+      "title": "权限范围",
+      "description": "每个密钥可被授予一个或两个权限。当密钥缺少所需权限时，请求将被拒绝并返回 401。",
+      "links_read": "读取链接",
+      "links_write": "写入链接"
+    },
+    "endpoints": {
+      "title": "端点",
+      "description": "下表中的路由接受 API 密钥访问。其他 /api 下的端点仅供仪表盘会话使用。",
+      "method_label": "方法",
+      "scope_label": "所需权限",
+      "verify": "校验当前 Bearer 令牌并返回身份信息。",
+      "link_query": "通过 slug 与域名查询单个短链接。",
+      "link_list": "列出短链接，支持分页、过滤与排序。",
+      "link_search": "按关键词、精确 URL、标签、状态或域名搜索链接。",
+      "link_count": "按关键词、URL、标签、状态或域名过滤统计链接数量。",
+      "link_tags": "列出当前所有短链接正在使用的标签。",
+      "link_create": "在已注册的域名上创建一条新的短链接。",
+      "link_upsert": "创建一条新的短链接，若 slug 已存在则返回已存在的记录。",
+      "link_edit": "原地更新一条已存在的短链接。domain 字段为只读。",
+      "link_delete": "通过 slug 与域名删除一条短链接。"
+    },
+    "interactive": {
+      "title": "交互式文档",
+      "description": "想端到端调试一次请求？Scalar UI 支持浏览完整接口描述、用你的 Bearer 令牌直接发送请求，并复制自动生成的代码片段。",
+      "open": "打开 Scalar"
+    },
+    "example": {
+      "request_label": "请求体",
+      "response_label": "响应"
+    }
+  }
+}

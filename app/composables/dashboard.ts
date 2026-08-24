@@ -1,5 +1,5 @@
 import type { Component } from 'vue'
-import { Activity, ChartArea, FolderSync, Globe, KeyRound, Link, ScanSearch } from '@lucide/vue'
+import { Activity, BookOpen, ChartArea, FolderSync, Globe, KeyRound, Link, ScanSearch } from '@lucide/vue'
 import { computed } from 'vue'
 import { useRoute } from '#imports'
 
@@ -49,6 +49,11 @@ export const DASHBOARD_ROUTES = {
     paths: ['/dashboard/api-keys'],
     titleKey: 'nav.api_keys',
     icon: KeyRound,
+  },
+  apiDocs: {
+    paths: ['/dashboard/api-docs'],
+    titleKey: 'nav.api_docs',
+    icon: BookOpen,
   },
 } as const satisfies Record<string, DashboardRouteConfig>
 

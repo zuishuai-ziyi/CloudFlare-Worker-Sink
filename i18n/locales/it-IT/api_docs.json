@@ -1,0 +1,47 @@
+{
+  "api_docs": {
+    "description": "Gestisci programmaticamente i link brevi tramite l'API della piattaforma aperta di Sink. Tutti gli endpoint accettano JSON e richiedono un token Bearer emesso dalla pagina delle chiavi API.",
+    "base_url": {
+      "title": "URL di base",
+      "description": "Tutti gli endpoint sono serviti dalla tua istanza Sink. Sostituisci il dominio qui sotto con quello su cui è distribuita questa istanza.",
+      "placeholder": "https://your-domain.com"
+    },
+    "auth": {
+      "title": "Autenticazione",
+      "description": "Invia la tua chiave API come token Bearer nell'intestazione Authorization. Le chiavi vengono create, assegnate e revocate dalla pagina delle chiavi API.",
+      "example_label": "Richiesta di esempio",
+      "keys_hint": "Genera una chiave nella pagina delle chiavi API."
+    },
+    "scopes": {
+      "title": "Ambiti",
+      "description": "Ogni chiave riceve uno o entrambi gli ambiti. Le richieste vengono rifiutate con 401 quando la chiave non dispone dell'ambito richiesto.",
+      "links_read": "Leggi i link",
+      "links_write": "Scrivi i link"
+    },
+    "endpoints": {
+      "title": "Endpoint",
+      "description": "Le route nella tabella seguente accettano le chiavi API. Gli altri endpoint sotto /api sono riservati alla sessione del pannello.",
+      "method_label": "Metodo",
+      "scope_label": "Ambito richiesto",
+      "verify": "Verifica il token Bearer corrente e restituisce le informazioni sull'identità.",
+      "link_query": "Recupera un singolo link breve tramite slug e dominio.",
+      "link_list": "Elenca i link brevi con paginazione, filtri e ordinamento.",
+      "link_search": "Cerca link tramite parola chiave, URL esatto, tag, stato o dominio.",
+      "link_count": "Conta i link che corrispondono ai filtri parola chiave, URL, tag, stato o dominio.",
+      "link_tags": "Elenca tutti i tag attualmente utilizzati dai link memorizzati.",
+      "link_create": "Crea un nuovo link breve su un dominio registrato.",
+      "link_upsert": "Crea un nuovo link breve oppure restituisce quello esistente quando lo slug è già presente.",
+      "link_edit": "Aggiorna sul posto un link breve esistente. Il campo domain è di sola lettura.",
+      "link_delete": "Elimina un link breve tramite slug e dominio."
+    },
+    "interactive": {
+      "title": "Documentazione interattiva",
+      "description": "Hai bisogno di provare una richiesta end-to-end? L'interfaccia Scalar ti permette di esplorare lo schema completo, inviare richieste reali con il tuo token Bearer e copiare frammenti generati automaticamente.",
+      "open": "Apri Scalar"
+    },
+    "example": {
+      "request_label": "Corpo della richiesta",
+      "response_label": "Risposta"
+    }
+  }
+}

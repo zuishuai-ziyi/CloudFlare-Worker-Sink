@@ -57,7 +57,7 @@ function updateOpen(value: boolean) {
           {{ description || title }}
         </DialogDescription>
       </DialogHeader>
-      <div class="overflow-y-auto overscroll-contain">
+      <div class="overflow-x-hidden overflow-y-auto overscroll-contain">
         <slot />
       </div>
       <DialogFooter v-if="slots.footer">
@@ -86,8 +86,8 @@ function updateOpen(value: boolean) {
       </DrawerHeader>
       <div
         class="
-          flex min-h-0 flex-1 flex-col items-center overflow-y-auto
-          overscroll-contain px-4
+          flex min-h-0 flex-1 flex-col items-center overflow-x-hidden
+          overflow-y-auto overscroll-contain px-4
         "
       >
         <slot />

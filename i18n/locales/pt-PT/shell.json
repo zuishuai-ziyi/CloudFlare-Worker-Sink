@@ -31,7 +31,8 @@
     "check": "Check",
     "migrate": "Importar/Exportar",
     "domains": "Domínios",
-    "api_keys": "Chaves de API"
+    "api_keys": "Plataforma Aberta",
+    "api_docs": "Documentação da API"
   },
   "sidebar": {
     "subtitle": "Encurtador de links",

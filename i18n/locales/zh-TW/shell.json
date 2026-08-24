@@ -31,7 +31,8 @@
     "check": "檢查",
     "migrate": "匯入/匯出",
     "domains": "網域",
-    "api_keys": "API 金鑰"
+    "api_keys": "開放平台",
+    "api_docs": "API 文件"
   },
   "sidebar": {
     "subtitle": "縮網址服務",

@@ -2,9 +2,9 @@
 import type { DashboardApiKey, DashboardApiKeyListResponse } from '@/types/api-keys'
 import {
   AlertCircle,
-  Ban,
   Ellipsis,
   KeyRound,
+  RefreshCw,
   SquarePen,
   Trash2,
 } from '@lucide/vue'
@@ -43,8 +43,8 @@ const { t, locale } = useI18n()
 
 const editingKey = shallowRef<DashboardApiKey | null>(null)
 const editOpen = shallowRef(false)
-const revokeTarget = shallowRef<DashboardApiKey | null>(null)
-const revokeOpen = shallowRef(false)
+const rotateTarget = shallowRef<DashboardApiKey | null>(null)
+const rotateOpen = shallowRef(false)
 const deleteTarget = shallowRef<DashboardApiKey | null>(null)
 const deleteOpen = shallowRef(false)
 
@@ -53,9 +53,9 @@ function openEdit(key: DashboardApiKey) {
   editOpen.value = true
 }
 
-function openRevoke(key: DashboardApiKey) {
-  revokeTarget.value = key
-  revokeOpen.value = true
+function openRotate(key: DashboardApiKey) {
+  rotateTarget.value = key
+  rotateOpen.value = true
 }
 
 function openDelete(key: DashboardApiKey) {
@@ -231,10 +231,10 @@ function handleChanged() {
                   <DropdownMenuItem
                     v-if="key.revokedAt === null"
                     variant="destructive"
-                    @select="openRevoke(key)"
+                    @select="openRotate(key)"
                   >
-                    <Ban aria-hidden="true" />
-                    {{ $t('api_keys.dialogs.revoke.action') }}
+                    <RefreshCw aria-hidden="true" />
+                    {{ $t('api_keys.dialogs.rotate.action') }}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem variant="destructive" @select="openDelete(key)">
@@ -255,10 +255,10 @@ function handleChanged() {
       :api-key="editingKey"
       @changed="handleChanged"
     />
-    <DashboardApiKeysRevokeDialog
-      v-model:open="revokeOpen"
-      :api-key="revokeTarget"
-      @changed="handleChanged"
+    <DashboardApiKeysRotateDialog
+      v-model:open="rotateOpen"
+      :api-key="rotateTarget"
+      @rotated="handleChanged"
     />
     <DashboardApiKeysDeleteDialog
       v-model:open="deleteOpen"

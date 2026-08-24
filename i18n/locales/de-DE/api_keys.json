@@ -1,6 +1,6 @@
 {
   "api_keys": {
-    "group_title": "API-Schlüssel",
+    "group_title": "Offene Plattform",
     "create": "API-Schlüssel erstellen",
     "edit": "API-Schlüssel bearbeiten",
     "load_failed": "API-Schlüssel konnten nicht geladen werden.",
@@ -13,8 +13,8 @@
     "create_failed": "API-Schlüssel konnte nicht erstellt werden",
     "update_success": "API-Schlüssel aktualisiert",
     "update_failed": "API-Schlüssel konnte nicht aktualisiert werden",
-    "revoke_success": "API-Schlüssel widerrufen",
-    "revoke_failed": "API-Schlüssel konnte nicht widerrufen werden",
+    "rotate_success": "API-Schlüssel rotiert",
+    "rotate_failed": "API-Schlüssel konnte nicht rotiert werden",
     "delete_success": "API-Schlüssel gelöscht",
     "delete_failed": "API-Schlüssel konnte nicht gelöscht werden",
     "table": {
@@ -47,7 +47,7 @@
       "pick_date": "Datum auswählen"
     },
     "token": {
-      "title": "API-Schlüssel erstellt",
+      "title": "Speichere deinen API-Schlüssel",
       "description": "Kopiere deinen API-Schlüssel jetzt und bewahre ihn sicher auf.",
       "warning": "Aus Sicherheitsgründen wird der vollständige Schlüssel nur einmal angezeigt und kann nicht wiederhergestellt werden.",
       "copy": "Kopieren",
@@ -55,10 +55,10 @@
       "done": "Fertig"
     },
     "dialogs": {
-      "revoke": {
-        "title": "{name} widerrufen?",
-        "description": "Anfragen mit diesem Schlüssel funktionieren sofort nicht mehr.",
-        "action": "Schlüssel widerrufen"
+      "rotate": {
+        "title": "API-Schlüssel rotieren",
+        "description": "Erzeuge ein neues Secret für „{name}\". Das aktuelle Secret wird sofort ungültig. Stelle sicher, dass du das neue Secret speichern kannst, bevor du fortfährst.",
+        "action": "Schlüssel rotieren"
       },
       "delete": {
         "title": "{name} löschen?",

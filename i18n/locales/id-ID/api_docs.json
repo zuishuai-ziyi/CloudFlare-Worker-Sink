@@ -1,0 +1,47 @@
+{
+  "api_docs": {
+    "description": "Kelola tautan pendek secara terprogram menggunakan API Platform Terbuka Sink. Semua endpoint menerima JSON dan memerlukan token Bearer yang diterbitkan dari halaman Kunci API.",
+    "base_url": {
+      "title": "URL Dasar",
+      "description": "Semua endpoint dilayani oleh instans Sink Anda. Ganti domain di bawah ini dengan domain tempat instans ini diterapkan.",
+      "placeholder": "https://your-domain.com"
+    },
+    "auth": {
+      "title": "Autentikasi",
+      "description": "Kirim kunci API Anda sebagai token Bearer di header Authorization. Kunci dibuat, diberi cakupan, dan dicabut dari halaman Kunci API.",
+      "example_label": "Contoh permintaan",
+      "keys_hint": "Buat kunci di halaman Kunci API."
+    },
+    "scopes": {
+      "title": "Cakupan",
+      "description": "Setiap kunci diberikan satu atau kedua cakupan. Permintaan ditolak dengan 401 ketika kunci tidak memiliki cakupan yang diperlukan.",
+      "links_read": "Baca tautan",
+      "links_write": "Tulis tautan"
+    },
+    "endpoints": {
+      "title": "Endpoint",
+      "description": "Rute dalam tabel di bawah ini menerima kunci API. Endpoint lain di bawah /api disediakan untuk sesi dasbor.",
+      "method_label": "Metode",
+      "scope_label": "Cakupan yang diperlukan",
+      "verify": "Memverifikasi token Bearer saat ini dan mengembalikan informasi identitas.",
+      "link_query": "Mencari satu tautan pendek berdasarkan slug dan domain.",
+      "link_list": "Mencantumkan tautan pendek dengan paginasi, filter, dan pengurutan.",
+      "link_search": "Mencari tautan berdasarkan kata kunci, URL persis, tag, status, atau domain.",
+      "link_count": "Menghitung tautan yang cocok dengan filter kata kunci, URL, tag, status, atau domain.",
+      "link_tags": "Mencantumkan semua tag yang saat ini digunakan oleh tautan tersimpan.",
+      "link_create": "Membuat tautan pendek baru pada domain terdaftar.",
+      "link_upsert": "Membuat tautan pendek baru atau mengembalikan yang sudah ada ketika slug sudah digunakan.",
+      "link_edit": "Memperbarui tautan pendek yang ada secara langsung. Kolom domain hanya-baca.",
+      "link_delete": "Menghapus tautan pendek berdasarkan slug dan domain."
+    },
+    "interactive": {
+      "title": "Dokumentasi interaktif",
+      "description": "Perlu mencoba permintaan secara menyeluruh? Antarmuka Scalar memungkinkan Anda menelusuri skema lengkap, mengirim permintaan langsung dengan token Bearer Anda, dan menyalin cuplikan yang dihasilkan.",
+      "open": "Buka Scalar"
+    },
+    "example": {
+      "request_label": "Badan permintaan",
+      "response_label": "Respons"
+    }
+  }
+}

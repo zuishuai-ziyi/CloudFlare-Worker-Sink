@@ -1,0 +1,47 @@
+{
+  "api_docs": {
+    "description": "Gérez vos liens courts par programmation grâce à l'API de la plateforme ouverte Sink. Tous les points de terminaison acceptent JSON et nécessitent un jeton Bearer émis depuis la page des clés API.",
+    "base_url": {
+      "title": "URL de base",
+      "description": "Tous les points de terminaison sont servis depuis votre instance Sink. Remplacez le domaine ci-dessous par celui sur lequel cette instance est déployée.",
+      "placeholder": "https://your-domain.com"
+    },
+    "auth": {
+      "title": "Authentification",
+      "description": "Envoyez votre clé API en tant que jeton Bearer dans l'en-tête Authorization. Les clés sont créées, scopées et révoquées depuis la page des clés API.",
+      "example_label": "Exemple de requête",
+      "keys_hint": "Générez une clé sur la page des clés API."
+    },
+    "scopes": {
+      "title": "Portées",
+      "description": "Chaque clé reçoit une ou deux portées. Les requêtes sont rejetées avec un 401 lorsque la clé ne dispose pas de la portée requise.",
+      "links_read": "Lire les liens",
+      "links_write": "Écrire les liens"
+    },
+    "endpoints": {
+      "title": "Points de terminaison",
+      "description": "Les routes du tableau ci-dessous acceptent les clés API. Les autres points de terminaison sous /api sont réservés à la session du tableau de bord.",
+      "method_label": "Méthode",
+      "scope_label": "Portée requise",
+      "verify": "Vérifie le jeton Bearer actuel et renvoie les informations d'identité.",
+      "link_query": "Recherche un seul lien court par slug et domaine.",
+      "link_list": "Liste les liens courts avec pagination, filtres et tri.",
+      "link_search": "Recherche des liens par mot-clé, URL exacte, étiquette, état ou domaine.",
+      "link_count": "Compte les liens correspondant à des filtres mot-clé, URL, étiquette, état ou domaine.",
+      "link_tags": "Liste toutes les étiquettes actuellement utilisées par les liens stockés.",
+      "link_create": "Crée un nouveau lien court sur un domaine enregistré.",
+      "link_upsert": "Crée un nouveau lien court ou renvoie celui déjà présent si le slug existe déjà.",
+      "link_edit": "Met à jour un lien court existant sur place. Le champ domain est en lecture seule.",
+      "link_delete": "Supprime un lien court par slug et domaine."
+    },
+    "interactive": {
+      "title": "Documentation interactive",
+      "description": "Besoin d'essayer une requête de bout en bout ? L'interface Scalar vous permet de parcourir le schéma complet, d'envoyer des requêtes en direct avec votre jeton Bearer et de copier des extraits générés.",
+      "open": "Ouvrir Scalar"
+    },
+    "example": {
+      "request_label": "Corps de la requête",
+      "response_label": "Réponse"
+    }
+  }
+}

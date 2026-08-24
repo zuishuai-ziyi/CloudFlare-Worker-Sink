@@ -1,6 +1,6 @@
 {
   "api_keys": {
-    "group_title": "API Keys",
+    "group_title": "Open Platform",
     "create": "Create API Key",
     "edit": "Edit API Key",
     "load_failed": "Failed to load API keys.",
@@ -13,8 +13,8 @@
     "create_failed": "Failed to create API key",
     "update_success": "API key updated",
     "update_failed": "Failed to update API key",
-    "revoke_success": "API key revoked",
-    "revoke_failed": "Failed to revoke API key",
+    "rotate_success": "API key rotated",
+    "rotate_failed": "Failed to rotate API key",
     "delete_success": "API key deleted",
     "delete_failed": "Failed to delete API key",
     "table": {
@@ -47,7 +47,7 @@
       "pick_date": "Pick a date"
     },
     "token": {
-      "title": "API key created",
+      "title": "Save your API key",
       "description": "Copy your API key now and store it somewhere safe.",
       "warning": "For security reasons, the full key is shown only once and cannot be recovered.",
       "copy": "Copy",
@@ -55,10 +55,10 @@
       "done": "Done"
     },
     "dialogs": {
-      "revoke": {
-        "title": "Revoke {name}?",
-        "description": "Requests made with this key will immediately stop working.",
-        "action": "Revoke key"
+      "rotate": {
+        "title": "Rotate API key",
+        "description": "Generate a new secret for \"{name}\". The current secret stops working immediately. Make sure you can store the new secret before continuing.",
+        "action": "Rotate key"
       },
       "delete": {
         "title": "Delete {name}?",

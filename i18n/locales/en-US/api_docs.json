@@ -1,0 +1,47 @@
+{
+  "api_docs": {
+    "description": "Programmatically manage short links using the Sink Open Platform API. All endpoints accept JSON and require a bearer token issued from the API Keys page.",
+    "base_url": {
+      "title": "Base URL",
+      "description": "All endpoints are served from your Sink instance. Replace the origin below with the domain where this instance is deployed.",
+      "placeholder": "https://your-domain.com"
+    },
+    "auth": {
+      "title": "Authentication",
+      "description": "Send your API key as a Bearer token in the Authorization header. Keys are minted, scoped, and revoked from the API Keys page.",
+      "example_label": "Example request",
+      "keys_hint": "Generate a key on the API Keys page."
+    },
+    "scopes": {
+      "title": "Scopes",
+      "description": "Each key is granted one or both scopes. Requests are rejected with 401 when the key lacks the required scope.",
+      "links_read": "Read links",
+      "links_write": "Write links"
+    },
+    "endpoints": {
+      "title": "Endpoints",
+      "description": "Routes in the table below accept API keys. Other endpoints under /api are reserved for the dashboard session.",
+      "method_label": "Method",
+      "scope_label": "Required scope",
+      "verify": "Verify the current bearer token and return identity information.",
+      "link_query": "Look up a single short link by slug and domain.",
+      "link_list": "List short links with pagination, filtering, and sorting.",
+      "link_search": "Search links by keyword, exact URL, tag, status, or domain.",
+      "link_count": "Count links matching keyword, URL, tag, status, or domain filters.",
+      "link_tags": "List every tag currently in use across stored links.",
+      "link_create": "Create a new short link on a registered domain.",
+      "link_upsert": "Create a new short link or return the existing one when the slug already exists.",
+      "link_edit": "Update an existing short link in place. The domain field is read-only.",
+      "link_delete": "Delete a short link by slug and domain."
+    },
+    "interactive": {
+      "title": "Interactive documentation",
+      "description": "Need to try a request end-to-end? The Scalar UI lets you browse the full schema, send live requests with your bearer token, and copy generated snippets.",
+      "open": "Open Scalar"
+    },
+    "example": {
+      "request_label": "Request body",
+      "response_label": "Response"
+    }
+  }
+}

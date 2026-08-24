@@ -1,0 +1,47 @@
+{
+  "api_docs": {
+    "description": "Faça a gestão programática dos seus links curtos através da API da Plataforma Aberta do Sink. Todos os endpoints aceitam JSON e requerem um token Bearer emitido na página de Chaves de API.",
+    "base_url": {
+      "title": "URL base",
+      "description": "Todos os endpoints são servidos pela sua instância do Sink. Substitua o domínio abaixo pelo domínio onde esta instância está implementada.",
+      "placeholder": "https://your-domain.com"
+    },
+    "auth": {
+      "title": "Autenticação",
+      "description": "Envie a sua chave de API como token Bearer no cabeçalho Authorization. As chaves são criadas, com permissões atribuídas e revogadas na página de Chaves de API.",
+      "example_label": "Pedido de exemplo",
+      "keys_hint": "Gere uma chave na página de Chaves de API."
+    },
+    "scopes": {
+      "title": "Permissões",
+      "description": "Cada chave recebe uma ou ambas as permissões. Os pedidos são rejeitados com 401 quando a chave não tem a permissão exigida.",
+      "links_read": "Ler links",
+      "links_write": "Escrever links"
+    },
+    "endpoints": {
+      "title": "Endpoints",
+      "description": "As rotas na tabela abaixo aceitam chaves de API. Os restantes endpoints sob /api são reservados à sessão do painel.",
+      "method_label": "Método",
+      "scope_label": "Permissão exigida",
+      "verify": "Verifica o token Bearer atual e devolve informação de identidade.",
+      "link_query": "Procura um único link curto pelo slug e domínio.",
+      "link_list": "Lista os links curtos com paginação, filtros e ordenação.",
+      "link_search": "Pesquisa links por palavra-chave, URL exata, etiqueta, estado ou domínio.",
+      "link_count": "Conta os links que correspondem aos filtros de palavra-chave, URL, etiqueta, estado ou domínio.",
+      "link_tags": "Lista todas as etiquetas atualmente usadas pelos links armazenados.",
+      "link_create": "Cria um novo link curto num domínio registado.",
+      "link_upsert": "Cria um novo link curto ou devolve o existente quando o slug já existe.",
+      "link_edit": "Atualiza um link curto existente no local. O campo domain é apenas de leitura.",
+      "link_delete": "Elimina um link curto pelo slug e domínio."
+    },
+    "interactive": {
+      "title": "Documentação interativa",
+      "description": "Precisa de experimentar um pedido de ponta a ponta? A interface Scalar permite-lhe percorrer o esquema completo, enviar pedidos em tempo real com o seu token Bearer e copiar snippets gerados.",
+      "open": "Abrir Scalar"
+    },
+    "example": {
+      "request_label": "Corpo do pedido",
+      "response_label": "Resposta"
+    }
+  }
+}

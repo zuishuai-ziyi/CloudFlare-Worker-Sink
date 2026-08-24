@@ -1,6 +1,6 @@
 {
   "api_keys": {
-    "group_title": "Chaves de API",
+    "group_title": "Plataforma Aberta",
     "create": "Criar chave de API",
     "edit": "Editar chave de API",
     "load_failed": "Falha ao carregar as chaves de API.",
@@ -13,8 +13,8 @@
     "create_failed": "Falha ao criar a chave de API",
     "update_success": "Chave de API atualizada",
     "update_failed": "Falha ao atualizar a chave de API",
-    "revoke_success": "Chave de API revogada",
-    "revoke_failed": "Falha ao revogar a chave de API",
+    "rotate_success": "Chave de API regenerada",
+    "rotate_failed": "Falha ao regenerar a chave de API",
     "delete_success": "Chave de API eliminada",
     "delete_failed": "Falha ao eliminar a chave de API",
     "table": {
@@ -47,7 +47,7 @@
       "pick_date": "Escolher uma data"
     },
     "token": {
-      "title": "Chave de API criada",
+      "title": "Guarde a sua chave de API",
       "description": "Copie agora a sua chave de API e guarde-a num local seguro.",
       "warning": "Por questões de segurança, a chave completa é mostrada apenas uma vez e não pode ser recuperada.",
       "copy": "Copiar",
@@ -55,10 +55,10 @@
       "done": "Concluído"
     },
     "dialogs": {
-      "revoke": {
-        "title": "Revogar {name}?",
-        "description": "Os pedidos feitos com esta chave deixarão de funcionar de imediato.",
-        "action": "Revogar chave"
+      "rotate": {
+        "title": "Regenerar chave de API",
+        "description": "Gere um novo segredo para \"{name}\". O segredo atual deixará de funcionar imediatamente. Confirme que consegue guardar o novo segredo antes de continuar.",
+        "action": "Regenerar chave"
       },
       "delete": {
         "title": "Eliminar {name}?",

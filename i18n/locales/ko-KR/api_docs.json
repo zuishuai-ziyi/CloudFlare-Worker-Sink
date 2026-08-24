@@ -1,0 +1,47 @@
+{
+  "api_docs": {
+    "description": "Sink 오픈 플랫폼 API를 통해 단축 링크를 프로그래밍 방식으로 관리하세요. 모든 엔드포인트는 JSON을 허용하며 API 키 페이지에서 발급된 토큰을 필요로 합니다.",
+    "base_url": {
+      "title": "기본 URL",
+      "description": "모든 엔드포인트는 Sink 인스턴스에서 제공됩니다. 아래 도메인을 이 인스턴스가 배포된 도메인으로 교체하세요.",
+      "placeholder": "https://your-domain.com"
+    },
+    "auth": {
+      "title": "인증",
+      "description": "API 키를 Authorization 헤더의 Bearer 토큰으로 전송하세요. 키는 API 키 페이지에서 발급, 권한 부여, 취소됩니다.",
+      "example_label": "요청 예시",
+      "keys_hint": "API 키 페이지에서 키를 생성하세요."
+    },
+    "scopes": {
+      "title": "권한",
+      "description": "각 키는 하나 또는 두 개의 권한을 부여받습니다. 필요한 권한이 없는 키의 요청은 401로 거부됩니다.",
+      "links_read": "링크 읽기",
+      "links_write": "링크 쓰기"
+    },
+    "endpoints": {
+      "title": "엔드포인트",
+      "description": "아래 표의 경로는 API 키 접근을 허용합니다. /api 아래의 다른 엔드포인트는 대시보드 세션 전용입니다.",
+      "method_label": "메서드",
+      "scope_label": "필요한 권한",
+      "verify": "현재 Bearer 토큰을 검증하고 신원 정보를 반환합니다.",
+      "link_query": "slug와 도메인으로 단일 단축 링크를 조회합니다.",
+      "link_list": "페이지네이션, 필터링, 정렬을 사용해 단축 링크를 나열합니다.",
+      "link_search": "키워드, 정확한 URL, 태그, 상태, 도메인으로 링크를 검색합니다.",
+      "link_count": "키워드, URL, 태그, 상태, 도메인 필터와 일치하는 링크 수를 셉니다.",
+      "link_tags": "저장된 링크에서 현재 사용 중인 모든 태그를 나열합니다.",
+      "link_create": "등록된 도메인에 새로운 단축 링크를 생성합니다.",
+      "link_upsert": "새로운 단축 링크를 생성하거나, slug가 이미 존재하면 기존 링크를 반환합니다.",
+      "link_edit": "기존 단축 링크를 그 자리에서 업데이트합니다. domain 필드는 읽기 전용입니다.",
+      "link_delete": "slug와 도메인으로 단축 링크를 삭제합니다."
+    },
+    "interactive": {
+      "title": "대화형 문서",
+      "description": "요청을 처음부터 끝까지 시험해 보고 싶으신가요? Scalar UI는 전체 스키마를 탐색하고, Bearer 토큰으로 라이브 요청을 보내고, 자동 생성된 코드 스니펫을 가져올 수 있도록 해줍니다.",
+      "open": "Scalar 열기"
+    },
+    "example": {
+      "request_label": "요청 본문",
+      "response_label": "응답"
+    }
+  }
+}

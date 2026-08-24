@@ -1,6 +1,6 @@
 {
   "api_keys": {
-    "group_title": "API 密钥",
+    "group_title": "开放平台",
     "create": "创建 API 密钥",
     "edit": "编辑 API 密钥",
     "load_failed": "加载 API 密钥失败。",
@@ -13,8 +13,8 @@
     "create_failed": "创建 API 密钥失败",
     "update_success": "API 密钥已更新",
     "update_failed": "更新 API 密钥失败",
-    "revoke_success": "API 密钥已撤销",
-    "revoke_failed": "撤销 API 密钥失败",
+    "rotate_success": "API 密钥已轮换",
+    "rotate_failed": "轮换 API 密钥失败",
     "delete_success": "API 密钥已删除",
     "delete_failed": "删除 API 密钥失败",
     "table": {
@@ -47,7 +47,7 @@
       "pick_date": "选择日期"
     },
     "token": {
-      "title": "API 密钥已创建",
+      "title": "请保存你的 API 密钥",
       "description": "请立即复制你的 API 密钥，并妥善保管。",
       "warning": "出于安全原因，完整密钥仅显示一次，无法再次查看。",
       "copy": "复制",
@@ -55,10 +55,10 @@
       "done": "完成"
     },
     "dialogs": {
-      "revoke": {
-        "title": "撤销 {name}？",
-        "description": "使用此密钥发起的请求将立即停止工作。",
-        "action": "撤销密钥"
+      "rotate": {
+        "title": "轮换 API 密钥",
+        "description": "为\"{name}\"生成新的密钥。当前密钥将立即失效，请确认您已准备好保存新密钥。",
+        "action": "轮换密钥"
       },
       "delete": {
         "title": "删除 {name}？",

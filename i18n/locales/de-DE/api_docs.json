@@ -1,0 +1,47 @@
+{
+  "api_docs": {
+    "description": "Verwalte Kurzl Links programmatisch über die Sink Open-Platform-API. Alle Endpunkte akzeptieren JSON und benötigen ein Bearer-Token, das auf der API-Schlüssel-Seite ausgestellt wird.",
+    "base_url": {
+      "title": "Basis-URL",
+      "description": "Alle Endpunkte werden von deiner Sink-Instanz bereitgestellt. Ersetze die unten stehende Domain durch die Domain, unter der diese Instanz bereitgestellt wird.",
+      "placeholder": "https://your-domain.com"
+    },
+    "auth": {
+      "title": "Authentifizierung",
+      "description": "Sende deinen API-Schlüssel als Bearer-Token im Authorization-Header. Schlüssel werden auf der API-Schlüssel-Seite erstellt, mit Berechtigungen versehen und widerrufen.",
+      "example_label": "Beispielanfrage",
+      "keys_hint": "Erzeuge einen Schlüssel auf der API-Schlüssel-Seite."
+    },
+    "scopes": {
+      "title": "Berechtigungen",
+      "description": "Jeder Schlüssel erhält eine oder beide Berechtigungen. Anfragen werden mit 401 abgelehnt, wenn dem Schlüssel die erforderliche Berechtigung fehlt.",
+      "links_read": "Links lesen",
+      "links_write": "Links schreiben"
+    },
+    "endpoints": {
+      "title": "Endpunkte",
+      "description": "Die Routen in der folgenden Tabelle akzeptieren API-Schlüssel. Andere Endpunkte unter /api sind der Dashboard-Sitzung vorbehalten.",
+      "method_label": "Methode",
+      "scope_label": "Erforderliche Berechtigung",
+      "verify": "Überprüft das aktuelle Bearer-Token und liefert Identitätsinformationen.",
+      "link_query": "Sucht einen einzelnen Kurz-Link anhand von Slug und Domain.",
+      "link_list": "Listet Kurz-Links mit Paginierung, Filterung und Sortierung auf.",
+      "link_search": "Durchsucht Links nach Stichwort, genauer URL, Tag, Status oder Domain.",
+      "link_count": "Zählt Links, die nach Stichwort, URL, Tag, Status oder Domain gefiltert sind.",
+      "link_tags": "Listet alle Tags auf, die aktuell in gespeicherten Links verwendet werden.",
+      "link_create": "Erstellt einen neuen Kurz-Link auf einer registrierten Domain.",
+      "link_upsert": "Erstellt einen neuen Kurz-Link oder gibt den vorhandenen zurück, wenn der Slug bereits existiert.",
+      "link_edit": "Aktualisiert einen bestehenden Kurz-Link direkt. Das Feld domain ist schreibgeschützt.",
+      "link_delete": "Löscht einen Kurz-Link anhand von Slug und Domain."
+    },
+    "interactive": {
+      "title": "Interaktive Dokumentation",
+      "description": "Du willst eine Anfrage einmal komplett ausprobieren? Die Scalar-Oberfläche erlaubt es, das gesamte Schema zu durchsuchen, Live-Anfragen mit deinem Bearer-Token zu senden und generierte Snippets zu kopieren.",
+      "open": "Scalar öffnen"
+    },
+    "example": {
+      "request_label": "Anfragekörper",
+      "response_label": "Antwort"
+    }
+  }
+}

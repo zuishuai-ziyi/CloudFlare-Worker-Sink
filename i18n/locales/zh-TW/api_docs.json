@@ -1,0 +1,47 @@
+{
+  "api_docs": {
+    "description": "透過 Sink 開放平台 API 以程式化方式管理短連結。所有端點接受 JSON，並需要來自 API 金鑰頁簽發的 Bearer 權杖。",
+    "base_url": {
+      "title": "基礎網址",
+      "description": "所有端點都由你的 Sink 實例提供。請將下方網域替換為該實例實際部署的網域。",
+      "placeholder": "https://your-domain.com"
+    },
+    "auth": {
+      "title": "身分驗證",
+      "description": "在 Authorization 標頭中以 Bearer 方式傳送你的 API 金鑰。金鑰可在 API 金鑰頁產生、設定權限與撤銷。",
+      "example_label": "範例請求",
+      "keys_hint": "請至 API 金鑰頁產生金鑰。"
+    },
+    "scopes": {
+      "title": "權限範圍",
+      "description": "每把金鑰可被授予一個或兩個權限。當金鑰缺少所需權限時，將以 401 拒絕請求。",
+      "links_read": "讀取連結",
+      "links_write": "寫入連結"
+    },
+    "endpoints": {
+      "title": "端點",
+      "description": "下表中的路由接受 API 金鑰存取。其他 /api 下的端點僅供儀表板工作階段使用。",
+      "method_label": "方法",
+      "scope_label": "所需權限",
+      "verify": "驗證目前的 Bearer 權杖並回傳身分資訊。",
+      "link_query": "透過 slug 與網域查詢單一短連結。",
+      "link_list": "列出短連結，支援分頁、篩選與排序。",
+      "link_search": "依關鍵字、精確 URL、標籤、狀態或網域搜尋連結。",
+      "link_count": "依關鍵字、URL、標籤、狀態或網域篩選並統計連結數量。",
+      "link_tags": "列出目前所有短連結正在使用的標籤。",
+      "link_create": "在已註冊的網域上建立一筆新的短連結。",
+      "link_upsert": "建立一筆新的短連結，若 slug 已存在則回傳已存在的紀錄。",
+      "link_edit": "原地更新一筆已存在的短連結。domain 欄位為唯讀。",
+      "link_delete": "透過 slug 與網域刪除一筆短連結。"
+    },
+    "interactive": {
+      "title": "互動式文件",
+      "description": "想端到端除錯一次請求？Scalar UI 可瀏覽完整結構描述、用你的 Bearer 權杖直接發送請求，並複製自動產生的程式碼片段。",
+      "open": "開啟 Scalar"
+    },
+    "example": {
+      "request_label": "請求主體",
+      "response_label": "回應"
+    }
+  }
+}

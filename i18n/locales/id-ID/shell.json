@@ -31,7 +31,8 @@
     "check": "Check",
     "migrate": "Impor/Ekspor",
     "domains": "Domain",
-    "api_keys": "Kunci API"
+    "api_keys": "Platform Terbuka",
+    "api_docs": "Dokumentasi API"
   },
   "sidebar": {
     "subtitle": "Pemendek Tautan",

@@ -31,7 +31,8 @@
     "check": "Check",
     "migrate": "Nhập/Xuất",
     "domains": "Tên miền",
-    "api_keys": "Khóa API"
+    "api_keys": "Nền tảng mở",
+    "api_docs": "Tài liệu API"
   },
   "sidebar": {
     "subtitle": "Rút gọn liên kết",

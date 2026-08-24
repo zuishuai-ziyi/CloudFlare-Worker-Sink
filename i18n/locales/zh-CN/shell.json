@@ -31,7 +31,8 @@
     "check": "检测",
     "migrate": "导入/导出",
     "domains": "域名",
-    "api_keys": "API 密钥"
+    "api_keys": "开放平台",
+    "api_docs": "API 文档"
   },
   "sidebar": {
     "subtitle": "短链接服务",

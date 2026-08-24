@@ -1,6 +1,6 @@
 {
   "api_keys": {
-    "group_title": "Kunci API",
+    "group_title": "Platform Terbuka",
     "create": "Buat Kunci API",
     "edit": "Edit Kunci API",
     "load_failed": "Gagal memuat kunci API.",
@@ -13,8 +13,8 @@
     "create_failed": "Gagal membuat kunci API",
     "update_success": "Kunci API diperbarui",
     "update_failed": "Gagal memperbarui kunci API",
-    "revoke_success": "Kunci API dicabut",
-    "revoke_failed": "Gagal mencabut kunci API",
+    "rotate_success": "Kunci API dirotasi",
+    "rotate_failed": "Gagal merotasi kunci API",
     "delete_success": "Kunci API dihapus",
     "delete_failed": "Gagal menghapus kunci API",
     "table": {
@@ -47,7 +47,7 @@
       "pick_date": "Pilih tanggal"
     },
     "token": {
-      "title": "Kunci API dibuat",
+      "title": "Simpan kunci API Anda",
       "description": "Salin kunci API Anda sekarang dan simpan di tempat yang aman.",
       "warning": "Demi alasan keamanan, kunci lengkap hanya ditampilkan sekali dan tidak dapat dipulihkan.",
       "copy": "Salin",
@@ -55,10 +55,10 @@
       "done": "Selesai"
     },
     "dialogs": {
-      "revoke": {
-        "title": "Cabut {name}?",
-        "description": "Permintaan yang dibuat dengan kunci ini akan langsung berhenti bekerja.",
-        "action": "Cabut kunci"
+      "rotate": {
+        "title": "Rotasi kunci API",
+        "description": "Buat secret baru untuk \"{name}\". Secret saat ini akan langsung tidak berlaku. Pastikan Anda dapat menyimpan secret baru sebelum melanjutkan.",
+        "action": "Rotasi kunci"
       },
       "delete": {
         "title": "Hapus {name}?",

@@ -1,15 +1,15 @@
 ---
-title: API Keys
-description: Programmatic access for site admins — create, scope, rotate, and revoke API Keys, plus the endpoints they can call.
+title: Open Platform
+description: Open Platform is the dashboard section where you manage the API keys used for programmatic access — create, scope, rotate, and revoke them, plus the endpoints they can call.
 ---
 
-# API Keys
+# Open Platform
 
-API Keys let trusted scripts and integrations call Sink's REST API without using your site token. Create them in the dashboard, send them with `Authorization: Bearer`, and revoke them at any time.
+Open Platform is the dashboard section where you create and revoke API keys. API keys let trusted scripts and integrations call Sink's REST API without using your site token. Create them in the dashboard, send them with `Authorization: Bearer`, and revoke them at any time.
 
 ## Overview
 
-- API Keys are managed per instance from **Dashboard → API Keys** (`/dashboard/api-keys`).
+- API keys are managed per instance from **Dashboard → Open Platform** (`/dashboard/api-keys`).
 - Only the site token (or a verified Cloudflare Access identity) can create, edit, revoke, or delete keys.
 - Each key carries one or more **scopes** that decide which endpoints it may call.
 - The full key value is shown **once** at creation time. Sink stores only a SHA-256 hash, so the original value cannot be recovered later — copy it when it appears.
@@ -17,7 +17,7 @@ API Keys let trusted scripts and integrations call Sink's REST API without using
 
 ## Creating an API Key
 
-Open **Dashboard → API Keys** and click **Create**. Fill in:
+Open **Dashboard → Open Platform** and click **Create**. Fill in:
 
 1. **Name** (required) — a human-readable label so you can tell keys apart in the list.
 2. **Scopes** — tick `links:read` and/or `links:write`. Both are enabled by default; untick what you do not need.

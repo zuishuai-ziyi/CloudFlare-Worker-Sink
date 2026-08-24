@@ -12,3 +12,6 @@ export interface DashboardApiKeyCreateResponse {
   key: DashboardApiKey
   token: string
 }
+
+// Rotation shares the same one-time token shape as creation.
+export type DashboardApiKeyRotateResponse = DashboardApiKeyCreateResponse

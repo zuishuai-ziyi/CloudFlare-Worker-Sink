@@ -55,5 +55,5 @@ Authorization: Bearer YOUR_SITE_TOKEN
 | 存储初始化 | `/api/link/migration/status`、`/api/link/migration/run` — [存储初始化](/zh-CN/storage/kv-to-d1)  |
 | AI         | `/api/link/ai`、`/api/link/og-ai` — [Workers AI](/zh-CN/features/ai)                             |
 | 访问分析   | `/api/stats/**`、`/api/logs/**` — [访问分析](/zh-CN/features/analytics)                          |
-| API 密钥   | `/api/api-key/create`、`edit`、`revoke`、`delete`、`list` — [API 密钥](/zh-CN/features/api-keys) |
+| 开放平台   | `/api/api-key/create`、`edit`、`revoke`、`delete`、`list` — [开放平台](/zh-CN/features/api-keys) |
 | 实用工具   | `/api/verify`、`/api/location`、`/api/upload/image`、`/api/backup`                               |

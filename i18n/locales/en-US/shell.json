@@ -31,7 +31,8 @@
     "check": "Check",
     "migrate": "Import/Export",
     "domains": "Domains",
-    "api_keys": "API Keys"
+    "api_keys": "Open Platform",
+    "api_docs": "API Docs"
   },
   "sidebar": {
     "subtitle": "Link Shortener",

@@ -127,11 +127,11 @@ function formatErrors(errors: unknown[]): string[] {
 <template>
   <form
     :id="formId"
-    class="w-full space-y-6 px-1"
+    class="w-full min-w-0 space-y-6 px-1"
     :aria-busy="isSubmitting"
     @submit.prevent="form.handleSubmit()"
   >
-    <fieldset :disabled="isSubmitting" class="space-y-6">
+    <fieldset :disabled="isSubmitting" class="min-w-0 space-y-6">
       <FieldGroup>
         <form.Field
           v-slot="{ field }"

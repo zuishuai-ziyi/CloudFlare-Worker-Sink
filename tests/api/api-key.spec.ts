@@ -8,6 +8,7 @@ const createdSlugs = new Set<string>()
 interface CreatedApiKey {
   key: {
     id: string
+    name: string
     scopes: ApiKeyScope[]
     tokenPrefix: string
   }
@@ -179,13 +180,29 @@ describe('/api/api-key', { concurrent: false }, () => {
     expect(denied.status).toBe(403)
   })
 
-  it('revokes an API key and immediately disables it', async () => {
+  it('rotates an API key, invalidating the previous secret', async () => {
     const created = await createApiKey()
-    const revokeResponse = await postJson('/api/api-key/revoke', { id: created.key.id })
-    expect(revokeResponse.status).toBe(200)
 
-    const verifyResponse = await fetchWithApiKey('/api/verify', created.token)
-    expect(verifyResponse.status).toBe(401)
+    const beforeRotate = await fetchWithApiKey('/api/link/list?limit=1&status=all', created.token)
+    expect(beforeRotate.status).toBe(200)
+
+    const rotateResponse = await postJson('/api/api-key/rotate', { id: created.key.id })
+    expect(rotateResponse.status).toBe(200)
+    const rotated = await rotateResponse.json() as CreatedApiKey
+    expect(rotated.token.startsWith('sk_')).toBe(true)
+    expect(rotated.token).not.toBe(created.token)
+    expect(rotated.key.id).toBe(created.key.id)
+    expect(rotated.key.name).toBe(created.key.name)
+    expect(rotated.key.scopes).toEqual(created.key.scopes)
+
+    const staleVerify = await fetchWithApiKey('/api/verify', created.token)
+    expect(staleVerify.status).toBe(401)
+
+    const freshVerify = await fetchWithApiKey('/api/verify', rotated.token)
+    expect(freshVerify.status).toBe(200)
+
+    const afterRotate = await fetchWithApiKey('/api/link/list?limit=1&status=all', rotated.token)
+    expect(afterRotate.status).toBe(200)
   })
 
   it('deletes an API key and immediately disables it', async () => {
@@ -218,8 +235,8 @@ describe('/api/api-key', { concurrent: false }, () => {
     const editResponse = await putJson('/api/api-key/edit', { id, name: 'renamed' })
     expect(editResponse.status).toBe(404)
 
-    const revokeResponse = await postJson('/api/api-key/revoke', { id })
-    expect(revokeResponse.status).toBe(404)
+    const rotateResponse = await postJson('/api/api-key/rotate', { id })
+    expect(rotateResponse.status).toBe(404)
 
     const deleteResponse = await postJson('/api/api-key/delete', { id })
     expect(deleteResponse.status).toBe(404)

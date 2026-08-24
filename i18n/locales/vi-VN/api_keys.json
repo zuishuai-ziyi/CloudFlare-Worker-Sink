@@ -1,6 +1,6 @@
 {
   "api_keys": {
-    "group_title": "Khóa API",
+    "group_title": "Nền tảng mở",
     "create": "Tạo Khóa API",
     "edit": "Sửa Khóa API",
     "load_failed": "Tải khóa API thất bại.",
@@ -13,8 +13,8 @@
     "create_failed": "Tạo khóa API thất bại",
     "update_success": "Đã cập nhật khóa API",
     "update_failed": "Cập nhật khóa API thất bại",
-    "revoke_success": "Đã thu hồi khóa API",
-    "revoke_failed": "Thu hồi khóa API thất bại",
+    "rotate_success": "Đã xoay vòng khóa API",
+    "rotate_failed": "Không thể xoay vòng khóa API",
     "delete_success": "Đã xóa khóa API",
     "delete_failed": "Xóa khóa API thất bại",
     "table": {
@@ -47,7 +47,7 @@
       "pick_date": "Chọn ngày"
     },
     "token": {
-      "title": "Đã tạo khóa API",
+      "title": "Hãy lưu khóa API của bạn",
       "description": "Sao chép khóa API ngay bây giờ và cất giữ ở nơi an toàn.",
       "warning": "Vì lý do bảo mật, khóa đầy đủ chỉ được hiển thị một lần và không thể khôi phục.",
       "copy": "Sao chép",
@@ -55,10 +55,10 @@
       "done": "Xong"
     },
     "dialogs": {
-      "revoke": {
-        "title": "Thu hồi {name}?",
-        "description": "Các yêu cầu dùng khóa này sẽ ngừng hoạt động ngay lập tức.",
-        "action": "Thu hồi khóa"
+      "rotate": {
+        "title": "Xoay vòng khóa API",
+        "description": "Tạo secret mới cho \"{name}\". Secret hiện tại sẽ ngừng hoạt động ngay lập tức. Hãy đảm bảo bạn có thể lưu secret mới trước khi tiếp tục.",
+        "action": "Xoay vòng khóa"
       },
       "delete": {
         "title": "Xóa {name}?",

@@ -1,0 +1,47 @@
+{
+  "api_docs": {
+    "description": "Quản lý liên kết rút gọn theo cách lập trình thông qua API Nền tảng Mở của Sink. Tất cả endpoint chấp nhận JSON và yêu cầu token Bearer được phát hành từ trang Khóa API.",
+    "base_url": {
+      "title": "URL cơ sở",
+      "description": "Tất cả endpoint được phục vụ từ thể hiện Sink của bạn. Hãy thay tên miền bên dưới bằng tên miền nơi thể hiện này được triển khai.",
+      "placeholder": "https://your-domain.com"
+    },
+    "auth": {
+      "title": "Xác thực",
+      "description": "Gửi khóa API của bạn dưới dạng token Bearer trong header Authorization. Khóa được tạo, gán phạm vi và thu hồi từ trang Khóa API.",
+      "example_label": "Yêu cầu mẫu",
+      "keys_hint": "Tạo khóa trên trang Khóa API."
+    },
+    "scopes": {
+      "title": "Phạm vi",
+      "description": "Mỗi khóa được cấp một hoặc cả hai phạm vi. Yêu cầu bị từ chối với 401 khi khóa thiếu phạm vi cần thiết.",
+      "links_read": "Đọc liên kết",
+      "links_write": "Ghi liên kết"
+    },
+    "endpoints": {
+      "title": "Endpoint",
+      "description": "Các route trong bảng dưới đây chấp nhận khóa API. Các endpoint khác dưới /api được dành riêng cho phiên bảng điều khiển.",
+      "method_label": "Phương thức",
+      "scope_label": "Phạm vi yêu cầu",
+      "verify": "Xác minh token Bearer hiện tại và trả về thông tin danh tính.",
+      "link_query": "Tra cứu một liên kết rút gọn theo slug và tên miền.",
+      "link_list": "Liệt kê các liên kết rút gọn với phân trang, lọc và sắp xếp.",
+      "link_search": "Tìm kiếm liên kết theo từ khóa, URL chính xác, thẻ, trạng thái hoặc tên miền.",
+      "link_count": "Đếm các liên kết khớp với bộ lọc từ khóa, URL, thẻ, trạng thái hoặc tên miền.",
+      "link_tags": "Liệt kê mọi thẻ hiện đang được sử dụng bởi các liên kết đã lưu.",
+      "link_create": "Tạo một liên kết rút gọn mới trên một tên miền đã đăng ký.",
+      "link_upsert": "Tạo liên kết rút gọn mới hoặc trả về bản ghi hiện có khi slug đã tồn tại.",
+      "link_edit": "Cập nhật tại chỗ một liên kết rút gọn đã có. Trường domain là chỉ đọc.",
+      "link_delete": "Xóa một liên kết rút gọn theo slug và tên miền."
+    },
+    "interactive": {
+      "title": "Tài liệu tương tác",
+      "description": "Cần thử một yêu cầu từ đầu đến cuối? Giao diện Scalar cho phép bạn duyệt toàn bộ schema, gửi yêu cầu trực tiếp với token Bearer của bạn và sao chép các đoạn mã được tạo tự động.",
+      "open": "Mở Scalar"
+    },
+    "example": {
+      "request_label": "Thân yêu cầu",
+      "response_label": "Phản hồi"
+    }
+  }
+}

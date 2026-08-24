@@ -48,12 +48,12 @@ Until you open **Dashboard → Links** once after deploy, most `/api/link/**` ca
 
 Use the OpenAPI UI for full request/response details.
 
-| Group         | Routes                                                                                       |
-| ------------- | -------------------------------------------------------------------------------------------- |
-| Links         | `/api/link/create`, `edit`, `upsert`, `delete`, `query`, `search`, `list`, `check`, `tags`   |
-| Import/export | `/api/link/import`, `/api/link/export` — [Import and Export](/features/import-export)        |
-| Storage setup | `/api/link/migration/status`, `/api/link/migration/run` — [storage setup](/storage/kv-to-d1) |
-| AI            | `/api/link/ai`, `/api/link/og-ai` — [Workers AI](/features/ai)                               |
-| Analytics     | `/api/stats/**`, `/api/logs/**` — [Analytics](/features/analytics)                           |
-| API Keys      | `/api/api-key/create`, `edit`, `revoke`, `delete`, `list` — [API Keys](/features/api-keys)   |
-| Utilities     | `/api/verify`, `/api/location`, `/api/upload/image`, `/api/backup`                           |
+| Group         | Routes                                                                                          |
+| ------------- | ----------------------------------------------------------------------------------------------- |
+| Links         | `/api/link/create`, `edit`, `upsert`, `delete`, `query`, `search`, `list`, `check`, `tags`      |
+| Import/export | `/api/link/import`, `/api/link/export` — [Import and Export](/features/import-export)           |
+| Storage setup | `/api/link/migration/status`, `/api/link/migration/run` — [storage setup](/storage/kv-to-d1)    |
+| AI            | `/api/link/ai`, `/api/link/og-ai` — [Workers AI](/features/ai)                                  |
+| Analytics     | `/api/stats/**`, `/api/logs/**` — [Analytics](/features/analytics)                              |
+| Open Platform | `/api/api-key/create`, `edit`, `revoke`, `delete`, `list` — [Open Platform](/features/api-keys) |
+| Utilities     | `/api/verify`, `/api/location`, `/api/upload/image`, `/api/backup`                              |

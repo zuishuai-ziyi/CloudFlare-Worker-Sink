@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
 import type { ApiKeyScope, StoredApiKey } from '#shared/schemas/api-key'
-import { desc, eq } from 'drizzle-orm'
+import { and, desc, eq, isNull } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/d1'
 import { z } from 'zod'
 import { API_KEY_TOKEN_PREFIX, ApiKeyScopesSchema } from '#shared/schemas/api-key'
@@ -190,17 +190,36 @@ export async function updateApiKeyRecord(
 }
 
 /**
- * Mark an API key as revoked without deleting the row.
- * Returns false when the id is unknown or already revoked.
+ * Mint a fresh secret for an existing API key. The previous token is invalidated
+ * immediately because the stored hash is replaced. The row's name, scopes,
+ * expiration, and history (createdAt, lastUsedAt) are preserved; revokedAt is
+ * reset to NULL so a previously revoked row cannot be silently rotated back to
+ * life — only active keys are eligible. Returns null when the id is unknown or
+ * the key is already revoked.
  */
-export async function revokeApiKeyRecord(event: H3Event, id: string): Promise<boolean> {
+export async function rotateApiKeyRecord(
+  event: H3Event,
+  id: string,
+): Promise<{ key: StoredApiKey, token: string } | null> {
+  const token = generateApiToken()
   const now = Math.floor(Date.now() / 1000)
   const rows = await getDatabase(event)
     .update(apiKeys)
-    .set({ revokedAt: now, updatedAt: now })
-    .where(eq(apiKeys.id, id))
-    .returning({ id: apiKeys.id })
-  return rows.length > 0
+    .set({
+      tokenHash: await hashApiToken(token),
+      tokenPrefix: apiTokenPrefix(token),
+      updatedAt: now,
+      revokedAt: null,
+    })
+    .where(and(eq(apiKeys.id, id), isNull(apiKeys.revokedAt)))
+    .returning()
+  const row = rows[0]
+  if (!row)
+    return null
+  return {
+    key: rowToStoredApiKey(row),
+    token,
+  }
 }
 
 /** Permanently delete an API key row. Returns false when the id is unknown. */

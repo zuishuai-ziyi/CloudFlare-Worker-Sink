@@ -1,15 +1,15 @@
 ---
-title: API 密钥
-description: 为站点管理员提供程序化访问——创建、授权范围、轮换与撤销 API 密钥，以及它们可以调用的端点。
+title: 开放平台
+description: 开放平台是仪表盘中管理 API 密钥的区域——创建、授权范围、轮换与撤销 API 密钥，并列出它们可以调用的端点。
 ---
 
-# API 密钥
+# 开放平台
 
-API 密钥让受信任的脚本与集成在不暴露站点令牌的前提下调用 Sink 的 REST API。在仪表盘里创建，配 `Authorization: Bearer` 头使用，随时可以撤销。
+开放平台是仪表盘中管理 API 密钥的区域。API 密钥让受信任的脚本与集成在不暴露站点令牌的前提下调用 Sink 的 REST API。在仪表盘里创建，配 `Authorization: Bearer` 头使用，随时可以撤销。
 
 ## 概述
 
-- 在 **Dashboard → API Keys**（`/dashboard/api-keys`）按实例管理 API 密钥。
+- 在 **Dashboard → 开放平台**（`/dashboard/api-keys`）按实例管理 API 密钥。
 - 只有站点令牌（或已验证的 Cloudflare Access 身份）能创建、编辑、撤销或删除密钥。
 - 每个密钥携带一个或多个**权限范围（scope）**，决定它可以调用哪些端点。
 - 完整的密钥值仅在创建时**显示一次**。Sink 只存 SHA-256 哈希，原值无法再找回——看到时请立即复制。
@@ -17,7 +17,7 @@ API 密钥让受信任的脚本与集成在不暴露站点令牌的前提下调�
 
 ## 创建 API 密钥
 
-打开 **Dashboard → API Keys**，点击 **Create**。填写：
+打开 **Dashboard → 开放平台**，点击 **Create**。填写：
 
 1. **名称**（必填）——便于在列表里区分不同的密钥。
 2. **权限范围** —— 勾选 `links:read` 和/或 `links:write`。默认两者都启用；不需要的取消即可。

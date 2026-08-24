@@ -8,7 +8,8 @@
     "check",
     "migrate",
     "domains",
-    "api_keys"
+    "api_keys",
+    "api_docs"
   ],
   "locales": [
     {

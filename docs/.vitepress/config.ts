@@ -64,7 +64,7 @@ export default defineConfig({
               { text: 'Links', link: '/features/links' },
               { text: 'Analytics and Realtime', link: '/features/analytics' },
               { text: 'Workers AI', link: '/features/ai' },
-              { text: 'API Keys', link: '/features/api-keys' },
+              { text: 'Open Platform', link: '/features/api-keys' },
             ] },
             { text: 'Operations', items: [
               { text: 'Import and Export', link: '/features/import-export' },
@@ -124,7 +124,7 @@ export default defineConfig({
               { text: '链接', link: '/zh-CN/features/links' },
               { text: '分析与实时视图', link: '/zh-CN/features/analytics' },
               { text: 'Workers AI', link: '/zh-CN/features/ai' },
-              { text: 'API 密钥', link: '/zh-CN/features/api-keys' },
+              { text: '开放平台', link: '/zh-CN/features/api-keys' },
             ] },
             { text: '运维', items: [
               { text: '导入与导出', link: '/zh-CN/features/import-export' },

@@ -65,7 +65,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    :ref="(el) => setViewportElement(el as HTMLElement | null)"
+    :ref="(el: HTMLElement | null) => setViewportElement(el as HTMLElement | null)"
     data-slot="message-scroller-viewport"
     role="region"
     aria-label="Messages"

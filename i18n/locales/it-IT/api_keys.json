@@ -1,6 +1,6 @@
 {
   "api_keys": {
-    "group_title": "Chiavi API",
+    "group_title": "Piattaforma aperta",
     "create": "Crea chiave API",
     "edit": "Modifica chiave API",
     "load_failed": "Impossibile caricare le chiavi API.",
@@ -13,8 +13,8 @@
     "create_failed": "Impossibile creare la chiave API",
     "update_success": "Chiave API aggiornata",
     "update_failed": "Impossibile aggiornare la chiave API",
-    "revoke_success": "Chiave API revocata",
-    "revoke_failed": "Impossibile revocare la chiave API",
+    "rotate_success": "Chiave API ruotata",
+    "rotate_failed": "Rotazione della chiave API non riuscita",
     "delete_success": "Chiave API eliminata",
     "delete_failed": "Impossibile eliminare la chiave API",
     "table": {
@@ -47,7 +47,7 @@
       "pick_date": "Scegli una data"
     },
     "token": {
-      "title": "Chiave API creata",
+      "title": "Salva la tua chiave API",
       "description": "Copia subito la tua chiave API e conservala in un luogo sicuro.",
       "warning": "Per motivi di sicurezza, la chiave completa viene mostrata solo una volta e non può essere recuperata.",
       "copy": "Copia",
@@ -55,10 +55,10 @@
       "done": "Fatto"
     },
     "dialogs": {
-      "revoke": {
-        "title": "Revocare {name}?",
-        "description": "Le richieste effettuate con questa chiave smetteranno immediatamente di funzionare.",
-        "action": "Revoca chiave"
+      "rotate": {
+        "title": "Ruota chiave API",
+        "description": "Genera un nuovo segreto per \"{name}\". Il segreto attivo smetterà subito di funzionare. Assicurati di poter salvare il nuovo segreto prima di continuare.",
+        "action": "Ruota chiave"
       },
       "delete": {
         "title": "Eliminare {name}?",

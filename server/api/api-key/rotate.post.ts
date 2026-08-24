@@ -2,7 +2,7 @@ import { ApiKeyTargetSchema } from '#shared/schemas/api-key'
 
 defineRouteMeta({
   openAPI: {
-    description: 'Revoke an API key without deleting it',
+    description: 'Rotate an API key by minting a new secret and invalidating the previous one',
     security: [{ bearerAuth: [] }],
     requestBody: {
       required: true,
@@ -12,7 +12,7 @@ defineRouteMeta({
             type: 'object',
             required: ['id'],
             properties: {
-              id: { type: 'string', description: 'API key id to revoke' },
+              id: { type: 'string', description: 'API key id to rotate' },
             },
           },
         },
@@ -26,17 +26,17 @@ export default eventHandler(async (event) => {
   if (previewMode) {
     throw createError({
       status: 403,
-      statusText: 'Preview mode cannot revoke API keys.',
+      statusText: 'Preview mode cannot rotate API keys.',
     })
   }
 
   const { id } = await readValidatedBody(event, ApiKeyTargetSchema.parse)
-  const revoked = await revokeApiKeyRecord(event, id)
-  if (!revoked) {
+  const result = await rotateApiKeyRecord(event, id)
+  if (!result) {
     throw createError({
       status: 404,
       statusText: 'API key not found',
     })
   }
-  return {}
+  return result
 })

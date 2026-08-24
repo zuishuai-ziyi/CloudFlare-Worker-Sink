@@ -12,7 +12,7 @@ const { setRootElement } = useMessageScrollerContext()
 
 <template>
   <div
-    :ref="(el) => setRootElement(el as HTMLElement | null)"
+    :ref="(el: HTMLElement | null) => setRootElement(el as HTMLElement | null)"
     data-slot="message-scroller"
     :class="cn(
       'group/message-scroller relative flex size-full min-h-0 flex-col overflow-hidden',

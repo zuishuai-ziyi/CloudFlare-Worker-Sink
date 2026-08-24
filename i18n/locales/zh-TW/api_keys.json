@@ -1,6 +1,6 @@
 {
   "api_keys": {
-    "group_title": "API 金鑰",
+    "group_title": "開放平台",
     "create": "建立 API 金鑰",
     "edit": "編輯 API 金鑰",
     "load_failed": "載入 API 金鑰失敗。",
@@ -13,8 +13,8 @@
     "create_failed": "建立 API 金鑰失敗",
     "update_success": "API 金鑰已更新",
     "update_failed": "更新 API 金鑰失敗",
-    "revoke_success": "API 金鑰已撤銷",
-    "revoke_failed": "撤銷 API 金鑰失敗",
+    "rotate_success": "API 金鑰已輪替",
+    "rotate_failed": "輪替 API 金鑰失敗",
     "delete_success": "API 金鑰已刪除",
     "delete_failed": "刪除 API 金鑰失敗",
     "table": {
@@ -47,7 +47,7 @@
       "pick_date": "選擇日期"
     },
     "token": {
-      "title": "API 金鑰已建立",
+      "title": "請保存你的 API 金鑰",
       "description": "請立即複製你的 API 金鑰，並妥善保存。",
       "warning": "基於安全考量，完整金鑰僅顯示一次，無法再次查看。",
       "copy": "複製",
@@ -55,10 +55,10 @@
       "done": "完成"
     },
     "dialogs": {
-      "revoke": {
-        "title": "撤銷 {name}？",
-        "description": "使用此金鑰發出的請求將立即停止運作。",
-        "action": "撤銷金鑰"
+      "rotate": {
+        "title": "輪替 API 金鑰",
+        "description": "為「{name}」產生新的金鑰。目前金鑰將立即失效，請確認您已準備好保存新金鑰。",
+        "action": "輪替金鑰"
       },
       "delete": {
         "title": "刪除 {name}？",

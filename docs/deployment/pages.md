@@ -42,30 +42,30 @@ Under **Settings → Functions → Compatibility Flags**, add `nodejs_compat` fo
 
 Under **Settings → Variables and Secrets**, add the build deployment configuration below. The two IDs are required for D1 migration and deployment configuration generation.
 
-| Build variable                   | Required? | What to put                                                                    |
-| -------------------------------- | --------- | ------------------------------------------------------------------------------ |
-| `DEPLOY_D1_DATABASE_ID`          | Yes       | D1 database ID (from the D1 detail page)                                       |
-| `DEPLOY_KV_NAMESPACE_ID`         | Yes       | KV namespace ID (from the KV detail page)                                      |
-| `DEPLOY_KV_PREVIEW_NAMESPACE_ID` | No        | Preview KV namespace ID; defaults to `DEPLOY_KV_NAMESPACE_ID`                  |
+| Build variable                   | Required? | What to put                                                                     |
+| -------------------------------- | --------- | ------------------------------------------------------------------------------- |
+| `DEPLOY_D1_DATABASE_ID`          | Yes       | D1 database ID (from the D1 detail page)                                        |
+| `DEPLOY_KV_NAMESPACE_ID`         | Yes       | KV namespace ID (from the KV detail page)                                       |
+| `DEPLOY_KV_PREVIEW_NAMESPACE_ID` | No        | Preview KV namespace ID; defaults to `DEPLOY_KV_NAMESPACE_ID`                   |
 | `DEPLOY_D1_DATABASE_NAME`        | No        | D1 database name; defaults to `sink`                                            |
 | `DEPLOY_ANALYTICS_DATASET`       | No        | Analytics Engine dataset; defaults to `sink` (keep aligned with `NUXT_DATASET`) |
 
 Also configure Pages Build / Wrangler authentication for the Production environment. Pages does not provide these variables automatically:
 
-| Authentication variable   | Type             | What to put                                                                                                                                                                                                 |
-| ------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`    | Encrypted secret | Token used by the `postbuild` remote D1 migration. Git builds need at least **Account → D1 → Edit**. If the same token runs `pnpm deploy:pages` externally, also grant **Account → Cloudflare Pages → Edit** |
-| `CLOUDFLARE_ACCOUNT_ID`   | Variable         | Cloudflare account ID. Wrangler defines it as optional, but this project does not set `account_id`, so configure it for stable non-interactive builds                                                       |
+| Authentication variable | Type             | What to put                                                                                                                                                                                                  |
+| ----------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CLOUDFLARE_API_TOKEN`  | Encrypted secret | Token used by the `postbuild` remote D1 migration. Git builds need at least **Account → D1 → Edit**. If the same token runs `pnpm deploy:pages` externally, also grant **Account → Cloudflare Pages → Edit** |
+| `CLOUDFLARE_ACCOUNT_ID` | Variable         | Cloudflare account ID. Wrangler defines it as optional, but this project does not set `account_id`, so configure it for stable non-interactive builds                                                        |
 
 `CLOUDFLARE_ACCOUNT_ID` may have the same value as `NUXT_CF_ACCOUNT_ID`, but both variable names must be set separately. Preview builds skip the migration, so these authentication variables are not needed in the Preview environment.
 
 Add runtime configuration separately in the same dashboard section:
 
-| Runtime variable           | Type             | What to put                                                           |
-| -------------------------- | ---------------- | --------------------------------------------------------------------- |
-| `NUXT_SITE_TOKEN`          | Encrypted secret | Dashboard login password and API password (strong, stable, ≥ 8 chars) |
-| `NUXT_CF_ACCOUNT_ID`       | Variable         | Cloudflare account ID (for analytics)                                 |
-| `NUXT_CF_API_TOKEN`        | Encrypted secret | Custom Token with **Account → Account Analytics → Read** only         |
+| Runtime variable     | Type             | What to put                                                           |
+| -------------------- | ---------------- | --------------------------------------------------------------------- |
+| `NUXT_SITE_TOKEN`    | Encrypted secret | Dashboard login password and API password (strong, stable, ≥ 8 chars) |
+| `NUXT_CF_ACCOUNT_ID` | Variable         | Cloudflare account ID (for analytics)                                 |
+| `NUXT_CF_API_TOKEN`  | Encrypted secret | Custom Token with **Account → Account Analytics → Read** only         |
 
 How to create the analytics token: Cloudflare dashboard → profile icon → **My Profile** → **API Tokens** → **Create Token** → **Custom Token** → permission **Account → Account Analytics → Read**.
 

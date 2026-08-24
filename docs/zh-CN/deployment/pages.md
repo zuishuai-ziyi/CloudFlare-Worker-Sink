@@ -42,30 +42,30 @@ description: 通过 Git 集成和仪表盘管理的绑定将 Sink 部署到 Clou
 
 在 **Settings → Variables and Secrets** 中添加以下构建部署配置。D1 迁移和生成部署配置必须使用两个 ID。
 
-| 构建变量                          | 是否必需 | 填什么                                                                    |
-| --------------------------------- | -------- | ------------------------------------------------------------------------- |
-| `DEPLOY_D1_DATABASE_ID`           | 必需     | D1 数据库 ID（在 D1 详情页）                                              |
-| `DEPLOY_KV_NAMESPACE_ID`          | 必需     | KV 命名空间 ID（在 KV 详情页）                                            |
-| `DEPLOY_KV_PREVIEW_NAMESPACE_ID`  | 可选     | 预览 KV 命名空间 ID；默认等于 `DEPLOY_KV_NAMESPACE_ID`                    |
-| `DEPLOY_D1_DATABASE_NAME`         | 可选     | D1 数据库名称；默认 `sink`                                                |
-| `DEPLOY_ANALYTICS_DATASET`        | 可选     | Analytics Engine 数据集；默认 `sink`（请与 `NUXT_DATASET` 保持一致）       |
+| 构建变量                         | 是否必需 | 填什么                                                               |
+| -------------------------------- | -------- | -------------------------------------------------------------------- |
+| `DEPLOY_D1_DATABASE_ID`          | 必需     | D1 数据库 ID（在 D1 详情页）                                         |
+| `DEPLOY_KV_NAMESPACE_ID`         | 必需     | KV 命名空间 ID（在 KV 详情页）                                       |
+| `DEPLOY_KV_PREVIEW_NAMESPACE_ID` | 可选     | 预览 KV 命名空间 ID；默认等于 `DEPLOY_KV_NAMESPACE_ID`               |
+| `DEPLOY_D1_DATABASE_NAME`        | 可选     | D1 数据库名称；默认 `sink`                                           |
+| `DEPLOY_ANALYTICS_DATASET`       | 可选     | Analytics Engine 数据集；默认 `sink`（请与 `NUXT_DATASET` 保持一致） |
 
 还需为 Production 环境配置 Pages Build / Wrangler 鉴权变量。Pages 不会自动提供以下变量：
 
-| 鉴权变量                  | 类型     | 填什么                                                                                                                                                                                    |
-| ------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`    | 加密密钥 | `postbuild` 远程 D1 迁移使用的令牌。Git 构建最低需要 **Account → D1 → Edit**；若在外部使用同一令牌执行 `pnpm deploy:pages`，还需 **Account → Cloudflare Pages → Edit**                     |
-| `CLOUDFLARE_ACCOUNT_ID`   | 变量     | Cloudflare 账户 ID。Wrangler 官方将其定义为可选，但本项目未配置 `account_id`，因此建议设置，以保证非交互构建稳定                                                                           |
+| 鉴权变量                | 类型     | 填什么                                                                                                                                                                 |
+| ----------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | 加密密钥 | `postbuild` 远程 D1 迁移使用的令牌。Git 构建最低需要 **Account → D1 → Edit**；若在外部使用同一令牌执行 `pnpm deploy:pages`，还需 **Account → Cloudflare Pages → Edit** |
+| `CLOUDFLARE_ACCOUNT_ID` | 变量     | Cloudflare 账户 ID。Wrangler 官方将其定义为可选，但本项目未配置 `account_id`，因此建议设置，以保证非交互构建稳定                                                       |
 
 `CLOUDFLARE_ACCOUNT_ID` 可以与 `NUXT_CF_ACCOUNT_ID` 使用相同的值，但两个变量名必须分别设置。预览构建会跳过迁移，因此 Preview 环境不需要这两个鉴权变量。
 
 在仪表盘的同一位置另行添加运行时配置：
 
-| 运行时变量                 | 类型     | 填什么                                                      |
-| -------------------------- | -------- | ----------------------------------------------------------- |
-| `NUXT_SITE_TOKEN`          | 加密密钥 | 仪表盘登录密码和 API 密码（高强度、稳定，至少 8 个字符）    |
-| `NUXT_CF_ACCOUNT_ID`       | 变量     | Cloudflare 账户 ID（访问分析用）                            |
-| `NUXT_CF_API_TOKEN`        | 加密密钥 | 仅含 **Account → Account Analytics → Read** 的 Custom Token |
+| 运行时变量           | 类型     | 填什么                                                      |
+| -------------------- | -------- | ----------------------------------------------------------- |
+| `NUXT_SITE_TOKEN`    | 加密密钥 | 仪表盘登录密码和 API 密码（高强度、稳定，至少 8 个字符）    |
+| `NUXT_CF_ACCOUNT_ID` | 变量     | Cloudflare 账户 ID（访问分析用）                            |
+| `NUXT_CF_API_TOKEN`  | 加密密钥 | 仅含 **Account → Account Analytics → Read** 的 Custom Token |
 
 创建访问分析令牌：Cloudflare 仪表盘 → 右上角头像 → **My Profile** → **API Tokens** → **Create Token** → **Custom Token** → 权限选 **Account → Account Analytics → Read**。
 

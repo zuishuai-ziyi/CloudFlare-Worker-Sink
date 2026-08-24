@@ -7,10 +7,11 @@ const emit = defineEmits<{
 const open = defineModel<boolean>('open', { default: false })
 let confirmed = false
 
-function discardChanges() {
+async function discardChanges() {
   confirmed = true
-  emit('confirm')
   open.value = false
+  await nextTick()
+  emit('confirm')
 }
 
 function updateOpen(value: boolean) {
@@ -26,7 +27,7 @@ function updateOpen(value: boolean) {
 
 <template>
   <AlertDialog :open="open" @update:open="updateOpen">
-    <AlertDialogContent>
+    <AlertDialogContent class="z-60">
       <AlertDialogHeader>
         <AlertDialogTitle>{{ $t('links.dialogs.discard.title') }}</AlertDialogTitle>
         <AlertDialogDescription>

@@ -33,6 +33,7 @@ function applyBuilder(url: string) {
     :title="$t('links.form.utm_builder')"
     :description="$t('links.form.utm_description')"
     content-class="md:max-w-xl"
+    nested-drawer
   >
     <DashboardLinksEditorUtmBuilderForm
       v-if="open"

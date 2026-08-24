@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useMediaQuery } from '@vueuse/core'
+import { DrawerRootNested } from 'vaul-vue'
+import Drawer from '@/components/ui/drawer/Drawer.vue'
 
 defineOptions({ inheritAttrs: false })
 
@@ -7,9 +9,11 @@ const props = withDefaults(defineProps<{
   title: string
   description?: string
   contentClass?: string
+  nestedDrawer?: boolean
   preventClose?: boolean
 }>(), {
   contentClass: '',
+  nestedDrawer: false,
   preventClose: false,
 })
 
@@ -25,6 +29,7 @@ const slots = defineSlots<{
 
 const open = defineModel<boolean>('open', { default: false })
 const isDesktop = useMediaQuery('(min-width: 640px)')
+const mobileDrawerRoot = computed(() => props.nestedDrawer ? DrawerRootNested : Drawer)
 
 function updateOpen(value: boolean) {
   if (!value && props.preventClose)
@@ -67,7 +72,13 @@ function updateOpen(value: boolean) {
   </Dialog>
 
   <!-- Mobile: Drawer -->
-  <Drawer v-else :open="open" @update:open="updateOpen">
+  <component
+    :is="mobileDrawerRoot"
+    v-else
+    :open="open"
+    :should-scale-background="nestedDrawer ? false : undefined"
+    @update:open="updateOpen"
+  >
     <DrawerTrigger v-if="slots.trigger" as-child>
       <slot name="trigger" />
     </DrawerTrigger>
@@ -103,5 +114,5 @@ function updateOpen(value: boolean) {
         </DrawerClose>
       </DrawerFooter>
     </DrawerContent>
-  </Drawer>
+  </component>
 </template>

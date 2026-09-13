@@ -1,0 +1,3 @@
+[submodule "cloudflare"]
+	path = cloudflare
+	url = https://github.com/zuishuai-ziyi/CloudFlare-Worker-Sink.git

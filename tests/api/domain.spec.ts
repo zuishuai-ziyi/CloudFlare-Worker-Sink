@@ -1,6 +1,5 @@
-import { exports } from 'cloudflare:workers'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { clearDomains, clearLinks, fetchWithAuth, insertDomain, postJson, putJson, setLinkStoreD1Mode } from '../utils'
+import { clearDomains, clearLinks, fetchOnHost, fetchWithAuth, insertDomain, postJson, putJson, setLinkStoreD1Mode } from '../utils'
 
 const createdSlugs = new Set<string>()
 const createdDomains = new Set<string>()
@@ -17,10 +16,6 @@ function trackDomain(name: string) {
 
 async function deleteDomainViaApi(name: string) {
   return await fetchWithAuth(`/api/domain/${encodeURIComponent(name)}`, { method: 'DELETE' })
-}
-
-function fetchOnHost(host: string, path: string, options?: RequestInit): Promise<Response> {
-  return exports.default.fetch(new Request(`http://${host}${path}`, options))
 }
 
 beforeEach(async () => {
@@ -64,7 +59,7 @@ describe('/api/domain', { concurrent: false }, () => {
   })
 
   it('returns 401 without auth', async () => {
-    const response = await exports.default.fetch(new Request('http://localhost/api/domain', { method: 'POST', body: '{}', headers: { 'Content-Type': 'application/json' } }))
+    const response = await fetchOnHost('localhost', '/api/domain', { method: 'POST', body: '{}', headers: { 'Content-Type': 'application/json' } })
     expect(response.status).toBe(401)
   })
 
@@ -184,9 +179,9 @@ describe('domain-scoped links', { concurrent: false }, () => {
     expect(miss.status).toBe(404)
 
     // Unregistered hosts resolve nothing — there is no fallback to the default namespace.
-    const local = await exports.default.fetch(new Request(`http://localhost/${defaultSlug}`, { redirect: 'manual' }))
+    const local = await fetchOnHost('localhost', `/${defaultSlug}`, { redirect: 'manual' })
     expect(local.status).toBe(404)
-    const localMiss = await exports.default.fetch(new Request(`http://localhost/${otherSlug}`, { redirect: 'manual' }))
+    const localMiss = await fetchOnHost('localhost', `/${otherSlug}`, { redirect: 'manual' })
     expect(localMiss.status).toBe(404)
   })
 })

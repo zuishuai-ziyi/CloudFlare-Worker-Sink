@@ -1,11 +1,11 @@
 ---
 title: Getting Started
-description: Prepare Cloudflare resources, deploy Sink, and create your first short link.
+description: Prepare the Node runtime, deploy Sink, and create your first short link.
 ---
 
 # Getting Started
 
-Sink is a self-hosted short-link app with visit analytics. It runs on Cloudflare (no VPS required).
+Sink is a self-hosted short-link app with visit analytics. It runs as a single long-lived Node.js process (Nitro `node-server` preset); the original Cloudflare implementation is preserved under the `cloudflare/` git submodule for reference.
 
 ## 1. Fork Sink
 
@@ -13,35 +13,35 @@ Create a [fork of the Sink repository](https://github.com/miantiao-me/Sink/fork)
 
 ## 2. Choose where to deploy
 
-- [Cloudflare Workers](/deployment/workers) — recommended
+- [Linux VPS](/deployment/vps) — the supported deployment
+- [Cloudflare Workers](/deployment/workers) — legacy path, code kept in the `cloudflare/` submodule
 - [Cloudflare Pages](/deployment/pages) — deprecated
 
-Both use Git: Cloudflare builds from your fork and publishes the app.
+The Node deployment owns its own SQLite database and local file storage under `NUXT_DATA_DIR`; nginx (or any reverse proxy) terminates TLS in front of it.
 
-## 3. Create Cloudflare resources
+## 3. What you need to prepare
 
-In the [Cloudflare dashboard](https://dash.cloudflare.com/), create the services Sink will use. Later you will **bind** them to the project — binding means “connect this database/storage to Sink under a fixed name”.
+Before the first start, decide on:
 
-| Binding name | Cloudflare product       | Required?   | What it is                          |
-| ------------ | ------------------------ | ----------- | ----------------------------------- |
-| `DB`         | **D1** (database)        | Yes         | Stores your links                   |
-| `KV`         | **KV** (key-value store) | Yes         | Speeds up redirects                 |
-| `ANALYTICS`  | **Analytics Engine**     | Recommended | Visit stats and logs                |
-| `R2`         | **R2** (object storage)  | Optional    | Backups and social preview images   |
-| `AI`         | **Workers AI**           | Optional    | AI-suggested short codes and titles |
+| Variable           | Default   | What it is                                            |
+| ------------------ | --------- | ----------------------------------------------------- |
+| `NUXT_SITE_TOKEN`  | empty     | Dashboard login password and API password (≥ 8 chars) |
+| `PORT`             | `3000`    | TCP port the Node process binds                       |
+| `HOST`             | `0.0.0.0` | Interface the Node process binds                      |
+| `NUXT_DATA_DIR`    | `./data`  | Directory for the SQLite DB, uploads, and backups     |
+| `NUXT_AI_BASE_URL` | empty     | OpenAI-compatible endpoint for AI helpers (optional)  |
+| `NUXT_AI_API_KEY`  | empty     | API key for that endpoint                             |
 
-For the full experience, create all five. You can add analytics later — see [Analytics and Realtime](/features/analytics).
-
-After creating D1 and KV, open each resource’s detail page and copy its **ID** (you will paste it into deploy settings).
+No external database, KV namespace, R2 bucket, or Analytics Engine binding is required — Sink creates the local SQLite database and the `<NUXT_DATA_DIR>/r2/` directory on first use. You can add AI helpers later — see [AI helpers](/features/ai).
 
 ## 4. Configure and deploy
 
-Follow the Workers or Pages guide to connect the fork, add bindings, and set variables.
+Follow the [VPS deployment guide](/deployment/vps) to install Node.js, build Sink, configure systemd, and put nginx in front.
 
 ::: warning Set `NUXT_SITE_TOKEN` yourself
 This is your **dashboard login password** and the password used by API tools. Use a long random string (at least 8 characters) and keep it stable — changing it signs everyone out.
 
-If you skip it, Sink may invent a random password at build time that can change on the next deploy, and you will not be able to log in reliably.
+If you skip it, Sink may invent a random password at boot that can change on the next restart, and you will not be able to log in reliably.
 :::
 
 Other settings: [configuration reference](/configuration/).
@@ -53,7 +53,7 @@ Other settings: [configuration reference](/configuration/).
 3. Open **Dashboard → Links** once
 
 ::: tip Why open Links once?
-The first open finishes a one-time storage setup. Until then, creating links or backups may fail with “storage not ready” (HTTP 423). New installs only need a quick empty check; older KV-only installs migrate data here — see [storage setup / migration](/storage/kv-to-d1).
+The first open finishes a one-time storage setup. Until then, creating links or backups may fail with “storage not ready” (HTTP 423). On the Node deployment this is just a quick empty check; the legacy KV migration page documents the older Cloudflare-only flow — see [storage setup / migration](/storage/kv-to-d1).
 :::
 
 4. Create your first short link

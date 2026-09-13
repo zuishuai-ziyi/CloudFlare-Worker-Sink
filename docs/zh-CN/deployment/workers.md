@@ -5,6 +5,10 @@ description: 通过 Git 集成将 Sink 部署到 Cloudflare Workers。
 
 # 部署到 Cloudflare Workers
 
+::: warning 仅适用于 `cloudflare/` 子模块
+本页介绍保留在 `cloudflare/` git 子模块中的原版 Cloudflare 实现。主仓库面向 Linux VPS / Node.js 部署，请参见 [Linux VPS 部署指南](/deployment/vps)。
+:::
+
 ## 1. Fork Sink 并创建资源
 
 [Fork Sink 仓库](https://github.com/miantiao-me/Sink/fork)。在 [Cloudflare 仪表盘](https://dash.cloudflare.com/) 中创建：

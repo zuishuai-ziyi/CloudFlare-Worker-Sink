@@ -1,6 +1,6 @@
-import { cloudflareTest, readD1Migrations } from '@cloudflare/vitest-pool-workers'
+import { fileURLToPath } from 'node:url'
 import { loadEnv } from 'vite'
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 
 interface HandledValidationError {
   statusCode: 400
@@ -27,23 +27,29 @@ function isHandledValidationError(error: unknown): error is HandledValidationErr
     && data.stack.includes('validateData')
 }
 
-export default defineConfig(async ({ mode }) => ({
-  plugins: [
-    cloudflareTest({
-      wrangler: {
-        configPath: './wrangler.jsonc',
-      },
-      remoteBindings: false,
-      miniflare: {
-        cf: true,
-        bindings: {
-          TEST_MIGRATIONS: await readD1Migrations('./drizzle'),
-        },
-      },
-    }),
-  ],
+const root = fileURLToPath(new URL('.', import.meta.url))
+
+export default defineConfig(({ mode }) => ({
+  resolve: {
+    // The Nuxt app resolves these aliases at build time. Tests import app and
+    // server sources directly, so Vitest needs the same mapping.
+    alias: {
+      '#shared': fileURLToPath(new URL('./shared', import.meta.url)),
+      '#server': fileURLToPath(new URL('./server', import.meta.url)),
+      // Nuxt's auto-import module is virtual at runtime. Unit tests that need
+      // it replace it with `vi.mock('#imports', ...)`; the stub keeps the
+      // specifier resolvable for the rest of the module graph.
+      '#imports': fileURLToPath(new URL('./tests/stubs/imports.ts', import.meta.url)),
+      '@': fileURLToPath(new URL('./app', import.meta.url)),
+      '~': fileURLToPath(new URL('./app', import.meta.url)),
+      '~~': root,
+      '@@': root,
+    },
+  },
   test: {
+    environment: 'node',
     env: loadEnv(mode, process.cwd(), ''),
+    exclude: [...configDefaults.exclude, 'cloudflare/**', 'docs/**'],
     isolate: false,
     maxWorkers: 1,
     setupFiles: ['./tests/setup.ts'],

@@ -30,20 +30,13 @@ If you use Cloudflare Access:
 
 ## Analytics is empty
 
-Check all of these:
+Analytics is built in and writes to a local `access_logs` table inside the same SQLite database. If charts and logs are empty:
 
-1. Analytics Engine is bound as `ANALYTICS`
-2. Dataset name matches (`sink` by default, or the same as `NUXT_DATASET`)
-3. `NUXT_CF_ACCOUNT_ID` is the account that hosts this app
-4. `NUXT_CF_API_TOKEN` is a Custom Token with **Account → Account Analytics → Read**
-5. Bot filtering or dashboard filters are not hiding the traffic
+1. The database file under `NUXT_DATA_DIR` is writable and not full
+2. Bot filtering or dashboard filters are not hiding the traffic
+3. `NUXT_ANALYTICS_RETENTION_DAYS` has not pruned the rows you are looking at (default `90` days)
 
 Full steps: [Analytics](/features/analytics).
-
-<details>
-  <summary><b>Analytics Engine binding screenshot</b></summary>
-  <img alt="Analytics Engine binding settings in Cloudflare" src="./images/faqs-Analytics_engine.png">
-</details>
 
 ## Realtime events arrive in bursts or feel delayed
 
@@ -71,10 +64,10 @@ Keep each request within half the export page size. Use protected passwords from
 
 ## Backup was not created
 
-1. Confirm `R2` is bound
+1. The directory `<NUXT_DATA_DIR>/r2/backups/` is writable
 2. Open **Dashboard → Links** once if storage is not ready yet (backup returns 423 until then)
-3. Workers scheduled backups: check `NUXT_DISABLE_AUTO_BACKUP` and Cron
-4. Pages: use manual backup only in this repo
+3. Scheduled daily backups: confirm `NUXT_DISABLE_AUTO_BACKUP` is not set to `true`; the Node server runs them at 00:00 UTC
+4. Manual backups: call `POST /api/backup` (or use the dashboard backup button) at any time
 
 ## Redirect still looks old
 

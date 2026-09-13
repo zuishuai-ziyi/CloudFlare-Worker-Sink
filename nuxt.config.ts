@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import process from 'node:process'
+import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import { currentLocales } from './i18n/i18n'
 
@@ -27,10 +28,16 @@ export default defineNuxtConfig({
     redirectWithQuery: false,
     redirectNoStore: false,
     homeURL: '',
-    cfAccountId: '',
-    cfApiToken: '',
-    dataset: 'sink',
     aiModel: '@cf/qwen/qwen3-30b-a3b-fp8',
+    // Node platform configuration; env overrides: NUXT_DATA_DIR,
+    // NUXT_AI_BASE_URL, NUXT_AI_API_KEY, NUXT_GEOIP_DB,
+    // NUXT_ANALYTICS_RETENTION_DAYS.
+    dataDir: '',
+    aiBaseUrl: '',
+    aiApiKey: '',
+    geoipDb: '',
+    // Access-log retention in days; <= 0 keeps rows forever.
+    analyticsRetentionDays: 90,
     aiPrompt: `You are a URL shortening assistant, please shorten the URL provided by the user into a SLUG. The SLUG information should be derived from the URL and page content (if provided). Do not make any assumptions beyond the given information. A SLUG is human-readable and should not exceed three words and can be validated using regular expressions {slugRegex} . Only the best one is returned, the format must be JSON reference {"slug": "example-slug"}`,
     aiOgPrompt: `You are an OpenGraph metadata assistant. Please summarize the page content provided by the user into a perfect title and description for an OpenGraph preview. Do not make any assumptions beyond the given information. Only the best one is returned, the format must be JSON reference {"title": "Example Title", "description": "Example description that summarizes the page accurately."}`,
     caseSensitive: false,
@@ -80,10 +87,13 @@ export default defineNuxtConfig({
   },
   compatibilityDate: '2026-07-13',
   nitro: {
-    preset: import.meta.env.CF_PAGES !== '1' ? 'cloudflare-module' : undefined,
+    preset: 'node-server',
     experimental: {
       openAPI: true,
     },
+    serverAssets: [
+      { baseName: 'drizzle', dir: fileURLToPath(new URL('./drizzle', import.meta.url)) },
+    ],
     timing: true,
     openAPI: {
       production: 'runtime',

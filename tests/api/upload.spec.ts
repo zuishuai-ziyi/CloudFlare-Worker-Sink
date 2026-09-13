@@ -1,6 +1,5 @@
-import { env } from 'cloudflare:workers'
 import { describe, expect, it } from 'vitest'
-import { fetch, fetchWithAuth, TEST_PNG_BYTES } from '../utils'
+import { deleteR2, fetch, fetchWithAuth, TEST_PNG_BYTES } from '../utils'
 
 describe('/api/upload/image', () => {
   it('uploads and serves a PNG with immutable cache metadata', async () => {
@@ -32,7 +31,7 @@ describe('/api/upload/image', () => {
     }
     finally {
       if (key)
-        await env.R2.delete(key)
+        await deleteR2(key)
     }
   })
 

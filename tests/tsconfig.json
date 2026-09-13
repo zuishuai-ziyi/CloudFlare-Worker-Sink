@@ -7,5 +7,5 @@
     "types": ["node", "vite/client"],
     "skipLibCheck": true
   },
-  "include": ["./**/*.ts", "../worker-configuration.d.ts"]
+  "include": ["./**/*.ts"]
 }

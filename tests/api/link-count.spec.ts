@@ -1,9 +1,8 @@
 import type { Link } from '../../shared/schemas/link'
-import { env } from 'cloudflare:workers'
 import { eq } from 'drizzle-orm'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { links } from '../../server/database/schema'
-import { db, deleteStoredLinks, fetchWithAuth, insertDomain, postJson, setLinkStoreD1Mode } from '../utils'
+import { db, deleteKV, deleteStoredLinks, fetchWithAuth, insertDomain, postJson, setLinkStoreD1Mode } from '../utils'
 
 const TEST_DOMAIN = 'example.com'
 
@@ -69,7 +68,7 @@ describe('/api/link/count', { concurrent: false }, () => {
     await db.update(links)
       .set({ expiration: expiredAt, effectiveExpiresAt: expiredAt })
       .where(eq(links.slug, expiredTagged.slug))
-    await env.KV.delete(`link:${expiredTagged.slug}`)
+    await deleteKV(`link:${expiredTagged.slug}`)
   })
 
   afterEach(async () => {

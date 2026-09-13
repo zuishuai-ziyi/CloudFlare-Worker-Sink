@@ -5,6 +5,10 @@ description: Deploy Sink on Cloudflare Workers through Git integration.
 
 # Deploy on Cloudflare Workers
 
+::: warning Applies to the `cloudflare/` submodule only
+This page documents the original Cloudflare implementation kept in the `cloudflare/` git submodule. The main repository targets a Linux VPS / Node.js deployment — see the [Linux VPS deployment guide](/deployment/vps) instead.
+:::
+
 ## 1. Fork Sink and create resources
 
 Create a [fork of the Sink repository](https://github.com/miantiao-me/Sink/fork). In the [Cloudflare dashboard](https://dash.cloudflare.com/), create:

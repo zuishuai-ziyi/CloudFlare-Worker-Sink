@@ -1,8 +1,8 @@
-import type { RawBuilder } from 'kysely'
+import type { SQL } from 'drizzle-orm'
+import type { SQLiteColumn } from 'drizzle-orm/sqlite-core'
 import type { Query } from '#shared/schemas/query'
-import type { BlobsKey } from './access-log'
-import { sql } from 'kysely'
-import { blobsMap } from './access-log'
+import { and, gte, inArray, lte } from 'drizzle-orm'
+import { accessLogs } from '../database/schema'
 
 export type { Query }
 
@@ -18,38 +18,55 @@ function queryValues(value: string, omitEmpty = false): string[] {
   return omitEmpty ? values.filter(Boolean) : values
 }
 
-function inFilter(column: string, values: string[]): RawBuilder<boolean> | undefined {
-  if (!values.length)
-    return
-
-  return sql<boolean>`${sql.ref(column)} in (${sql.join(values.map(value => sql.lit(value)))})`
+// Query fields that map to a filterable access-log column. Fields absent from
+// QuerySchema (`ua`, `ip`, `COLO`) stay unfilterable, matching the previous
+// Analytics Engine behaviour.
+const filterColumns: Record<string, SQLiteColumn> = {
+  url: accessLogs.url,
+  slug: accessLogs.slug,
+  domain: accessLogs.domain,
+  referer: accessLogs.referer,
+  country: accessLogs.country,
+  region: accessLogs.region,
+  city: accessLogs.city,
+  timezone: accessLogs.timezone,
+  language: accessLogs.language,
+  os: accessLogs.os,
+  browser: accessLogs.browser,
+  browserType: accessLogs.browserType,
+  device: accessLogs.device,
+  deviceType: accessLogs.deviceType,
 }
 
-export function buildAnalyticsFilter(query: Query): RawBuilder<boolean> | undefined {
-  const filters: RawBuilder<boolean>[] = []
+/**
+ * Translates a validated query into a Drizzle `where` condition. `startAt` and
+ * `endAt` are second-precision epochs (as sent by the dashboard); stored
+ * timestamps are milliseconds, so ranges are expanded back to the whole second.
+ */
+export function buildAnalyticsFilter(query: Query): SQL | undefined {
+  const filters: SQL[] = []
+
   if (query.id) {
-    const filter = inFilter('index1', queryValues(query.id, true))
-    if (filter)
-      filters.push(filter)
+    const ids = queryValues(query.id, true)
+    if (ids.length)
+      filters.push(inArray(accessLogs.linkId, ids))
   }
 
-  const blobKeys = Object.keys(blobsMap) as BlobsKey[]
-  for (const blobKey of blobKeys) {
-    const queryKey = blobsMap[blobKey] as keyof Query
-    const value = query[queryKey]
+  for (const [key, column] of Object.entries(filterColumns)) {
+    const value = query[key as keyof Query]
     if (typeof value === 'string' && value)
-      filters.push(inFilter(blobKey, queryValues(value))!)
+      filters.push(inArray(column, queryValues(value)))
   }
 
   if (query.startAt) {
     const startTimestamp = Math.floor(Number(query.startAt))
-    filters.push(sql<boolean>`${sql.ref('timestamp')} >= toDateTime(${sql.lit(startTimestamp)})`)
+    filters.push(gte(accessLogs.timestamp, startTimestamp * 1000))
   }
 
   if (query.endAt) {
     const endTimestamp = Math.floor(Number(query.endAt))
-    filters.push(sql<boolean>`${sql.ref('timestamp')} <= toDateTime(${sql.lit(endTimestamp)})`)
+    filters.push(lte(accessLogs.timestamp, endTimestamp * 1000 + 999))
   }
 
-  return filters.length ? sql<boolean>`${sql.join(filters, sql` and `)}` : undefined
+  return filters.length ? and(...filters) : undefined
 }

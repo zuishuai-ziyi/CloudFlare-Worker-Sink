@@ -7,69 +7,56 @@ description: Sink 支持的全部环境变量——做什么、填在哪、什�
 
 所有值都是字符串。布尔开关除非另有说明，使用 `true`。
 
+Sink 在运行时从进程环境读取配置。VPS 部署下，值放在应用目录的 `.env` 中；`.env.example` 是带注释的权威清单。逐步安装（systemd、nginx、数据目录）见 [VPS 部署指南](/zh-CN/deployment/vps)。
+
 **大多数人需要的**
 
-- 必配：`NUXT_SITE_TOKEN`、D1（`DB`）、KV（`KV`）以及它们的 ID
-- 访问分析：`ANALYTICS` 绑定 + `NUXT_CF_ACCOUNT_ID` + `NUXT_CF_API_TOKEN` — 见[访问分析](/zh-CN/features/analytics)
+- 必配：`NUXT_SITE_TOKEN`
+- 通常需要：`PORT`、`HOST`、`NUXT_DATA_DIR`——默认值适用于大多数安装
+- 访问分析开箱即用（本地 `access_logs` 表）；只有 `NUXT_ANALYTICS_RETENTION_DAYS` 值得调整
 - 其余都是可选
 
 ## 变量填在哪里
 
-可以想成两个时机：
-
-| 时机         | 含义                                           | Workers                                     | Pages                                    |
-| ------------ | ---------------------------------------------- | ------------------------------------------- | ---------------------------------------- |
-| **构建时**   | Cloudflare 构建/发布应用时用到                 | Workers Builds → Variables                  | **Settings → Variables and Secrets**     |
-| **运行时**   | 线上应用运行时用到                             | Worker **Settings → Variables and Secrets** | 同一套 **Variables and Secrets**（共用） |
-| **两者都要** | 构建出的页面和运行时都要用（例如公开 UI 设置） | 在 Builds **和** Worker 设置里填**相同**值  | 只填一次                                 |
+Sink 以长期运行的 Node 进程运行，所有变量都在运行时读取。放在服务加载的 `.env` 文件中（见 [VPS 部署指南](/zh-CN/deployment/vps)），或在 systemd 单元/进程环境中导出。
 
 ::: tip 改了公开/构建变量后
-请重新部署一次，让应用重新构建。Workers 上「两者都要」的变量必须在两处一致。
+少数 `NUXT_PUBLIC_*` 值会在 `pnpm build` 时写入客户端产物。请在构建前设置，修改后重新构建。
 :::
 
-以 `DEPLOY_*` 开头的名字只在部署时连接资源用。它们会把仓库里 `wrangler.jsonc` 的占位值写进被 gitignore 的 `wrangler.deploy.jsonc` — 请在 `.env` 或 Cloudflare 构建变量里设置 `DEPLOY_*`，不要把生产环境 ID 写进 `wrangler.jsonc`。以 `NUXT_*` 开头的名字配置正在运行的应用。
+## 平台绑定
 
-## Cloudflare 绑定
+Node 运行时会自动替换 Cloudflare 绑定——无需配置：
 
-**绑定** = 把 Cloudflare 产品用固定名称接到 Sink。
+- **D1** → `<NUXT_DATA_DIR>/sink.db` 处的 SQLite 数据库
+- **KV** → 同一数据库中的 `kv_store` 表
+- **Analytics Engine** → 同一数据库中的 `access_logs` 表
+- **R2** → `<NUXT_DATA_DIR>/r2/` 下的文件
+- **AI** → 任意 OpenAI 兼容的 HTTP 端点（`NUXT_AI_BASE_URL` / `NUXT_AI_API_KEY`）
 
-| 绑定        | 是否必需 | 白话说明                                                                                           |
-| ----------- | -------- | -------------------------------------------------------------------------------------------------- |
-| `DB`        | 必需     | D1 数据库 — 保存链接                                                                               |
-| `KV`        | 必需     | 加速跳转的缓存（+ 存储就绪标记）                                                                   |
-| `ANALYTICS` | 推荐     | 访问事件，供分析使用                                                                               |
-| `R2`        | 可选     | 文件存储，用于备份和社交图片。Workers 可用 `DEPLOY_R2_BUCKET_NAME`；Pages 在仪表盘 Bindings 里添加 |
-| `AI`        | 可选     | Workers AI 建议                                                                                    |
-| `ASSETS`    | 自动     | 静态文件 — 系统自动提供                                                                            |
-
-访问分析是可选的。不配也能用短链和仪表盘；图表会是空的。启用步骤见[访问分析](/zh-CN/features/analytics)。
+历史上的绑定名（`DB`、`KV`、`ANALYTICS`、`R2`、`AI`、`ASSETS`）和 `DEPLOY_*` 占位符只适用于 `cloudflare/` 子模块中保留的 Cloudflare 代码。
 
 ## 必须配置
 
 ::: warning `NUXT_SITE_TOKEN`
 请自己设置。这是**仪表盘登录密码**，也是 **API 密码**。至少 8 个字符，越长越好。保持稳定。
 
-如果留空，Sink 可能在构建时随机生成密码，下次部署可能变化。
+如果留空，Sink 会在启动时随机生成密码，下次重启可能变化。
 :::
 
-| 变量                     | 时机           | 放哪里                       | 用途                           |
-| ------------------------ | -------------- | ---------------------------- | ------------------------------ |
-| `NUXT_SITE_TOKEN`        | 运行时（密钥） | Workers 或 Pages 的加密密钥  | 登录 + API 密码                |
-| `DEPLOY_D1_DATABASE_ID`  | 构建时         | Workers Builds 或 Pages 变量 | D1 数据库 ID（在 D1 详情页）   |
-| `DEPLOY_KV_NAMESPACE_ID` | 构建时         | Workers Builds 或 Pages 变量 | KV 命名空间 ID（在 KV 详情页） |
+| 变量              | 用途                      |
+| ----------------- | ------------------------- |
+| `NUXT_SITE_TOKEN` | 仪表盘登录密码 + API 密码 |
 
-## 推荐配置（访问分析）
+`PORT`、`HOST`、`NUXT_DATA_DIR` 都有安全默认值（见 `.env.example`），通常无需修改。
 
-| 变量                 | 时机           | 放哪里               | 用途                                                        |
-| -------------------- | -------------- | -------------------- | ----------------------------------------------------------- |
-| `NUXT_CF_ACCOUNT_ID` | 运行时         | Worker 或 Pages 变量 | 你的 Cloudflare 账户 ID                                     |
-| `NUXT_CF_API_TOKEN`  | 运行时（密钥） | 加密密钥             | 仅含 **Account → Account Analytics → Read** 的 Custom Token |
+## 访问分析
 
-同时绑定 `ANALYTICS`。备份加 `R2`，AI 加 `AI`。令牌步骤见[访问分析](/zh-CN/features/analytics)。
+访问分析内建：事件保存在同一 SQLite 数据库的本地 `access_logs` 表中，无需额外绑定或令牌。用 `NUXT_ANALYTICS_RETENTION_DAYS` 调整保留时长（默认 `90`；`0` 或负数表示永久保留）。
 
 ## 公开覆盖值（只在改默认时）
 
-Workers 要在 Builds 和运行时填相同值。Pages 只填一次，然后重新部署。
+这些值会在 `pnpm build` 时写入客户端产物；修改后需重新构建并重启。
 
 | 变量                              | 默认 | 用途                                 |
 | --------------------------------- | ---- | ------------------------------------ |
@@ -81,12 +68,9 @@ Workers 要在 Builds 和运行时填相同值。Pages 只填一次，然后重�
 
 ### 构建时选项
 
-| 变量                             | 放哪里                  | 何时生效                                                                        |
-| -------------------------------- | ----------------------- | ------------------------------------------------------------------------------- |
-| `NUXT_API_CORS`                  | Builds 或 Pages         | 严格等于 `true` 时，允许其他网站的浏览器调用 `/api/**`（CORS）。仍需要登录      |
-| `DEPLOY_R2_BUCKET_NAME`          | 仅 Workers Builds       | 填已有 R2 桶名以挂上 R2（`bucket_name`）。Pages：在 Bindings 里添加             |
-| `DEPLOY_KV_PREVIEW_NAMESPACE_ID` | Workers Builds 或 Pages | 可选 Wrangler `preview_id`；默认等于 `DEPLOY_KV_NAMESPACE_ID`                   |
-| `DEPLOY_R2_PREVIEW_BUCKET_NAME`  | 仅 Workers Builds       | 可选 Wrangler `preview_bucket_name`；启用 R2 时默认等于 `DEPLOY_R2_BUCKET_NAME` |
+| 变量            | 何时生效                                                                   |
+| --------------- | -------------------------------------------------------------------------- |
+| `NUXT_API_CORS` | 严格等于 `true` 时，允许其他网站的浏览器调用 `/api/**`（CORS）。仍需要登录 |
 
 ### 运行时选项
 
@@ -103,21 +87,22 @@ Workers 要在 Builds 和运行时填相同值。Pages 只填一次，然后重�
 
 ## 高级默认值（通常不用改）
 
-| 变量                          | 默认                         | 用途                                                                                     |
-| ----------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------- |
-| `NUXT_REDIRECT_STATUS_CODE`   | `301`                        | 普通跳转状态码（也可用 `302`/`307`/`308`）。未知短链仍用 302                             |
-| `NUXT_LINK_CACHE_TTL`         | `60`                         | KV 缓存链接的秒数                                                                        |
-| `NUXT_REDIRECT_WITH_QUERY`    | `false`                      | `true` 时把访客查询参数接到目标 URL                                                      |
-| `NUXT_REDIRECT_NO_STORE`      | `false`                      | `true` 时要求浏览器不要缓存这次跳转                                                      |
-| `NUXT_CASE_SENSITIVE`         | `false`                      | `true` 时自定义短链码区分大小写（`Docs` ≠ `docs`）                                       |
-| `NUXT_DATASET`                | `sink`                       | 访问分析数据集名；必须与 `ANALYTICS` 绑定一致                                            |
-| `NUXT_LIST_QUERY_LIMIT`       | `500`                        | 分析列表最大行数                                                                         |
-| `NUXT_DISABLE_BOT_ACCESS_LOG` | `false`                      | `true` 时从分析和 Webhook 排除机器人                                                     |
-| `NUXT_DISABLE_AUTO_BACKUP`    | `false`                      | `true` 时关闭计划 R2 备份                                                                |
-| `NUXT_AI_MODEL`               | `@cf/qwen/qwen3-30b-a3b-fp8` | Workers AI 模型                                                                          |
-| `NUXT_AI_PROMPT`              | 内置                         | 自定义短链提示词必须保留 `{slugRegex}`                                                   |
-| `NUXT_AI_OG_PROMPT`           | 内置                         | 自定义社交预览提示词                                                                     |
-| `DEPLOY_D1_DATABASE_NAME`     | `sink`                       | 覆盖生成部署配置中的 `d1_databases[].database_name`                                      |
-| `DEPLOY_ANALYTICS_DATASET`    | `sink`                       | 覆盖生成部署配置中的 `analytics_engine_datasets[].dataset`；请与 `NUXT_DATASET` 保持一致 |
+| 变量                            | 默认                         | 用途                                                           |
+| ------------------------------- | ---------------------------- | -------------------------------------------------------------- |
+| `NUXT_REDIRECT_STATUS_CODE`     | `301`                        | 普通跳转状态码（也可用 `302`/`307`/`308`）                     |
+| `NUXT_LINK_CACHE_TTL`           | `60`                         | KV 缓存将已解析链接视为新鲜的秒数                              |
+| `NUXT_REDIRECT_WITH_QUERY`      | `false`                      | `true` 时把访客查询参数接到目标 URL                            |
+| `NUXT_REDIRECT_NO_STORE`        | `false`                      | `true` 时要求浏览器不要缓存这次跳转                            |
+| `NUXT_CASE_SENSITIVE`           | `false`                      | `true` 时自定义短链码区分大小写（`Docs` ≠ `docs`）             |
+| `NUXT_ANALYTICS_RETENTION_DAYS` | `90`                         | `access_logs` 保留天数；`0` 或负数表示永久保留                 |
+| `NUXT_LIST_QUERY_LIMIT`         | `500`                        | 分析列表最大行数                                               |
+| `NUXT_DISABLE_BOT_ACCESS_LOG`   | `false`                      | `true` 时从分析和 Webhook 排除机器人                           |
+| `NUXT_DISABLE_AUTO_BACKUP`      | `false`                      | `true` 时关闭每日 00:00 UTC 的自动备份任务                     |
+| `NUXT_AI_BASE_URL`              | 空                           | OpenAI 兼容端点；未设置时 AI 路由返回 HTTP 501                 |
+| `NUXT_AI_API_KEY`               | 空                           | 上面端点的 API 密钥；两者都设置才启用 AI                       |
+| `NUXT_AI_MODEL`                 | `@cf/qwen/qwen3-30b-a3b-fp8` | 传给上游提供方的模型名                                         |
+| `NUXT_AI_PROMPT`                | 内置                         | 自定义短链提示词必须保留 `{slugRegex}`                         |
+| `NUXT_AI_OG_PROMPT`             | 内置                         | 自定义社交预览提示词                                           |
+| `NUXT_GEOIP_DB`                 | 空                           | 可选 GeoLite2-City `.mmdb` 路径；代理未发送 `x-geo-*` 头时使用 |
 
-详见[访问分析](/zh-CN/features/analytics)和 [API](/zh-CN/api/)。
+权威的带注释清单见 `.env.example`，另见[访问分析](/zh-CN/features/analytics)和 [API](/zh-CN/api/)。

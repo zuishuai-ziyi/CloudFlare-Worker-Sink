@@ -30,20 +30,13 @@ description: 解决常见的部署、登录、访问分析、重定向、导入�
 
 ## 访问分析为空
 
-请逐项确认：
+访问分析是内建的，写入同一 SQLite 数据库中的本地 `access_logs` 表。如果图表和日志为空：
 
-1. Analytics Engine 已绑定为 `ANALYTICS`
-2. 数据集名称一致（默认 `sink`，或与 `NUXT_DATASET` 相同）
-3. `NUXT_CF_ACCOUNT_ID` 是承载本应用的账户
-4. `NUXT_CF_API_TOKEN` 是仅含 **Account → Account Analytics → Read** 的 Custom Token
-5. 机器人过滤或仪表盘筛选没有把流量藏起来
+1. `NUXT_DATA_DIR` 下的数据库文件可写且未写满
+2. 机器人过滤或仪表盘筛选没有把流量藏起来
+3. `NUXT_ANALYTICS_RETENTION_DAYS` 没有清理掉你要看的行（默认 `90` 天）
 
 完整步骤见[访问分析](/zh-CN/features/analytics)。
-
-<details>
-  <summary><b>Analytics Engine 绑定截图</b></summary>
-  <img alt="Cloudflare 中的 Analytics Engine 绑定设置" src="../images/faqs-Analytics_engine.png">
-</details>
 
 ## 近实时事件成批到达或感觉有延迟
 
@@ -71,10 +64,10 @@ description: 解决常见的部署、登录、访问分析、重定向、导入�
 
 ## 没有创建备份
 
-1. 确认已绑定 `R2`
+1. 目录 `<NUXT_DATA_DIR>/r2/backups/` 可写
 2. 若存储尚未就绪，先打开一次 **Dashboard → Links**（此前备份会返回 423）
-3. Workers 计划备份：检查 `NUXT_DISABLE_AUTO_BACKUP` 与 Cron
-4. Pages：本仓库只支持手动备份
+3. 计划任务：确认 `NUXT_DISABLE_AUTO_BACKUP` 没有设为 `true`；Node 服务会在 UTC 00:00 跑
+4. 手动备份：随时调用 `POST /api/backup`（或在仪表盘点击备份按钮）
 
 ## 重定向看起来仍是旧值
 

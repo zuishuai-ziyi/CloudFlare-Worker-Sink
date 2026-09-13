@@ -40,3 +40,6 @@ opencode.json
 
 # Local deepwork session state
 .slim/deepwork/
+
+# Node runtime data (SQLite database, uploads, etc.)
+data/

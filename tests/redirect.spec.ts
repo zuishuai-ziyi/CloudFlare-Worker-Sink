@@ -1,8 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { deleteStoredLinks, fetch, insertDomain, postJson, setLinkStoreD1Mode } from './utils'
 
-type CfRequestInit = RequestInit & { cf?: { country?: string } }
-
 const createdSlugs: string[] = []
 const TEST_DOMAIN = 'example.com'
 
@@ -101,7 +99,7 @@ describe('/', () => {
     expect(browserResponse.headers.get('Location')).toBe(targetUrl)
   })
 
-  it('redirects to geo URL when cf.country matches', async () => {
+  it('redirects to geo URL when x-geo-country matches', async () => {
     const slug = `geo-cn-${crypto.randomUUID()}`
     const cnUrl = 'https://cn.example.com/landing'
 
@@ -114,14 +112,13 @@ describe('/', () => {
     expect(createResponse.status).toBe(201)
     createdSlugs.push(slug)
 
-    const options: CfRequestInit = { redirect: 'manual', cf: { country: 'CN' } }
-    const response = await fetch(`/${slug}`, options as RequestInit)
+    const response = await fetch(`/${slug}`, { redirect: 'manual', headers: { 'x-geo-country': 'CN' } })
 
     expect(response.status).toBe(301)
     expect(response.headers.get('Location')).toBe(cnUrl)
   })
 
-  it('redirects to default URL when cf.country does not match', async () => {
+  it('redirects to default URL when x-geo-country does not match', async () => {
     const slug = `geo-default-${crypto.randomUUID()}`
     const defaultUrl = 'https://example.com/default'
 
@@ -134,8 +131,7 @@ describe('/', () => {
     expect(createResponse.status).toBe(201)
     createdSlugs.push(slug)
 
-    const options: CfRequestInit = { redirect: 'manual', cf: { country: 'US' } }
-    const response = await fetch(`/${slug}`, options as RequestInit)
+    const response = await fetch(`/${slug}`, { redirect: 'manual', headers: { 'x-geo-country': 'US' } })
 
     expect(response.status).toBe(301)
     expect(response.headers.get('Location')).toBe(defaultUrl)
@@ -155,8 +151,7 @@ describe('/', () => {
     expect(createResponse.status).toBe(201)
     createdSlugs.push(slug)
 
-    const options: CfRequestInit = { redirect: 'manual', cf: { country: 'CN' } }
-    const response = await fetch(`/${slug}`, options as RequestInit)
+    const response = await fetch(`/${slug}`, { redirect: 'manual', headers: { 'x-geo-country': 'CN' } })
     const html = await response.text()
 
     expect(response.status).toBe(200)
@@ -201,14 +196,13 @@ describe('/', () => {
     expect(createResponse.status).toBe(201)
     createdSlugs.push(slug)
 
-    const options: CfRequestInit = {
+    const response = await fetch(`/${slug}`, {
       redirect: 'manual',
-      cf: { country: 'CN' },
       headers: {
+        'x-geo-country': 'CN',
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/147 Version/11.1.1 Mobile/15E148 Safari/604.1',
       },
-    }
-    const response = await fetch(`/${slug}`, options as RequestInit)
+    })
 
     expect(response.status).toBe(301)
     expect(response.headers.get('Location')).toBe(apple)

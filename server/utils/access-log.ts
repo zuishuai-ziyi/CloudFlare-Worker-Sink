@@ -1,4 +1,5 @@
 import type { H3Event } from 'h3'
+import { drizzle } from 'drizzle-orm/d1'
 import { getRequestHost } from 'h3'
 import { parseAcceptLanguage } from 'intl-parse-accept-language'
 import { UAParser } from 'ua-parser-js'
@@ -14,9 +15,19 @@ import {
 } from 'ua-parser-js/extensions'
 import { parseURL } from 'ufo'
 import { getFlag } from '#shared/utils/flag'
+import { accessLogs as accessLogsTable } from '../database/schema'
 
 function toBlobNumber(blob: string) {
   return +blob.replace(/\D/g, '')
+}
+
+function toLogText(value: unknown): string {
+  return value === undefined || value === null ? '' : String(value)
+}
+
+function toLogNumber(value: unknown): number {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : 0
 }
 
 export const blobsMap = {
@@ -191,19 +202,44 @@ export function collectAccessLog(event: H3Event): AccessLogResult | undefined {
 }
 
 export function writeAccessLog(event: H3Event, accessLogs: LogsMap): void {
-  const { cloudflare } = event.context
   const link = event.context.link || {}
 
   if (process.env.NODE_ENV === 'production') {
-    const analytics = cloudflare.env.ANALYTICS
-    if (!analytics)
-      return
-
-    analytics.writeDataPoint({
-      indexes: [link.id], // only one index
-      blobs: logs2blobs(accessLogs),
-      doubles: logs2doubles(accessLogs),
-    })
+    try {
+      // Persist to the local access_logs table through the D1 shim. The insert
+      // is intentionally fire-and-forget so analytics never blocks (or breaks)
+      // the redirect flow.
+      const db = drizzle(event.context.cloudflare.env.DB)
+      void Promise.resolve(db.insert(accessLogsTable).values({
+        linkId: toLogText(link.id),
+        // Milliseconds since epoch; API responses convert back to seconds.
+        timestamp: Date.now(),
+        slug: toLogText(accessLogs.slug),
+        url: toLogText(accessLogs.url),
+        ua: toLogText(accessLogs.ua),
+        ip: toLogText(accessLogs.ip),
+        referer: toLogText(accessLogs.referer),
+        country: toLogText(accessLogs.country),
+        region: toLogText(accessLogs.region),
+        city: toLogText(accessLogs.city),
+        timezone: toLogText(accessLogs.timezone),
+        language: toLogText(accessLogs.language),
+        os: toLogText(accessLogs.os),
+        browser: toLogText(accessLogs.browser),
+        browserType: toLogText(accessLogs.browserType),
+        device: toLogText(accessLogs.device),
+        deviceType: toLogText(accessLogs.deviceType),
+        colo: toLogText(accessLogs.COLO),
+        domain: toLogText(accessLogs.domain),
+        latitude: toLogNumber(accessLogs.latitude),
+        longitude: toLogNumber(accessLogs.longitude),
+      }).run()).catch((error) => {
+        console.error('writeAccessLog: failed to persist access log:', error)
+      })
+    }
+    catch (error) {
+      console.error('writeAccessLog: failed to persist access log:', error)
+    }
     return
   }
 

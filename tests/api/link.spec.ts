@@ -1,5 +1,5 @@
-import { env } from 'cloudflare:workers'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { getTestServer } from '../server'
 import { deleteStoredLinks, expectMaskedPassword, expectStoredHashedPassword, fetch, fetchWithAuth, getStoredLink, insertDomain, postJson, putJson, setLinkStoreD1Mode } from '../utils'
 
 const createdSlugs = new Set<string>()
@@ -29,23 +29,17 @@ afterEach(async () => {
 })
 
 describe('/api/link/ai', () => {
-  it('returns a fallback slug when Workers AI fails', async () => {
-    const runSpy = vi.spyOn(env.AI, 'run').mockRejectedValue(new Error('Workers AI unavailable'))
-    const toMarkdownSpy = vi.spyOn(env.AI, 'toMarkdown').mockRejectedValue(new Error('Markdown conversion unavailable'))
+  it('returns a fallback slug when the configured AI endpoint fails', async () => {
+    // The test server points NUXT_AI_BASE_URL at a closed port, so AI.run() always
+    // fails. Using the local server as the target URL keeps markdown fetching
+    // offline while still exercising the fallback path.
+    const target = `${(await getTestServer()).baseUrl}/fallback-slug`
+    const response = await fetchWithAuth(`/api/link/ai?url=${encodeURIComponent(target)}`)
+    expect(response.status).toBe(200)
 
-    try {
-      const response = await fetchWithAuth(`/api/link/ai?url=${encodeURIComponent('https://example.com/fallback-slug')}`)
-      expect(response.status).toBe(200)
-
-      const data = await response.json() as { slug: string }
-      expect(data.slug).toBe('fallback-slug')
-      expect(data.slug).not.toBe('')
-      expect(runSpy).toHaveBeenCalledOnce()
-    }
-    finally {
-      runSpy.mockRestore()
-      toMarkdownSpy.mockRestore()
-    }
+    const data = await response.json() as { slug: string }
+    expect(data.slug).toBe('fallback-slug')
+    expect(data.slug).not.toBe('')
   })
 
   it('returns 400 when url parameter is missing', async () => {
@@ -60,23 +54,16 @@ describe('/api/link/ai', () => {
 })
 
 describe('/api/link/og-ai', () => {
-  it('returns fallback metadata when Workers AI fails', async () => {
-    const runSpy = vi.spyOn(env.AI, 'run').mockRejectedValue(new Error('Workers AI unavailable'))
-    const toMarkdownSpy = vi.spyOn(env.AI, 'toMarkdown').mockRejectedValue(new Error('Markdown conversion unavailable'))
+  it('returns fallback metadata when the configured AI endpoint fails', async () => {
+    // See the /api/link/ai fallback test: the closed AI endpoint forces the
+    // fallback branch, and the fallback title comes from the target hostname.
+    const target = `${(await getTestServer()).baseUrl}/fallback-metadata`
+    const response = await fetchWithAuth(`/api/link/og-ai?url=${encodeURIComponent(target)}`)
+    expect(response.status).toBe(200)
 
-    try {
-      const response = await fetchWithAuth(`/api/link/og-ai?url=${encodeURIComponent('https://example.com/fallback-metadata')}`)
-      expect(response.status).toBe(200)
-
-      const data = await response.json() as { title: string, description: string }
-      expect(data.title).toBe('example.com')
-      expect(data.description).not.toBe('')
-      expect(runSpy).toHaveBeenCalledOnce()
-    }
-    finally {
-      runSpy.mockRestore()
-      toMarkdownSpy.mockRestore()
-    }
+    const data = await response.json() as { title: string, description: string }
+    expect(data.title).toBe('127.0.0.1')
+    expect(data.description).not.toBe('')
   })
 
   it('returns 400 when url parameter is missing', async () => {

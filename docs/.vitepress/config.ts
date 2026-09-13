@@ -53,6 +53,7 @@ export default defineConfig({
             { text: 'Deployment', items: [
               { text: 'Cloudflare Workers', link: '/deployment/workers' },
               { text: 'Cloudflare Pages', link: '/deployment/pages' },
+              { text: 'Linux VPS (Node)', link: '/deployment/vps' },
               { text: 'Upgrading Sink', link: '/deployment/upgrading' },
             ] },
             { text: 'Configuration', items: [
@@ -113,6 +114,7 @@ export default defineConfig({
             { text: '部署', items: [
               { text: 'Cloudflare Workers', link: '/zh-CN/deployment/workers' },
               { text: 'Cloudflare Pages', link: '/zh-CN/deployment/pages' },
+              { text: 'Linux VPS（Node）', link: '/zh-CN/deployment/vps' },
               { text: '升级 Sink', link: '/zh-CN/deployment/upgrading' },
             ] },
             { text: '配置', items: [

@@ -5,33 +5,15 @@ description: 启用访问分析、查看图表和日志、了解近实时视图�
 
 # 访问分析与近实时视图
 
-访问分析是**可选**功能。不配置时，短链、登录和链接管理仍可用 — 图表、日志和近实时视图会是空的。
+访问分析是内建功能。每一次短链访问都会写入同一 SQLite 数据库中的本地 `access_logs` 表 —— 无需 Cloudflare 账户、API 令牌或额外绑定。
 
-## 如何启用（三样都要）
+## 保留时长
 
-需要同时具备：
-
-1. **Analytics Engine 绑定**，名称必须是 `ANALYTICS`
-   - **Workers：** 通常由部署配置生成（数据集默认 `sink`）
-   - **Pages：** **Settings → Bindings → Add → Analytics Engine**
-   - 变量名：`ANALYTICS`
-   - 数据集：默认 `sink`。若设置了 `NUXT_DATASET`，这里必须相同
-
-2. **账户 ID** — 把 `NUXT_CF_ACCOUNT_ID` 设为承载本应用的 Cloudflare 账户 ID  
-   （仪表盘侧边栏账户名，或登录后 URL 里可见）
-
-3. **API 令牌** — 把 `NUXT_CF_API_TOKEN` 设为加密密钥：
-   - Cloudflare 仪表盘 → 右上角头像 → **My Profile** → **API Tokens** → **Create Token** → **Custom Token**
-   - 权限仅需：**Account → Account Analytics → Read**
-   - 建议限制到同一账户
-
-缺一或名称不一致，访问分析会一直为空。
+用 `NUXT_ANALYTICS_RETENTION_DAYS` 调整保留天数（默认 `90`；`0` 或负数表示永久保留）。保留期清理与每日自动备份任务在同一次调度里执行。详见[备份](/zh-CN/features/backups)和[配置参考](/zh-CN/configuration/#高级默认值)。
 
 ## 能看到什么
 
 成功的访问会进入计数器、图表、热力图、最近事件和位置。可按链接、时间、国家/地区、浏览器、系统、设备、来源筛选。
-
-数字可能是**近似值**（Cloudflare 会对大流量采样）。低流量时也可能看起来不均匀。
 
 要从统计和[点击 Webhook](/zh-CN/configuration/webhooks) 排除机器人，设置 `NUXT_DISABLE_BOT_ACCESS_LOG=true`。
 

@@ -1,9 +1,8 @@
 import type { LinkCheckResponse } from '../../shared/types/link-check'
-import { env } from 'cloudflare:workers'
 import { eq } from 'drizzle-orm'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { links } from '../../server/database/schema'
-import { db, deleteStoredLinks, insertDomain, postJson, setLinkStoreD1Mode } from '../utils'
+import { db, deleteKV, deleteStoredLinks, insertDomain, postJson, setLinkStoreD1Mode } from '../utils'
 
 const TEST_DOMAIN = 'example.com'
 
@@ -30,7 +29,6 @@ async function createStoredLinks(count: number): Promise<{ slug: string, url: st
 describe('/api/link/check', { concurrent: false }, () => {
   it('checks authoritative links with keyset cursor pagination', async () => {
     const created = await createStoredLinks(11)
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('Blocked test outbound request'))
 
     try {
       const checked = new Map<string, string>()
@@ -61,7 +59,6 @@ describe('/api/link/check', { concurrent: false }, () => {
         expect(checked.get(link.slug)).toBe(link.url)
     }
     finally {
-      fetchSpy.mockRestore()
       await deleteStoredLinks(created.map(link => link.slug))
     }
   })
@@ -72,8 +69,7 @@ describe('/api/link/check', { concurrent: false }, () => {
     await db.update(links)
       .set({ expiration: expiredAt, effectiveExpiresAt: expiredAt })
       .where(eq(links.slug, link.slug))
-    await env.KV.delete(`link::${link.slug}`)
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('Blocked test outbound request'))
+    await deleteKV(`link::${link.slug}`)
 
     try {
       let cursor: string | undefined
@@ -97,7 +93,6 @@ describe('/api/link/check', { concurrent: false }, () => {
       })
     }
     finally {
-      fetchSpy.mockRestore()
       await deleteStoredLinks([link.slug])
     }
   })

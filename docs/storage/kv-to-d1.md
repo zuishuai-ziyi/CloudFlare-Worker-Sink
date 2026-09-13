@@ -5,6 +5,10 @@ description: One-time storage setup for every install, and how to move links fro
 
 # Storage setup and KV migration
 
+::: tip Node version note
+This page documents the **Cloudflare** deployment, which lives under the `cloudflare/` git submodule and is preserved for reference only. On the Node deployment (the supported one), new installs only need the one-time **Dashboard → Links** open — there is no KV to migrate from. To move links from an existing Cloudflare instance, export them from the original dashboard and import with `POST /api/link/import` (or the dashboard import flow).
+:::
+
 ::: warning Who needs this page?
 
 - **New installs:** after the first deploy, open **Dashboard → Links** once. Sink finishes a quick empty check and marks storage ready. You do not need to export anything.

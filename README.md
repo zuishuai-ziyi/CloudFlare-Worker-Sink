@@ -39,6 +39,7 @@
 
 [<img src="https://devin.ai/assets/deepwiki-badge.png" alt="DeepWiki" height="20"/>](https://deepwiki.com/miantiao-me/Sink)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-F69652?style=flat&logo=cloudflare&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-22-339933?style=flat&logo=nodedotjs&logoColor=white)
 ![Nuxt](https://img.shields.io/badge/Nuxt-00DC82?style=flat&logo=nuxtdotjs&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)
 ![shadcn/ui](https://img.shields.io/badge/shadcn/ui-000000?style=flat&logo=shadcnui&logoColor=white)
@@ -87,14 +88,14 @@ Site Token: SinkCool
 ## 🧱 Technologies Used
 
 - **Framework**: [Nuxt 4](https://nuxt.com/)
-- **Database**: [Cloudflare D1](https://developers.cloudflare.com/d1/) is the authoritative link store; [Workers KV](https://developers.cloudflare.com/kv/) is a write-through read cache
+- **Database**: SQLite via [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) (Cloudflare D1-shaped binding) is the authoritative link store; a `kv_store` table in the same database acts as a write-through read cache
 - **ORM**: [Drizzle ORM](https://orm.drizzle.team/)
-- **Analytics Engine**: [Cloudflare Workers Analytics Engine](https://developers.cloudflare.com/analytics/)
-- **Object Storage**: [Cloudflare R2](https://developers.cloudflare.com/r2/) for optional logical JSON snapshots
-- **AI**: Optional [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/)
+- **Analytics**: local `access_logs` table (no external Analytics Engine)
+- **Object Storage**: filesystem under `${NUXT_DATA_DIR}/r2/` for optional logical JSON snapshots
+- **AI**: any OpenAI-compatible HTTP endpoint (optional)
 - **UI Components**: [shadcn-vue](https://www.shadcn-vue.com/)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-- **Deployment**: [Cloudflare](https://www.cloudflare.com/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Deployment**: any Linux VPS via the Nitro `node-server` preset (default); the original Cloudflare implementation is preserved in the `cloudflare/` git submodule
 
 ## 🚗 Roadmap [WIP]
 
@@ -114,7 +115,9 @@ We welcome your contributions and PRs.
 
 > Video tutorial: [Watch here](https://www.youtube.com/watch?v=MkU23U2VE9E)
 
-We currently support deployment to [Cloudflare Workers](https://docs.sink.cool/deployment/workers) (recommended) and [Cloudflare Pages](https://docs.sink.cool/deployment/pages) (deprecated).
+The current release targets a Linux VPS via the Nitro `node-server` preset. Build with `pnpm build` and run `node .output/server/index.mjs`; see the [VPS deployment guide](https://docs.sink.cool/deployment/vps) for systemd, nginx, GeoIP, backups, and upgrade steps.
+
+The historical [Cloudflare Workers](https://docs.sink.cool/deployment/workers) and [Cloudflare Pages](https://docs.sink.cool/deployment/pages) flows remain supported only through the original code preserved in the [`cloudflare/`](./cloudflare) git submodule. Initialize it with `git submodule update --init --recursive`.
 
 ## ⚒️ Configuration
 

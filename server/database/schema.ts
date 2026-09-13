@@ -1,6 +1,6 @@
 import type { Link } from '../../shared/schemas/link'
 import { sql } from 'drizzle-orm'
-import { index, integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { index, integer, primaryKey, real, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 export const domains = sqliteTable('domains', {
   // Lowercase host (no scheme/path/port). At most one row has is_default = true.
@@ -80,6 +80,38 @@ export const linkMigrationRuns = sqliteTable('link_migration_runs', {
     sql`${table.createdAt} desc`,
     sql`${table.id} desc`,
   ),
+])
+
+// Local replacement for the Cloudflare Analytics Engine dataset. One row per
+// access event; `timestamp` is a millisecond epoch (Date.now()), while API
+// responses expose second-precision values to match the previous contract.
+export const accessLogs = sqliteTable('access_logs', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  // Authoritative link id (Analytics Engine `index1`).
+  linkId: text('link_id').notNull(),
+  timestamp: integer('timestamp').notNull(),
+  slug: text().notNull().default(''),
+  url: text().notNull().default(''),
+  ua: text().notNull().default(''),
+  ip: text().notNull().default(''),
+  referer: text().notNull().default(''),
+  country: text().notNull().default(''),
+  region: text().notNull().default(''),
+  city: text().notNull().default(''),
+  timezone: text().notNull().default(''),
+  language: text().notNull().default(''),
+  os: text().notNull().default(''),
+  browser: text().notNull().default(''),
+  browserType: text('browser_type').notNull().default(''),
+  device: text().notNull().default(''),
+  deviceType: text('device_type').notNull().default(''),
+  colo: text().notNull().default(''),
+  domain: text().notNull().default(''),
+  latitude: real().notNull().default(0),
+  longitude: real().notNull().default(0),
+}, table => [
+  index('access_logs_link_id_idx').on(table.linkId),
+  index('access_logs_timestamp_idx').on(table.timestamp),
 ])
 
 export const apiKeys = sqliteTable('api_keys', {

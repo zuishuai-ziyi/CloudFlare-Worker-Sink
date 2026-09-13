@@ -5,6 +5,10 @@ description: 每次部署都需要的一次性存储初始化，以及如何把�
 
 # 存储初始化与 KV 迁移
 
+::: tip Node 版说明
+本页面介绍的是 **Cloudflare** 部署方式，相关代码位于 `cloudflare/` git 子模块，仅作存档参考。Node 部署（当前支持的部署方式）新装只需打开一次 **Dashboard → Links**，不存在需要迁移的 KV。要从已有的 Cloudflare 实例迁移链接，在原仪表盘导出后用 `POST /api/link/import`（或仪表盘的导入流程）导入即可。
+:::
+
 ::: warning 谁需要看这页？
 
 - **新部署：** 首次部署后打开一次 **Dashboard → Links**。Sink 会做一次快速空检查并标记存储已就绪。不用导出任何数据。

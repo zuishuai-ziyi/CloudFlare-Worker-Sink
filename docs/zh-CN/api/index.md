@@ -53,7 +53,7 @@ Authorization: Bearer YOUR_SITE_TOKEN
 | 链接       | `/api/link/create`、`edit`、`upsert`、`delete`、`query`、`search`、`list`、`check`、`tags`       |
 | 导入/导出  | `/api/link/import`、`/api/link/export` — [导入/导出](/zh-CN/features/import-export)              |
 | 存储初始化 | `/api/link/migration/status`、`/api/link/migration/run` — [存储初始化](/zh-CN/storage/kv-to-d1)  |
-| AI         | `/api/link/ai`、`/api/link/og-ai` — [Workers AI](/zh-CN/features/ai)                             |
+| AI         | `/api/link/ai`、`/api/link/og-ai` — [AI 辅助](/zh-CN/features/ai)                                |
 | 访问分析   | `/api/stats/**`、`/api/logs/**` — [访问分析](/zh-CN/features/analytics)                          |
 | 开放平台   | `/api/api-key/create`、`edit`、`revoke`、`delete`、`list` — [开放平台](/zh-CN/features/api-keys) |
 | 实用工具   | `/api/verify`、`/api/location`、`/api/upload/image`、`/api/backup`                               |

@@ -1,0 +1,159 @@
+name: Deploy Release
+
+# Deploys a tagged release to the production VPS.
+# The server builds the app itself (low-memory profile, requires RAM+swap >= 4.5G)
+# and runs it under the BT panel managed Node project (user `www`,
+# 127.0.0.1:3000 behind nginx). If the build fails, the old process keeps serving.
+# If the new build fails to start or pass the health check, the deploy rolls back
+# to the previous build automatically.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to deploy (e.g. v0.3.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+# Never run two production deploys at the same time.
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: 22
+          command_timeout: 40m
+          envs: TAG
+          script: |
+            set -euo pipefail
+
+            # Only plain semver-ish tags: guards against command injection
+            # through the tag name and against accidental branch deploys.
+            if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
+              echo "Refusing to deploy invalid tag: $TAG"
+              exit 1
+            fi
+
+            [ "$(id -u)" -eq 0 ] || { echo "This deploy script must run as root"; exit 1; }
+
+            # The Nitro build peaks around 2 GB of live heap. The VPS only has
+            # 1.9 GB RAM, so a persistent swap file is part of the deployment
+            # prerequisites. Refuse to build without enough virtual memory.
+            RAM_KB="$(awk '/^MemTotal:/ {print $2}' /proc/meminfo)"
+            SWAP_KB="$(awk '/^SwapTotal:/ {print $2}' /proc/meminfo)"
+            TOTAL_MB="$(( (RAM_KB + SWAP_KB) / 1024 ))"
+            if [ "$TOTAL_MB" -lt 4500 ]; then
+              echo "Insufficient RAM+swap (${TOTAL_MB} MB, need >= 4500 MB). Add swap on the server first."
+              exit 1
+            fi
+
+            export PATH="/www/server/nodejs/v24.21.0/bin:$PATH"
+            # Apply a low heap to every Node invocation in this deploy
+            # (postinstall hooks, build:sphere, nuxt build) so the 2 GB VPS
+            # does not OOM during the build.
+            export NODE_OPTIONS=--max-old-space-size=2048
+            APP_DIR="/www/wwwroot/z26.top"
+            PID_FILE="/www/server/nodejs/vhost/pids/z26_top.pid"
+            START_SCRIPT="/www/server/nodejs/vhost/scripts/z26_top.sh"
+            APP_LOG="/www/wwwlogs/nodejs/z26_top.log"
+
+            restart_app() {
+              local pid
+              pid="$(cat "$PID_FILE" 2>/dev/null || true)"
+              if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+                kill "$pid" || true
+                for _ in $(seq 1 10); do
+                  kill -0 "$pid" 2>/dev/null || break
+                  sleep 1
+                done
+                kill -9 "$pid" 2>/dev/null || true
+              fi
+              # Relaunch exactly the way the BT panel does (as user www).
+              su -s /bin/bash www -c "bash ${START_SCRIPT}"
+            }
+
+            rollback_to_previous() {
+              if [ -d "$APP_DIR/.output.prev" ]; then
+                rm -rf "$APP_DIR/.output"
+                mv "$APP_DIR/.output.prev" "$APP_DIR/.output"
+                chown -R www:www "$APP_DIR/.output"
+                restart_app || true
+                echo "!! Rolled back to the previous build and restarted it."
+              fi
+            }
+
+            echo "== Deploying $TAG (RAM+swap: ${TOTAL_MB} MB) =="
+            cd "$APP_DIR"
+
+            echo "== Fetching source =="
+            git fetch --tags --force origin
+            git checkout --force "$TAG"
+
+            echo "== Installing dependencies =="
+            pnpm install --frozen-lockfile
+
+            echo "== Building (low-memory profile for the 2G VPS) =="
+            pnpm run build:sphere
+
+            # Keep the previous build until the new one is fully ready, so a
+            # failed build never leaves a half-written .output behind. Only
+            # move the current build aside if one already exists, so an
+            # interrupted build cannot destroy the only known-good build.
+            rm -rf "$APP_DIR/.output.prev"
+            if [ -d "$APP_DIR/.output" ]; then
+              mv "$APP_DIR/.output" "$APP_DIR/.output.prev"
+            fi
+            if ! pnpm exec nuxt build; then
+              rollback_to_previous
+              echo "!! Build failed; rolled back. The old process keeps serving."
+              exit 1
+            fi
+
+            echo "== Fixing ownership (built as root, runs as www) =="
+            chown -R www:www "$APP_DIR/.output" "$APP_DIR/public" "$APP_DIR/.nuxt" "$APP_DIR/node_modules"
+            mkdir -p "$APP_DIR/data"
+            chown www:www "$APP_DIR/data"
+
+            echo "== Restarting app (BT panel managed process) =="
+            if ! restart_app; then
+              rollback_to_previous
+              echo "!! Failed to start the new build; rolled back."
+              exit 1
+            fi
+
+            echo "== Health check =="
+            STATUS="000"
+            for _ in $(seq 1 20); do
+              STATUS="$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 http://127.0.0.1:3000/ || true)"
+              case "$STATUS" in 200|301|302) break ;; esac
+              sleep 2
+            done
+            if [ "$STATUS" != "200" ] && [ "$STATUS" != "301" ] && [ "$STATUS" != "302" ]; then
+              echo "!! Health check failed with HTTP $STATUS. Recent application logs:"
+              tail -n 30 "$APP_LOG" || true
+              rollback_to_previous
+              echo "!! Health check failed; rolled back to the previous build."
+              exit 1
+            fi
+
+            # New build is live and healthy; drop the previous one.
+            rm -rf "$APP_DIR/.output.prev"
+            echo "== Deploy of $TAG complete (health: $STATUS) =="
